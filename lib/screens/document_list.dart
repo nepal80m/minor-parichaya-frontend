@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../widgets/document_tile.dart';
 import '../dataset/dummy_documents.dart';
+
+import 'view_document_screen.dart';
 
 class DocumentList extends StatelessWidget {
   final documentList = DUMMY_DOCS;
@@ -27,6 +30,8 @@ class DocumentList extends StatelessWidget {
                 image: document.images[0],
                 onTap: () {
                   // TODO: Open document details page.
+                  Navigator.of(context).pushNamed(ViewDocuments.routeName,
+                      arguments: document.id);
                 },
               );
             },

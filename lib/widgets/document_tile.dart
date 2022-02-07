@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parichaya_frontend/utils/string.dart';
 
 class DocumentTile extends StatelessWidget {
   final Image image;
@@ -32,9 +33,7 @@ class DocumentTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   child: image,
                 )),
-            title: Text(title.length > 25
-                ? title.replaceRange(25, null, '...')
-                : title),
+            title: Text(generateLimitedLengthText(title, 25)),
             trailing: action
             // subtitle: Text(document.note.length > 25 ?
             //      note.replaceRange(25, null, '...')

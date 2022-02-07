@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-
-import './screens/buttomNavigationBase.dart';
-import './screens/add_documents_screen.dart';
-import 'screens/view_document_screen.dart';
+import 'package:parichaya_frontend/providers/documents.dart';
+import 'package:provider/provider.dart';
+import 'screens/buttom_navigation_base.dart';
+import 'screens/add_document.dart';
+import 'screens/document_details.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,26 +14,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Parichaya',
-      // TODO: Customize theme
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'OpenSans',
-        // fontFamily: 'Quicksand',
-        // splashFactory: InkRipple.splashFactory,
+    return ChangeNotifierProvider(
+      create: (_) => Documents(),
+      child: MaterialApp(
+        title: 'Parichaya',
+        // TODO: Customize theme
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          fontFamily: 'OpenSans',
+          // fontFamily: 'Quicksand',
+          // splashFactory: InkRipple.splashFactory,
+        ),
+        debugShowCheckedModeBanner: false,
+        routes: {
+          '/': (ctx) => const ButtomNavigationBase(),
+          AddDocuments.routeName: (ctx) => const AddDocuments(),
+          DocumentDetails.routeName: (ctx) => const DocumentDetails(),
+        },
+        onUnknownRoute: (settings) {
+          return MaterialPageRoute(
+            builder: (ctx) => const ButtomNavigationBase(),
+          );
+        },
       ),
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/': (ctx) => const ButtomNavigationBase(),
-        AddDocuments.routeName: (ctx) => const AddDocuments(),
-        ViewDocuments.routeName: (ctx) => const ViewDocuments(),
-      },
-      onUnknownRoute: (settings) {
-        return MaterialPageRoute(
-          builder: (ctx) => const ButtomNavigationBase(),
-        );
-      },
     );
   }
 }

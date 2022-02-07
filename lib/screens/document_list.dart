@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import '../providers/document.dart';
+import '../providers/documents.dart';
 import '../widgets/document_tile.dart';
-import '../dataset/dummy_documents.dart';
 
-import 'view_document_screen.dart';
+import 'document_details.dart';
 
 class DocumentList extends StatelessWidget {
-  final documentList = DUMMY_DOCS;
-  DocumentList({Key? key}) : super(key: key);
+  // late List<Document> documentList;
+  const DocumentList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final documentList = Provider.of<Documents>(context).items;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -29,8 +31,7 @@ class DocumentList extends StatelessWidget {
                 title: document.title,
                 image: document.images[0],
                 onTap: () {
-                  // TODO: Open document details page.
-                  Navigator.of(context).pushNamed(ViewDocuments.routeName,
+                  Navigator.of(context).pushNamed(DocumentDetails.routeName,
                       arguments: document.id);
                 },
               );

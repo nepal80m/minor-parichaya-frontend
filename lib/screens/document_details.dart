@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
-import '../dataset/dummy_documents.dart';
 import '../widgets/display_items.dart';
-import '../widgets/document_tile.dart';
+import '../providers/documents.dart';
+import '../utils/string.dart';
 
-class ViewDocuments extends StatelessWidget {
-  const ViewDocuments({Key? key}) : super(key: key);
+class DocumentDetails extends StatelessWidget {
+  const DocumentDetails({Key? key}) : super(key: key);
 
-  static const routeName = '/view_document';
+  static const routeName = '/document_details';
 
   @override
   Widget build(BuildContext context) {
     final routeDocumentId =
         ModalRoute.of(context)?.settings.arguments as String;
 
-    final doc =
-        DUMMY_DOCS.firstWhere((element) => element.id == routeDocumentId);
+    final document =
+        Provider.of<Documents>(context).getDocumentById(routeDocumentId);
 
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).primaryColor),
-        title: const Text(
-          'VIEW DOCUMENT',
+        title: Text(
+          generateLimitedLengthText(document.title, 25),
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
       ),
@@ -32,8 +33,8 @@ class ViewDocuments extends StatelessWidget {
         return SingleChildScrollView(
           child: Container(
               padding: const EdgeInsets.all(15),
-              child: DisplayItems(
-                  doc.title, doc.note, doc.images, constraints.maxHeight)),
+              child: DisplayItems(document.title, document.note,
+                  document.images, constraints.maxHeight)),
         );
       }),
     );

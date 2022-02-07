@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../utils/string.dart';
 
 import '../widgets/custom_icons_icons.dart';
-import '../screens/add_documents_screen.dart';
+import 'add_document.dart';
 
 // import './homepage.dart';
 import './document_list.dart';
@@ -102,7 +103,8 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
           },
         ),
         title: Text(
-          _screens[_screenIndex]['title'] as String,
+          generateLimitedLengthText(
+              _screens[_screenIndex]['title'] as String, 25),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         // titleSpacing: 0.0,

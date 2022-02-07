@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../widgets/custom_icons_icons.dart';
+import '../screens/add_documents_screen.dart';
 
 // import './homepage.dart';
 import './document_list.dart';
@@ -140,7 +141,9 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
       ),
       body: _screens[_screenIndex]['screen'] as Widget,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed(AddDocuments.routeName);
+        },
         tooltip: 'Add New Doc',
         elevation: 2,
         child: const Icon(Icons.add_a_photo),

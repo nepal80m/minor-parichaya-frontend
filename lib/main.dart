@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import './screens/buttomNavigationBase.dart';
+import './screens/add_documents_screen.dart';
+import 'screens/view_document_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +23,16 @@ class MyApp extends StatelessWidget {
         // splashFactory: InkRipple.splashFactory,
       ),
       debugShowCheckedModeBanner: false,
-      home: const ButtomNavigationBase(),
+      routes: {
+        '/': (ctx) => const ButtomNavigationBase(),
+        AddDocuments.routeName: (ctx) => const AddDocuments(),
+        ViewDocuments.routeName: (ctx) => const ViewDocuments(),
+      },
+      onUnknownRoute: (settings) {
+        return MaterialPageRoute(
+          builder: (ctx) => const ButtomNavigationBase(),
+        );
+      },
     );
   }
 }

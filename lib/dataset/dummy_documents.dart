@@ -15,38 +15,6 @@ const passportImgURL =
 const khopCardImgURL =
     'https://vaccine.mohp.gov.np/images/khop_card.jpg?ff2c4af8149164d4907942fdb3d48ca2';
 
-var veryLongList = List.generate(50, (index) {
-  return Document(
-    id: 'id${50 + index}',
-    title: 'Certificate ${index + 1}',
-    tags: ['tag1', 'tag2'],
-    note: 'This is my Fake Certificate',
-    images: [
-      Image.network(
-        slcImgURL,
-        width: 50,
-        height: 50,
-        fit: BoxFit.cover,
-        semanticLabel: 'Certificate',
-      ),
-      Image.network(
-        slcImgURL,
-        width: 50,
-        height: 50,
-        fit: BoxFit.cover,
-        semanticLabel: 'Certificate',
-      ),
-      Image.network(
-        slcImgURL,
-        width: 50,
-        height: 50,
-        fit: BoxFit.cover,
-        semanticLabel: 'Certificate',
-      ),
-    ],
-  );
-});
-
 final DUMMY_DOCS = [
       Document(
         id: 'id1',
@@ -195,3 +163,35 @@ final DUMMY_DOCS = [
       ),
     ] +
     veryLongList;
+
+var veryLongList = List.generate(50, (index) {
+  return Document(
+    id: 'id${50 + index}',
+    title: 'Certificate ${index + 1}',
+    tags: ['tag1', 'tag2'],
+    note: 'This is my Fake Certificate',
+    images: [
+      Image.network(
+        slcImgURL,
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+        semanticLabel: 'Certificate',
+      ),
+      Image.network(
+        slcImgURL,
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+        semanticLabel: 'Certificate',
+      ),
+      Image.network(
+        slcImgURL,
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+        semanticLabel: 'Certificate',
+      ),
+    ],
+  );
+});

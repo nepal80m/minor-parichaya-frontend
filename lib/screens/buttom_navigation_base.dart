@@ -21,6 +21,9 @@ class ButtomNavigationBase extends StatefulWidget {
 
 class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   int _screenIndex = 0;
+  final name = 'Peter Griffin';
+  final number = " 988434633";
+  bool isSwitched = false;
 
   void _selectScreen(int index) {
     setState(() {
@@ -63,22 +66,202 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
           padding: EdgeInsets.zero,
           children: [
             // TODO: Complete this drawer
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+            Container(
+              height: 130,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 30,
+                        child: Text(
+                          name[0].toUpperCase(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 20),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          name,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                        Text(
+                          number,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14),
+                        ),
+                        // Text('goerranger@gmail.com'),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              child: Text('Asim Nepal'),
             ),
+//Switch for dark mode
             ListTile(
-              title: const Text('Menu 1'),
+              title: Row(
+                children: [
+                  Icon(Icons.dark_mode_rounded),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Dark Mode',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              trailing: Switch(
+                value: isSwitched,
+                onChanged: (value) {
+                  setState(() {
+                    isSwitched = value;
+                    print(isSwitched);
+                  });
+                },
+                activeTrackColor: Theme.of(context).primaryColorLight,
+                activeColor: Theme.of(context).primaryColor,
+              ),
               onTap: () {},
             ),
+            Divider(color: Colors.grey),
+//Change Number
             ListTile(
-              title: const Text('Menu 2'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
+              title: Row(
+                children: [
+                  Icon(Icons.phone_android_rounded),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Change Number',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {},
+              trailing: Icon(Icons.arrow_forward_ios),
+            ),
+//Change Email Address
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(Icons.mail_rounded),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Change Email address',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {},
+              trailing: Icon(Icons.arrow_forward_ios),
+            ),
+
+//Change Password
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(Icons.vpn_key_rounded),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Change Password',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {},
+              trailing: Icon(Icons.arrow_forward_ios),
+            ),
+            Divider(color: Colors.grey),
+            //Terms of services
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(Icons.subject_rounded),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Terms of services',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {},
+              trailing: Icon(Icons.arrow_forward_ios),
+            ),
+            //Privacy Policy
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(Icons.lock_rounded),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Privacy Policy',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {},
+              trailing: Icon(Icons.arrow_forward_ios),
+            ),
+            //Terms of services
+            ListTile(
+              title: Row(
+                children: [
+                  Icon(Icons.group_rounded),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'About Us',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {},
+              trailing: Icon(Icons.arrow_forward_ios),
+            ),
+            Divider(
+              color: Colors.grey,
             ),
           ],
         ),

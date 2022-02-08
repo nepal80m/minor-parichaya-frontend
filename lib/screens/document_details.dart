@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/display_items.dart';
 import '../providers/documents.dart';
 import '../utils/string.dart';
 
@@ -26,15 +25,45 @@ class DocumentDetails extends StatelessWidget {
             statusBarColor: Theme.of(context).primaryColor),
         title: Text(
           generateLimitedLengthText(document.title, 25),
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
       ),
       body: LayoutBuilder(builder: (ctx, constraints) {
         return SingleChildScrollView(
           child: Container(
-              padding: const EdgeInsets.all(15),
-              child: DisplayItems(document.title, document.note,
-                  document.images, constraints.maxHeight)),
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  document.title,
+                  style: Theme.of(context).textTheme.headline3,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  document.note,
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                for (var i in document.images)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: constraints.maxHeight * 0.3,
+                      child: i,
+                    ),
+                  ),
+              ],
+            ),
+          ),
         );
       }),
     );

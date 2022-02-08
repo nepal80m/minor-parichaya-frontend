@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class AddDocuments extends StatelessWidget {
-  const AddDocuments({Key? key}) : super(key: key);
-  static const routeName = '/add_documents';
+class EditDocument extends StatefulWidget {
+  const EditDocument({Key? key}) : super(key: key);
 
+  static const routeName = '/edit_document';
+
+  @override
+  _EditDocumentState createState() => _EditDocumentState();
+}
+
+class _EditDocumentState extends State<EditDocument> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +19,7 @@ class AddDocuments extends StatelessWidget {
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).primaryColor),
         title: const Text(
-          'ADD NEW DOCUMENT',
+          'EDIT DOCUMENT',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
       ),

@@ -109,20 +109,19 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
         ),
         // titleSpacing: 0.0,
         actions: [
-          Visibility(
-            visible: _screenIndex == 0,
-            child: IconButton(
+          if (_screenIndex == 0)
+            IconButton(
               splashRadius: 24,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(AddDocuments.routeName);
+              },
               icon: const Icon(
                 Icons.add_rounded,
                 size: 30,
               ),
             ),
-          ),
-          Visibility(
-            visible: _screenIndex == 1,
-            child: IconButton(
+          if (_screenIndex == 1)
+            IconButton(
               splashRadius: 24,
               onPressed: () {},
               icon: const Icon(
@@ -130,7 +129,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 size: 30,
               ),
             ),
-          ),
           IconButton(
             splashRadius: 24,
             onPressed: () {},

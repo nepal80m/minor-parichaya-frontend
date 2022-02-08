@@ -1,8 +1,11 @@
+import 'dart:io';
+
+import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter/material.dart';
 import 'package:parichaya_frontend/utils/string.dart';
 
 class DocumentTile extends StatelessWidget {
-  final Image image;
+  final String image;
   final String title;
   final VoidCallback onTap;
   final Widget? action;
@@ -31,7 +34,18 @@ class DocumentTile extends StatelessWidget {
                 padding: const EdgeInsets.all(2),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: image,
+                  child: image.isEmpty
+                      ? FadeInImage.memoryNetwork(
+                          placeholder: kTransparentImage,
+                          image: 'https://picsum.photos/250?image=9',
+                        )
+                      : Image.file(
+                          File(image),
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                          semanticLabel: title,
+                        ),
                 )),
             title: Text(generateLimitedLengthText(title, 25)),
             trailing: action

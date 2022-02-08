@@ -5,20 +5,20 @@ class Document with ChangeNotifier {
   String title;
   // final List<String> tags;
   String note;
-  final List<Image> images;
+  final List<String> images;
 
   Document({
     required this.id,
     required this.title,
     // required this.tags,
-    required this.note,
+    this.note = '',
     required this.images,
   });
 
   void updateDocument(
     String? title,
     String? note,
-    List<Image>? images,
+    List<String>? images,
   ) {
     if (title != null) {
       this.title = title;

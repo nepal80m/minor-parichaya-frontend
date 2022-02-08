@@ -21,145 +21,35 @@ class Documents with ChangeNotifier {
       title: 'Citizenship',
       // tags: ['Government'],
       note: 'This is my Fake Nagarikta',
-      images: [
-        Image.network(
-          nagariktaImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-        Image.network(
-          nagariktaImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-        Image.network(
-          nagariktaImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-      ],
+      images: [],
     ),
     Document(
       id: 'id2',
       title: 'Licence',
       // tags: ['Government', 'Bike'],
       note: 'This is my Fake Licence',
-      images: [
-        Image.network(
-          licenceImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-        Image.network(
-          licenceImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-        Image.network(
-          licenceImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-      ],
+      images: [],
     ),
     Document(
       id: 'id3',
       title: 'School Leaving Certificate',
       // tags: ['Education', 'School'],
       note: 'This is my Fake School leaving certificate',
-      images: [
-        Image.network(
-          slcImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-        Image.network(
-          slcImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-        Image.network(
-          slcImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-      ],
+      images: [],
     ),
     Document(
       id: 'id4',
       title: 'Passport',
       // tags: ['Government'],
       note: 'This is my Fake Passport',
-      images: [
-        Image.network(
-          passportImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-        Image.network(
-          passportImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-        Image.network(
-          passportImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-      ],
+      images: [],
     ),
     Document(
       id: 'id5',
       title: 'Khop Card',
       // tags: ['Government', 'Covid'],
       note: 'This is my Fake Khop Card',
-      images: [
-        Image.network(
-          khopCardImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-        Image.network(
-          khopCardImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-        Image.network(
-          khopCardImgURL,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          semanticLabel: 'Nagarikta',
-        ),
-      ],
+      images: [],
     ),
   ];
 
@@ -178,7 +68,7 @@ class Documents with ChangeNotifier {
   String addDocument(
     String title,
     String note,
-    List<Image> images,
+    List<String> images,
   ) {
     final newDocument = Document(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -194,7 +84,7 @@ class Documents with ChangeNotifier {
     String documentId,
     String? title,
     String? note,
-    List<Image>? images,
+    List<String>? images,
   ) {
     var existingDocument = getDocumentById(documentId);
     if (title != null) {

@@ -28,7 +28,7 @@ class DocumentList extends StatelessWidget {
             (document) {
               return DocumentTile(
                 title: document.title,
-                image: document.images[0],
+                image: document.images.isEmpty ? '' : document.images[0],
                 onTap: () {
                   Navigator.of(context).pushNamed(DocumentDetails.routeName,
                       arguments: document.id);

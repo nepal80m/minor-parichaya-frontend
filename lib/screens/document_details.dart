@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -150,13 +152,13 @@ class DocumentDetails extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                for (var i in document.images)
+                for (var image in document.images)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
                       width: double.infinity,
                       height: constraints.maxHeight * 0.3,
-                      child: i,
+                      child: Image.file(File(image)),
                     ),
                   ),
               ],

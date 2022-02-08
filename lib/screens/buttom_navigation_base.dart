@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import '../utils/string.dart';
 
 import '../widgets/custom_icons_icons.dart';
-import 'add_document.dart';
+import './add_document.dart';
+import '../widgets/search_file.dart';
 
 // import './homepage.dart';
 import './document_list.dart';
@@ -110,10 +111,13 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
         // titleSpacing: 0.0,
         actions: [
           Visibility(
+            // To Do : Remove Visibility
             visible: _screenIndex == 0,
             child: IconButton(
               splashRadius: 24,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(AddDocuments.routeName);
+              },
               icon: const Icon(
                 Icons.add_rounded,
                 size: 30,
@@ -133,7 +137,12 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
           ),
           IconButton(
             splashRadius: 24,
-            onPressed: () {},
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: CustomSearchDelegate(),
+              );
+            },
             icon: const Icon(
               Icons.search,
               size: 30,

@@ -4,6 +4,12 @@ import 'package:provider/provider.dart';
 
 import '../providers/documents.dart';
 import '../utils/string.dart';
+import './edit_document.dart';
+
+enum selectionValue {
+  edit,
+  delete,
+}
 
 class DocumentDetails extends StatelessWidget {
   const DocumentDetails({Key? key}) : super(key: key);
@@ -15,8 +21,36 @@ class DocumentDetails extends StatelessWidget {
     final routeDocumentId =
         ModalRoute.of(context)?.settings.arguments as String;
 
-    final document =
-        Provider.of<Documents>(context).getDocumentById(routeDocumentId);
+    final document = Provider.of<Documents>(context, listen: false)
+        .getDocumentById(routeDocumentId);
+
+    Widget cancelButton = TextButton(
+      child: const Text("Cancel"),
+      onPressed: () {
+        return;
+      },
+    );
+
+    Widget continueButton = TextButton(
+      child: const Text("Continue"),
+      onPressed: () {
+        Provider.of<Documents>(context, listen: false)
+            .deleteDocument(document.id);
+        Navigator.popUntil(
+          context,
+          ModalRoute.withName('/'),
+        );
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: const Text("Confirmation"),
+      content: const Text("Down to Delete?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -27,6 +61,70 @@ class DocumentDetails extends StatelessWidget {
           generateLimitedLengthText(document.title, 25),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
+        actions: [
+          PopupMenuButton(
+            onSelected: (value) {
+              if (value == selectionValue.edit) {
+                Navigator.of(context).pushNamed(EditDocument.routeName);
+              } else if (value == selectionValue.delete) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return alert;
+                  },
+                );
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.edit,
+                        color: Colors.black,
+                      ),
+                      Text(
+                        'Edit',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 18,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
+                  ),
+                ),
+                value: selectionValue.edit,
+              ),
+              PopupMenuItem(
+                child: Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                      Text(
+                        'Delete',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 18,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
+                  ),
+                ),
+                value: selectionValue.delete,
+              ),
+            ],
+          )
+        ],
       ),
       body: LayoutBuilder(builder: (ctx, constraints) {
         return SingleChildScrollView(

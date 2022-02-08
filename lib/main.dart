@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'screens/buttom_navigation_base.dart';
 import 'screens/add_document.dart';
 import 'screens/document_details.dart';
+import 'screens/edit_document.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
           '/': (ctx) => const ButtomNavigationBase(),
           AddDocuments.routeName: (ctx) => const AddDocuments(),
           DocumentDetails.routeName: (ctx) => const DocumentDetails(),
+          EditDocument.routeName: (ctx) => const EditDocument(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(

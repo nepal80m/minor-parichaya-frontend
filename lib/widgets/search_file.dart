@@ -50,7 +50,7 @@ class CustomSearchDelegate extends SearchDelegate {
             (document) {
               return DocumentTile(
                 title: document.title,
-                image: document.images[0],
+                imagePath: document.images[0].path,
                 onTap: () {
                   Navigator.of(context).pushReplacementNamed(
                       DocumentDetails.routeName,
@@ -86,7 +86,7 @@ class CustomSearchDelegate extends SearchDelegate {
             (document) {
               return DocumentTile(
                 title: document.title,
-                image: document.images[0],
+                imagePath: document.images[0].path,
                 onTap: () {
                   Navigator.of(context).pushReplacementNamed(
                       DocumentDetails.routeName,

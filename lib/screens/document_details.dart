@@ -20,8 +20,7 @@ class DocumentDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routeDocumentId =
-        ModalRoute.of(context)?.settings.arguments as String;
+    final routeDocumentId = ModalRoute.of(context)?.settings.arguments as int;
 
     final document = Provider.of<Documents>(context, listen: false)
         .getDocumentById(routeDocumentId);
@@ -152,15 +151,15 @@ class DocumentDetails extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                for (var image in document.images)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: constraints.maxHeight * 0.3,
-                      child: Image.file(File(image)),
-                    ),
-                  ),
+                // for (var image in document.images)
+                ...document.images.map((image) {
+                  return Image.file(
+                    File(image.path),
+                    height: 200,
+                    width: 200,
+                    fit: BoxFit.cover,
+                  );
+                }).toList(),
               ],
             ),
           ),

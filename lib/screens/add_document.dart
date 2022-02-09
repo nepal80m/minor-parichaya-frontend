@@ -26,7 +26,7 @@ class _AddDocumentsState extends State<AddDocuments> {
   final List<String> uploadedImagePaths = [];
   var imageErrorMessage = '';
 
-  void addDocument(context) {
+  void addDocument(context) async {
     titleErrorMessage = '';
     imageErrorMessage = '';
     setState(() {
@@ -38,7 +38,7 @@ class _AddDocumentsState extends State<AddDocuments> {
     });
 
     if (titleController.text.isNotEmpty && uploadedImagePaths.isNotEmpty) {
-      final newDocumentId = Provider.of<Documents>(context, listen: false)
+      final newDocumentId = await Provider.of<Documents>(context, listen: false)
           .addDocument(
               titleController.text, noteController.text, uploadedImagePaths);
 

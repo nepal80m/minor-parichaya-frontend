@@ -35,8 +35,8 @@ class _EditDocumentState extends State<EditDocument> {
       Navigator.of(context).popUntil(ModalRoute.withName('/'));
       Navigator.of(context)
           .pushNamed(DocumentDetails.routeName, arguments: documentid);
-      Provider.of<Documents>(context, listen: false).updateDocument(documentid,
-          titleController.text, noteController.text, uploadedImagePaths);
+      Provider.of<Documents>(context, listen: false).updateDocument(
+          documentid, titleController.text, noteController.text);
       // listen = true shows image but cant edit whereas listen = false doesnt show image but can edit
     }
   }
@@ -103,13 +103,14 @@ class _EditDocumentState extends State<EditDocument> {
 
   @override
   Widget build(BuildContext context) {
-    final docId = ModalRoute.of(context)?.settings.arguments as String;
+    final docId = ModalRoute.of(context)?.settings.arguments as int;
     final document =
         Provider.of<Documents>(context, listen: false).getDocumentById(docId);
     final titleController = TextEditingController(text: document.title);
     final noteController = TextEditingController(text: document.note);
     var noteErrorMessage = '';
-    final List<String> uploadedImagePaths = document.images;
+    final List<String> uploadedImagePaths = List.generate(
+        document.images.length, (index) => document.images[index].path);
 
     return Scaffold(
       appBar: AppBar(

@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:parichaya_frontend/utils/string.dart';
 
 class DocumentTile extends StatelessWidget {
-  final String image;
+  final String imagePath;
   final String title;
   final VoidCallback onTap;
   final Widget? action;
 
   const DocumentTile({
     required this.title,
-    required this.image,
+    required this.imagePath,
     required this.onTap,
     this.action,
     Key? key,
@@ -31,22 +31,27 @@ class DocumentTile extends StatelessWidget {
               5,
             ),
             leading: Container(
-                padding: const EdgeInsets.all(2),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: image.isEmpty
-                      ? FadeInImage.memoryNetwork(
-                          placeholder: kTransparentImage,
-                          image: 'https://picsum.photos/250?image=9',
-                        )
-                      : Image.file(
-                          File(image),
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
-                          semanticLabel: title,
-                        ),
-                )),
+              padding: const EdgeInsets.all(2),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: imagePath.isEmpty
+                    ? FadeInImage.memoryNetwork(
+                        placeholder: kTransparentImage,
+                        image: 'https://picsum.photos/250?image=9',
+                      )
+                    : Image.file(
+                        File(imagePath),
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                        semanticLabel: title,
+                      ),
+                // child: FadeInImage.memoryNetwork(
+                //   placeholder: kTransparentImage,
+                //   image: imagePath,
+                // ),
+              ),
+            ),
             title: Text(generateLimitedLengthText(title, 25)),
             trailing: action
             // subtitle: Text(document.note.length > 25 ?

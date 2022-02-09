@@ -1,5 +1,173 @@
 import 'package:flutter/material.dart';
-import './document.dart';
+import 'package:parichaya_frontend/database/database_helper.dart';
+import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
+import 'package:parichaya_frontend/models/document_model.dart';
+import 'package:sqflite/sqflite.dart';
+import '../models/db_models/base_document_model.dart';
+
+class Documents with ChangeNotifier {
+  final List<Document> _items = [];
+  // final List<Document> _items = [
+  //   Document(
+  //     id: 1,
+  //     title: 'Citizenship',
+  //     // tags: ['Government'],
+  //     note: 'This is my Fake Nagarikta',
+  //   ),
+  //   Document(
+  //     id: 2,
+  //     title: 'Licence',
+  //     // tags: ['Government', 'Bike'],
+  //     note: 'This is my Fake Licence',
+  //   ),
+  //   Document(
+  //     id: 3,
+  //     title: 'School Leaving Certificate',
+  //     // tags: ['Education', 'School'],
+  //     note: 'This is my Fake School leaving certificate',
+  //   ),
+  //   Document(
+  //     id: 4,
+  //     title: 'Passport',
+  //     // tags: ['Government'],
+  //     note: 'This is my Fake Passport',
+  //   ),
+  //   Document(
+  //     id: 5,
+  //     title: 'Khop Card',
+  //     // tags: ['Government', 'Covid'],
+  //     note: 'This is my Fake Khop Card',
+  //   ),
+  // ];
+  DatabaseHelper _databaseHelper = DatabaseHelper();
+
+  Documents() {
+    DatabaseHelper _tempdataBaseHelper = DatabaseHelper();
+    _databaseHelper = _tempdataBaseHelper;
+    syncToDB();
+  }
+
+  void syncToDB() async {
+    final List<BaseDocument> baseDocuments =
+        await _databaseHelper.getDocuments();
+
+    final List<Document> documents = [];
+
+    for (BaseDocument baseDocument in baseDocuments) {
+      final images = await _databaseHelper.getDocumentImages(baseDocument.id!);
+      final document =
+          Document.fromMap({...baseDocument.toMap(), 'images': images});
+      documents.add(document);
+    }
+    _items.clear();
+    _items.addAll([...documents]);
+    notifyListeners();
+  }
+
+  void syncToDBBackend() async {
+    final documents = await _databaseHelper.getDocumentsWithImages();
+    _items.addAll([...documents]);
+    notifyListeners();
+  }
+
+  List<Document> get items {
+    return [..._items];
+  }
+
+  int get count {
+    return _items.length;
+  }
+
+  Document getDocumentById(int documentId) {
+    return _items.firstWhere((document) => document.id == documentId);
+  }
+
+  Future<int> addDocument(
+    String title,
+    String note,
+    List<String> imagePaths,
+  ) async {
+    final newBaseDocumentId = await _databaseHelper
+        .insertDocument(BaseDocument(title: title, note: note));
+
+    final newDocument =
+        Document(id: newBaseDocumentId, title: title, note: note, images: []);
+
+    for (String imagePath in imagePaths) {
+      final newDocumentImageId = await _databaseHelper.insertDocumentImage(
+        DocumentImage(
+          path: imagePath,
+          documentId: newBaseDocumentId,
+        ),
+      );
+      newDocument.images.add(
+        DocumentImage(
+            id: newDocumentImageId,
+            path: imagePath,
+            documentId: newBaseDocumentId),
+      );
+    }
+    // option 1
+    _items.add(newDocument);
+    notifyListeners();
+    // option 2
+    // syncToDB();
+
+    return newBaseDocumentId;
+  }
+
+  int updateDocument(
+    int documentId,
+    String? title,
+    String? note,
+  ) {
+    var existingDocument = getDocumentById(documentId);
+    if (title != null) {
+      existingDocument.title = title;
+    }
+    if (note != null) {
+      existingDocument.note = note;
+    }
+    _databaseHelper.updateDocument(
+      documentId,
+      BaseDocument(title: existingDocument.title, note: existingDocument.note),
+    );
+    notifyListeners();
+    return documentId;
+  }
+
+  Future<int> addDocumentImage(
+    int documentId,
+    String imagePath,
+  ) async {
+    final newImageId = await _databaseHelper.insertDocumentImage(
+        DocumentImage(path: imagePath, documentId: documentId));
+
+    final existingDocument = getDocumentById(documentId);
+    existingDocument.images.add(
+        DocumentImage(id: newImageId, path: imagePath, documentId: documentId));
+
+    notifyListeners();
+    return documentId;
+  }
+
+  void deleteDocumentImage(DocumentImage documentImage) {
+    /// Deletes the image with id=imageId and returns documentId.
+    final existingDocument = getDocumentById(documentImage.documentId);
+    existingDocument.images
+        .removeWhere((image) => image.id == documentImage.id);
+    _databaseHelper.deleteDocumentImage(documentImage.id!);
+
+    notifyListeners();
+    // return documentImage.documentId;
+  }
+
+  void deleteDocument(int documentId) {
+    _items.removeWhere((document) => document.id == documentId);
+    _databaseHelper.deleteDocument(documentId);
+    notifyListeners();
+  }
+}
 
 const nagariktaImgURL =
     'https://scontent.fktm1-2.fna.fbcdn.net/v/t1.6435-9/86265665_514718655838386_6235550399277826048_n.jpg?_nc_cat=103&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=O3Pqxxh0XV0AX9bgjhc&_nc_ht=scontent.fktm1-2.fna&oh=00_AT_DunItJCWLI0DMQgeQjyXGfI4T7p1qywBK1HfR6MSa-Q&oe=6220B9DB';
@@ -13,95 +181,3 @@ const passportImgURL =
 
 const khopCardImgURL =
     'https://vaccine.mohp.gov.np/images/khop_card.jpg?ff2c4af8149164d4907942fdb3d48ca2';
-
-class Documents with ChangeNotifier {
-  final List<Document> _items = [
-    Document(
-      id: 'id1',
-      title: 'Citizenship',
-      // tags: ['Government'],
-      note: 'This is my Fake Nagarikta',
-      images: [],
-    ),
-    Document(
-      id: 'id2',
-      title: 'Licence',
-      // tags: ['Government', 'Bike'],
-      note: 'This is my Fake Licence',
-      images: [],
-    ),
-    Document(
-      id: 'id3',
-      title: 'School Leaving Certificate',
-      // tags: ['Education', 'School'],
-      note: 'This is my Fake School leaving certificate',
-      images: [],
-    ),
-    Document(
-      id: 'id4',
-      title: 'Passport',
-      // tags: ['Government'],
-      note: 'This is my Fake Passport',
-      images: [],
-    ),
-    Document(
-      id: 'id5',
-      title: 'Khop Card',
-      // tags: ['Government', 'Covid'],
-      note: 'This is my Fake Khop Card',
-      images: [],
-    ),
-  ];
-
-  List<Document> get items {
-    return [..._items];
-  }
-
-  int get count {
-    return _items.length;
-  }
-
-  Document getDocumentById(String id) {
-    return _items.firstWhere((document) => document.id == id);
-  }
-
-  String addDocument(
-    String title,
-    String note,
-    List<String> images,
-  ) {
-    final newDocument = Document(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: title,
-        note: note,
-        images: images);
-    _items.add(newDocument);
-    notifyListeners();
-    return newDocument.id;
-  }
-
-  void updateDocument(
-    String documentId,
-    String? title,
-    String? note,
-    List<String>? images,
-  ) {
-    var existingDocument = getDocumentById(documentId);
-    if (title != null) {
-      existingDocument.title = title;
-    }
-    if (note != null) {
-      existingDocument.note = note;
-    }
-    if (images != null) {
-      existingDocument.images.clear();
-      existingDocument.images.addAll(images);
-    }
-    notifyListeners();
-  }
-
-  void deleteDocument(String documentId) {
-    _items.removeWhere((document) => document.id == documentId);
-    notifyListeners();
-  }
-}

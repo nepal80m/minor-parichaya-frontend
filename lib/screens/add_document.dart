@@ -41,6 +41,7 @@ class _AddDocumentsState extends State<AddDocuments> {
       final newDocumentId = Provider.of<Documents>(context, listen: false)
           .addDocument(
               titleController.text, noteController.text, uploadedImagePaths);
+
       Navigator.of(context)
           .popAndPushNamed(DocumentDetails.routeName, arguments: newDocumentId);
     }
@@ -80,18 +81,18 @@ class _AddDocumentsState extends State<AddDocuments> {
             padding: const EdgeInsets.all(20),
             child: Wrap(
               children: [
-                Text('Select Actions'),
+                const Text('Select Actions'),
                 ListTile(
-                  leading: Icon(Icons.file_upload_rounded),
-                  title: Text('Upload Image'),
+                  leading: const Icon(Icons.file_upload_rounded),
+                  title: const Text('Upload Image'),
                   onTap: () {
                     pickImage(ImageSource.gallery);
                     Navigator.of(context).pop();
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.camera_alt_rounded),
-                  title: Text('Take a Photo'),
+                  leading: const Icon(Icons.camera_alt_rounded),
+                  title: const Text('Take a Photo'),
                   onTap: () {
                     pickImage(ImageSource.camera);
                     Navigator.of(context).pop();
@@ -141,8 +142,8 @@ class _AddDocumentsState extends State<AddDocuments> {
                 overlayColor: MaterialStateProperty.all(
                     Theme.of(context).primaryColor.withOpacity(0.1)),
               ),
-              label: Text('Done'),
-              icon: Icon(Icons.done),
+              label: const Text('Done'),
+              icon: const Icon(Icons.done),
               onPressed: () {
                 addDocument(context);
               },
@@ -154,7 +155,7 @@ class _AddDocumentsState extends State<AddDocuments> {
         onPressed: () {
           showAddImageModalBottomSheet(context);
         },
-        child: Icon(Icons.add_photo_alternate_rounded),
+        child: const Icon(Icons.add_photo_alternate_rounded),
       ),
       body: LayoutBuilder(builder: (ctx, constraints) {
         return SingleChildScrollView(
@@ -223,12 +224,12 @@ class _AddDocumentsState extends State<AddDocuments> {
                                 top: 0,
                                 right: 0,
                                 child: IconButton(
-                                  constraints: BoxConstraints(),
+                                  constraints: const BoxConstraints(),
                                   padding: EdgeInsets.zero,
                                   onPressed: () {
                                     unPickImage(index);
                                   },
-                                  icon: Icon(Icons.cancel),
+                                  icon: const Icon(Icons.cancel),
                                   // size: 40,
                                   // color: Colors.red,
                                 ),

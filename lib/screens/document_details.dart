@@ -28,7 +28,7 @@ class DocumentDetails extends StatelessWidget {
     Widget cancelButton = TextButton(
       child: const Text("Cancel"),
       onPressed: () {
-        return;
+        Navigator.of(context).pop();
       },
     );
 
@@ -66,7 +66,8 @@ class DocumentDetails extends StatelessWidget {
           PopupMenuButton(
             onSelected: (value) {
               if (value == selectionValue.edit) {
-                Navigator.of(context).pushNamed(EditDocument.routeName);
+                Navigator.of(context)
+                    .pushNamed(EditDocument.routeName, arguments: document.id);
               } else if (value == selectionValue.delete) {
                 showDialog(
                   context: context,

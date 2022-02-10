@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
 import 'package:provider/provider.dart';
+import 'package:photo_view/photo_view.dart';
 
 import './document_details.dart';
 import '../providers/documents.dart';
+import '../models/db_models/document_image_model.dart';
 
 class FullScreenImage extends StatelessWidget {
   const FullScreenImage({Key? key}) : super(key: key);
@@ -88,9 +89,12 @@ class FullScreenImage extends StatelessWidget {
       body: SizedBox(
         height: double.infinity,
         width: double.infinity,
-        child: Image.file(
-          File(imageDoc.path),
-          fit: BoxFit.fill,
+        child: PhotoView(
+          imageProvider: FileImage(
+            File(imageDoc.path),
+          ),
+          enableRotation: true,
+          initialScale: PhotoViewComputedScale.contained * 0.9,
         ),
       ),
     );

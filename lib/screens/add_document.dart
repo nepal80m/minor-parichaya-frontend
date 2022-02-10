@@ -42,6 +42,9 @@ class _AddDocumentsState extends State<AddDocuments> {
           .addDocument(
               titleController.text, noteController.text, uploadedImagePaths);
 
+      const snackBar = SnackBar(content: Text('Document Successfully Added'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
       Navigator.of(context)
           .popAndPushNamed(DocumentDetails.routeName, arguments: newDocumentId);
     }
@@ -82,6 +85,7 @@ class _AddDocumentsState extends State<AddDocuments> {
             child: Wrap(
               children: [
                 const Text('Select Actions'),
+                const Divider(),
                 ListTile(
                   leading: const Icon(Icons.file_upload_rounded),
                   title: const Text('Upload Image'),

@@ -5,6 +5,7 @@ import 'screens/buttom_navigation_base.dart';
 import 'screens/add_document.dart';
 import 'screens/document_details.dart';
 import 'screens/edit_document.dart';
+import 'screens/full_screen_image.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
           AddDocuments.routeName: (ctx) => const AddDocuments(),
           DocumentDetails.routeName: (ctx) => const DocumentDetails(),
           EditDocument.routeName: (ctx) => const EditDocument(),
+          FullScreenImage.routeName: (ctx) => const FullScreenImage(),
         },
         onUnknownRoute: (settings) {
           return MaterialPageRoute(

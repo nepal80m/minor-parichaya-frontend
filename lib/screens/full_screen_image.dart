@@ -37,7 +37,10 @@ class FullScreenImage extends StatelessWidget {
               SnackBar(content: Text('Image Successfully Deleted'));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         } else {
-          const snackBar = SnackBar(content: Text('Image Cannot Be Deleted'));
+          final snackBar = SnackBar(
+              backgroundColor: Theme.of(context).errorColor,
+              content: const Text(
+                  'You must have atleast one image in the document.'));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
         Navigator.popUntil(

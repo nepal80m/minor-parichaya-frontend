@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:parichaya_frontend/database/database_helper.dart';
 import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
@@ -82,30 +84,25 @@ class Documents with ChangeNotifier {
     return _items.firstWhere((document) => document.id == documentId);
   }
 
-  Future<int> addDocument(
+  Future<Document> addDocument(
     String title,
     String note,
     List<String> imagePaths,
   ) async {
-    final newBaseDocumentId = await _databaseHelper
+    final newBaseDocument = await _databaseHelper
         .insertDocument(BaseDocument(title: title, note: note));
 
     final newDocument =
-        Document(id: newBaseDocumentId, title: title, note: note, images: []);
+        Document(id: newBaseDocument.id!, title: title, note: note, images: []);
 
     for (String imagePath in imagePaths) {
-      final newDocumentImageId = await _databaseHelper.insertDocumentImage(
+      final newDocumentImage = await _databaseHelper.insertDocumentImage(
         DocumentImage(
           path: imagePath,
-          documentId: newBaseDocumentId,
+          documentId: newBaseDocument.id!,
         ),
       );
-      newDocument.images.add(
-        DocumentImage(
-            id: newDocumentImageId,
-            path: imagePath,
-            documentId: newBaseDocumentId),
-      );
+      newDocument.images.add(newDocumentImage);
     }
     // option 1
     _items.add(newDocument);
@@ -113,14 +110,14 @@ class Documents with ChangeNotifier {
     // option 2
     // syncToDB();
 
-    return newBaseDocumentId;
+    return newDocument;
   }
 
-  int updateDocument(
+  Future<int> updateDocument(
     int documentId,
     String? title,
     String? note,
-  ) {
+  ) async {
     var existingDocument = getDocumentById(documentId);
     if (title != null) {
       existingDocument.title = title;
@@ -128,27 +125,27 @@ class Documents with ChangeNotifier {
     if (note != null) {
       existingDocument.note = note;
     }
-    _databaseHelper.updateDocument(
+    await _databaseHelper.updateDocument(
       documentId,
-      BaseDocument(title: existingDocument.title, note: existingDocument.note),
+      existingDocument.toBaseDocument(),
     );
     notifyListeners();
     return documentId;
   }
 
-  Future<int> addDocumentImage(
+  Future<DocumentImage> addDocumentImage(
     int documentId,
     String imagePath,
   ) async {
-    final newImageId = await _databaseHelper.insertDocumentImage(
+    log('adding in provider $documentId  $imagePath');
+    final newDocumentImage = await _databaseHelper.insertDocumentImage(
         DocumentImage(path: imagePath, documentId: documentId));
 
     final existingDocument = getDocumentById(documentId);
-    existingDocument.images.add(
-        DocumentImage(id: newImageId, path: imagePath, documentId: documentId));
+    existingDocument.images.add(newDocumentImage);
 
     notifyListeners();
-    return documentId;
+    return newDocumentImage;
   }
 
   void deleteDocumentImage(DocumentImage documentImage) {

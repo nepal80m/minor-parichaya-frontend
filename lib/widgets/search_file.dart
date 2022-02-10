@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parichaya_frontend/models/document_model.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/documents.dart';
@@ -30,19 +31,23 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    final documentList = Provider.of<Documents>(context).items.where(
-        (document) =>
-            document.title.toLowerCase().contains(query.toLowerCase()));
-
+    final documentList = query.isEmpty
+        ? []
+        : Provider.of<Documents>(context)
+            .items
+            .where((document) =>
+                document.title.toLowerCase().contains(query.toLowerCase()))
+            .toList();
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-              margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-              child: Text(
-                '${documentList.length} DOCUMENTS',
-              )),
+          if (query.isNotEmpty)
+            Container(
+                margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+                child: Text(
+                  '${documentList.length} DOCUMENTS',
+                )),
           const SizedBox(
             height: 10,
           ),
@@ -67,19 +72,24 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final documentList = Provider.of<Documents>(context).items.where(
-        (document) =>
-            document.title.toLowerCase().contains(query.toLowerCase()));
+    final documentList = query.isEmpty
+        ? []
+        : Provider.of<Documents>(context)
+            .items
+            .where((document) =>
+                document.title.toLowerCase().contains(query.toLowerCase()))
+            .toList();
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-              margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-              child: Text(
-                '${documentList.length} DOCUMENTS',
-              )),
+          if (documentList.isNotEmpty)
+            Container(
+                margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+                child: Text(
+                  '${documentList.length} DOCUMENTS',
+                )),
           const SizedBox(
             height: 10,
           ),

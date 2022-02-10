@@ -64,8 +64,7 @@ class DatabaseHelper {
     // TODO: generate random file name to prevent duplication conflicts.
     final path = baseDir.path;
     final fileName = basename(documentImage.path);
-    final fileExtension = extension(documentImage.path); // e.g. '.jpg'
-    final newPath = '$path/$fileName$fileExtension';
+    final newPath = '$path/$fileName';
     File(documentImage.path).copy('$path/$fileName');
 
     documentImage.path = newPath;

@@ -113,11 +113,11 @@ class Documents with ChangeNotifier {
     return newDocument;
   }
 
-  int updateDocument(
+  Future<int> updateDocument(
     int documentId,
     String? title,
     String? note,
-  ) {
+  ) async {
     var existingDocument = getDocumentById(documentId);
     if (title != null) {
       existingDocument.title = title;
@@ -125,9 +125,9 @@ class Documents with ChangeNotifier {
     if (note != null) {
       existingDocument.note = note;
     }
-    _databaseHelper.updateDocument(
+    await _databaseHelper.updateDocument(
       documentId,
-      BaseDocument(title: existingDocument.title, note: existingDocument.note),
+      existingDocument.toBaseDocument(),
     );
     notifyListeners();
     return documentId;

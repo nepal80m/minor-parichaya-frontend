@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
           // splashFactory: InkRipple.splashFactory,
         ),
         debugShowCheckedModeBanner: false,
-        darkTheme: ThemeData.dark(),
-        themeMode: ThemeMode.dark,
+        // darkTheme: ThemeData.dark(),
+        // themeMode: ThemeMode.dark,
         routes: {
           '/': (ctx) => const ButtomNavigationBase(),
           AddDocuments.routeName: (ctx) => const AddDocuments(),

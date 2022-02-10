@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
@@ -16,21 +18,32 @@ class EditDocument extends StatefulWidget {
 }
 
 class _EditDocumentState extends State<EditDocument> {
+  final titleController = TextEditingController();
   var titleErrorMessage = '';
+  final noteController = TextEditingController();
+  var noteErrorMessage = '';
 
-  void editDocument(context, documentid, titleController, noteController) {
-    setState(() {
-      titleErrorMessage =
-          titleController.text.isEmpty ? 'Title is required.' : '';
-    });
+  Future<void> editDocument(context, documentid) async {
+    if (titleController.text.isEmpty) {
+      setState(() {
+        titleErrorMessage = 'Title is required.';
+      });
+    }
+    if (titleController.text.isNotEmpty && titleErrorMessage.isNotEmpty) {
+      setState(() {
+        titleErrorMessage = '';
+      });
+      return;
+    }
     if (titleController.text.isNotEmpty) {
-      Navigator.of(context).popUntil(ModalRoute.withName('/'));
-      Navigator.of(context)
-          .pushNamed(DocumentDetails.routeName, arguments: documentid);
-      Provider.of<Documents>(context, listen: false).updateDocument(
+      await Provider.of<Documents>(context, listen: false).updateDocument(
           documentid, titleController.text, noteController.text);
-      const snackBar = SnackBar(content: Text('Document Successfully Edited'));
+      const snackBar = SnackBar(content: Text('Document Edited Successfully'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Navigator.of(context).pop();
+      // Navigator.of(context).popUntil(ModalRoute.withName('/'));
+      // Navigator.of(context)
+      //     .pushNamed(DocumentDetails.routeName, arguments: documentid);
     }
   }
 
@@ -39,9 +52,8 @@ class _EditDocumentState extends State<EditDocument> {
     final docId = ModalRoute.of(context)?.settings.arguments as int;
     final document =
         Provider.of<Documents>(context, listen: false).getDocumentById(docId);
-    final titleController = TextEditingController(text: document.title);
-    final noteController = TextEditingController(text: document.note);
-    var noteErrorMessage = '';
+    titleController.text = document.title;
+    noteController.text = document.note;
 
     return Scaffold(
       appBar: AppBar(
@@ -80,8 +92,7 @@ class _EditDocumentState extends State<EditDocument> {
               label: const Text('Done'),
               icon: const Icon(Icons.done),
               onPressed: () {
-                editDocument(
-                    context, document.id, titleController, noteController);
+                editDocument(context, document.id);
               },
             ),
           )

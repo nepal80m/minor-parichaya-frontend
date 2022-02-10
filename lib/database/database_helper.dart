@@ -45,7 +45,7 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> insertDocument(BaseDocument document) async {
+  Future<BaseDocument> insertDocument(BaseDocument document) async {
     log('Inserting document in DB');
     final db = await _databaseHelper.database;
     final newDocumentId = await db.insert(
@@ -53,10 +53,11 @@ class DatabaseHelper {
       document.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    return newDocumentId;
+    document.id = newDocumentId;
+    return document;
   }
 
-  Future<int> insertDocumentImage(DocumentImage documentImage) async {
+  Future<DocumentImage> insertDocumentImage(DocumentImage documentImage) async {
     log('Inserting image in DB');
     final db = await _databaseHelper.database;
 
@@ -74,7 +75,8 @@ class DatabaseHelper {
       documentImage.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    return newDocumentImageId;
+    documentImage.id = newDocumentImageId;
+    return documentImage;
   }
 
   Future<List<BaseDocument>> getDocuments() async {
@@ -127,17 +129,18 @@ class DatabaseHelper {
     return DocumentImage.fromMap(documentImageMaps.first);
   }
 
-  Future<int> updateDocument(int documentId, BaseDocument document) async {
+  Future<BaseDocument> updateDocument(
+      int documentId, BaseDocument document) async {
     log('Updating document in DB');
     final db = await _databaseHelper.database;
 
-    final updatedDocumentId = await db.update(
+    await db.update(
       documentTable,
       document.toMap(),
       where: 'id = ?',
       whereArgs: [documentId],
     );
-    return updatedDocumentId;
+    return document;
   }
 
   Future<int> deleteDocument(int documentId) async {

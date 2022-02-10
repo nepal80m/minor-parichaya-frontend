@@ -66,7 +66,7 @@ class DatabaseHelper {
     final path = baseDir.path;
     final fileName = basename(documentImage.path);
     final newPath = '$path/$fileName';
-    File(documentImage.path).copy('$path/$fileName');
+    File(documentImage.path).copy(newPath);
 
     documentImage.path = newPath;
 

@@ -15,8 +15,7 @@ enum selectionValue {
   delete,
 }
 
-Future<void> pickImage(
-    BuildContext context, ImageSource source, int documentId) async {
+void pickImage(BuildContext context, ImageSource source, int documentId) async {
   try {
     final image = await ImagePicker().pickImage(source: source);
     if (image == null) return;
@@ -36,8 +35,8 @@ class DocumentDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final routeDocumentId = ModalRoute.of(context)?.settings.arguments as int;
 
-    final document =
-        Provider.of<Documents>(context).getDocumentById(routeDocumentId);
+    final document = Provider.of<Documents>(context, listen: false)
+        .getDocumentById(routeDocumentId);
 
     Widget cancelButton = TextButton(
       child: const Text("Cancel"),
@@ -51,6 +50,9 @@ class DocumentDetails extends StatelessWidget {
       onPressed: () {
         Provider.of<Documents>(context, listen: false)
             .deleteDocument(document.id);
+        const snackBar =
+            SnackBar(content: Text('Document Successfully Deleted'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
         Navigator.popUntil(
           context,
           ModalRoute.withName('/'),
@@ -77,69 +79,58 @@ class DocumentDetails extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         actions: [
-          PopupMenuButton(
-            onSelected: (value) {
-              if (value == selectionValue.edit) {
-                Navigator.of(context)
-                    .pushNamed(EditDocument.routeName, arguments: document.id);
-              } else if (value == selectionValue.delete) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return alert;
-                  },
-                );
-              }
+          GestureDetector(
+            child: const Padding(
+              child: Icon(Icons.more_vert),
+              padding: EdgeInsets.symmetric(horizontal: 10),
+            ),
+            onTap: () {
+              showModalBottomSheet<void>(
+                isScrollControlled: true,
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
+                ),
+                builder: (BuildContext context) {
+                  return Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      child: Wrap(
+                        children: [
+                          const Text('Select Actions'),
+                          const Divider(),
+                          ListTile(
+                            leading: const Icon(Icons.edit),
+                            title: const Text('Edit Document'),
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                  EditDocument.routeName,
+                                  arguments: document.id);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.delete),
+                            title: const Text('Delete Document'),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return alert;
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
             },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Container(
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        Icons.edit,
-                        color: Colors.black,
-                      ),
-                      Text(
-                        'Edit',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ],
-                  ),
-                ),
-                value: selectionValue.edit,
-              ),
-              PopupMenuItem(
-                child: Container(
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
-                      Text(
-                        'Delete',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ],
-                  ),
-                ),
-                value: selectionValue.delete,
-              ),
-            ],
-          )
+          ),
         ],
       ),
       body: LayoutBuilder(builder: (ctx, constraints) {
@@ -212,9 +203,10 @@ class DocumentDetails extends StatelessWidget {
                   child: Wrap(
                     children: [
                       const Text('Select Actions'),
+                      const Divider(),
                       ListTile(
                         leading: const Icon(Icons.file_upload_rounded),
-                        title: const Text('Upload Image'),
+                        title: const Text('Add Image'),
                         onTap: () {
                           pickImage(context, ImageSource.gallery, document.id);
                           Navigator.of(context).pop();

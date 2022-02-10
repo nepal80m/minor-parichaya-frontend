@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
 import 'package:provider/provider.dart';
 
+import './document_details.dart';
 import '../providers/documents.dart';
-import '../utils/string.dart';
 
 class FullScreenImage extends StatelessWidget {
   const FullScreenImage({Key? key}) : super(key: key);
@@ -17,6 +17,8 @@ class FullScreenImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageDoc =
         ModalRoute.of(context)?.settings.arguments as DocumentImage;
+    final document =
+        Provider.of<Documents>(context).getDocumentById(imageDoc.documentId);
 
     Widget cancelButton = TextButton(
       child: const Text("Cancel"),
@@ -28,12 +30,18 @@ class FullScreenImage extends StatelessWidget {
     Widget continueButton = TextButton(
       child: const Text("Continue"),
       onPressed: () {
-        Provider.of<Documents>(context, listen: false)
-            .deleteDocumentImage(imageDoc);
+        if (document.images.length > 1) {
+          Provider.of<Documents>(context, listen: false)
+              .deleteDocumentImage(imageDoc);
+          const snackBar =
+              SnackBar(content: Text('Image Successfully Deleted'));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          const snackBar = SnackBar(content: Text('Image Cannot Be Deleted'));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
         Navigator.popUntil(
-          context,
-          ModalRoute.withName('/'),
-        );
+            context, ModalRoute.withName(DocumentDetails.routeName));
       },
     );
 
@@ -47,13 +55,12 @@ class FullScreenImage extends StatelessWidget {
     );
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-          elevation: 1,
-          systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Theme.of(context).primaryColor),
-          title: Text(
-            generateLimitedLengthText(imageDoc.path, 25),
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
           ),
           actions: [
             Container(

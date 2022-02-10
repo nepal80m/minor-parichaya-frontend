@@ -29,6 +29,8 @@ class _EditDocumentState extends State<EditDocument> {
           .pushNamed(DocumentDetails.routeName, arguments: documentid);
       Provider.of<Documents>(context, listen: false).updateDocument(
           documentid, titleController.text, noteController.text);
+      const snackBar = SnackBar(content: Text('Document Successfully Edited'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 

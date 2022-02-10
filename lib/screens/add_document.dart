@@ -38,15 +38,15 @@ class _AddDocumentsState extends State<AddDocuments> {
     });
 
     if (titleController.text.isNotEmpty && uploadedImagePaths.isNotEmpty) {
-      final newDocumentId = await Provider.of<Documents>(context, listen: false)
+      final newDocument = await Provider.of<Documents>(context, listen: false)
           .addDocument(
               titleController.text, noteController.text, uploadedImagePaths);
 
       const snackBar = SnackBar(content: Text('Document Successfully Added'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      Navigator.of(context)
-          .popAndPushNamed(DocumentDetails.routeName, arguments: newDocumentId);
+      Navigator.of(context).popAndPushNamed(DocumentDetails.routeName,
+          arguments: newDocument.id);
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:parichaya_frontend/database/database_helper.dart';
 import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
@@ -135,6 +137,7 @@ class Documents with ChangeNotifier {
     int documentId,
     String imagePath,
   ) async {
+    log('adding in provider $documentId  $imagePath');
     final newDocumentImage = await _databaseHelper.insertDocumentImage(
         DocumentImage(path: imagePath, documentId: documentId));
 

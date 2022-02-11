@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -15,21 +16,30 @@ enum selectionValue {
   delete,
 }
 
-void pickImage(BuildContext context, ImageSource source, int documentId) async {
-  try {
-    final image = await ImagePicker().pickImage(source: source);
-    if (image == null) return;
-    Provider.of<Documents>(context, listen: false)
-        .addDocumentImage(documentId, image.path);
-  } on PlatformException catch (e) {
-    return;
-  }
-}
-
-class DocumentDetails extends StatelessWidget {
+class DocumentDetails extends StatefulWidget {
   const DocumentDetails({Key? key}) : super(key: key);
 
   static const routeName = '/document_details';
+
+  @override
+  State<DocumentDetails> createState() => _DocumentDetailsState();
+}
+
+class _DocumentDetailsState extends State<DocumentDetails> {
+  Future<void> pickImage(
+      BuildContext context, ImageSource source, int documentId) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      log(documentId.toString());
+      if (image == null) return;
+      Provider.of<Documents>(context, listen: false)
+          .addDocumentImage(documentId, image.path);
+      const snackBar = SnackBar(content: Text('Image Successfully Added'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } on PlatformException catch (_) {
+      return;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +61,7 @@ class DocumentDetails extends StatelessWidget {
         Provider.of<Documents>(context, listen: false)
             .deleteDocument(document.id);
         const snackBar =
-            SnackBar(content: Text('Document Successfully Deleted'));
+            SnackBar(content: Text('Document Deleted Successfully'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         Navigator.popUntil(
           context,
@@ -61,8 +71,10 @@ class DocumentDetails extends StatelessWidget {
     );
 
     AlertDialog alert = AlertDialog(
-      title: const Text("Confirmation"),
-      content: const Text("Down to Delete?"),
+      title: const Text("Are you sure?"),
+      content: const Text(
+        "Deleting the document will delete all the images in it and cannot be undone.",
+      ),
       actions: [
         cancelButton,
         continueButton,
@@ -106,7 +118,7 @@ class DocumentDetails extends StatelessWidget {
                             leading: const Icon(Icons.edit),
                             title: const Text('Edit Document'),
                             onTap: () {
-                              Navigator.of(context).pushNamed(
+                              Navigator.of(context).popAndPushNamed(
                                   EditDocument.routeName,
                                   arguments: document.id);
                             },
@@ -115,6 +127,7 @@ class DocumentDetails extends StatelessWidget {
                             leading: const Icon(Icons.delete),
                             title: const Text('Delete Document'),
                             onTap: () {
+                              Navigator.of(context).pop();
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -187,6 +200,9 @@ class DocumentDetails extends StatelessWidget {
         );
       }),
       floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add_photo_alternate_rounded),
+        tooltip: 'Add Image',
+        elevation: 2,
         onPressed: () {
           showModalBottomSheet<void>(
             isScrollControlled: true,
@@ -206,9 +222,10 @@ class DocumentDetails extends StatelessWidget {
                       const Divider(),
                       ListTile(
                         leading: const Icon(Icons.file_upload_rounded),
-                        title: const Text('Add Image'),
-                        onTap: () {
-                          pickImage(context, ImageSource.gallery, document.id);
+                        title: const Text('Upload Image'),
+                        onTap: () async {
+                          await pickImage(
+                              context, ImageSource.gallery, document.id);
                           Navigator.of(context).pop();
                         },
                       ),
@@ -227,9 +244,6 @@ class DocumentDetails extends StatelessWidget {
             },
           );
         },
-        tooltip: 'Add Image',
-        elevation: 2,
-        child: const Icon(Icons.insert_photo_outlined),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );

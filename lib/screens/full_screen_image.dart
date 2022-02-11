@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
 import 'package:provider/provider.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 import './document_details.dart';
 import '../providers/documents.dart';
+import '../models/db_models/document_image_model.dart';
 
 class FullScreenImage extends StatelessWidget {
   const FullScreenImage({Key? key}) : super(key: key);
@@ -37,7 +39,10 @@ class FullScreenImage extends StatelessWidget {
               SnackBar(content: Text('Image Successfully Deleted'));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         } else {
-          const snackBar = SnackBar(content: Text('Image Cannot Be Deleted'));
+          final snackBar = SnackBar(
+              backgroundColor: Theme.of(context).errorColor,
+              content: const Text(
+                  'You must have atleast one image in the document.'));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
         Navigator.popUntil(
@@ -85,9 +90,23 @@ class FullScreenImage extends StatelessWidget {
       body: SizedBox(
         height: double.infinity,
         width: double.infinity,
-        child: Image.file(
-          File(imageDoc.path),
-          fit: BoxFit.fill,
+        child: PhotoViewGallery.builder(
+          pageController:
+              PageController(initialPage: document.images.indexOf(imageDoc)),
+          enableRotation: true,
+          allowImplicitScrolling: true,
+          scrollPhysics: const BouncingScrollPhysics(),
+          builder: (BuildContext context, int index) {
+            return PhotoViewGalleryPageOptions(
+              imageProvider: FileImage(
+                File(
+                  document.images[index].path,
+                ),
+              ),
+              initialScale: PhotoViewComputedScale.contained * 0.9,
+            );
+          },
+          itemCount: document.images.length,
         ),
       ),
     );

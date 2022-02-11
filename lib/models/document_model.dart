@@ -1,3 +1,5 @@
+import 'package:parichaya_frontend/models/db_models/base_document_model.dart';
+
 import 'db_models/document_image_model.dart';
 
 class Document {
@@ -26,6 +28,9 @@ class Document {
         'note': note,
         'images': images,
       };
+
+  BaseDocument toBaseDocument() =>
+      BaseDocument(id: id, title: title, note: note);
 
   @override
   String toString() {

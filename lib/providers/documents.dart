@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:parichaya_frontend/database/database_helper.dart';
 import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
@@ -111,11 +113,11 @@ class Documents with ChangeNotifier {
     return newDocument;
   }
 
-  int updateDocument(
+  Future<int> updateDocument(
     int documentId,
     String? title,
     String? note,
-  ) {
+  ) async {
     var existingDocument = getDocumentById(documentId);
     if (title != null) {
       existingDocument.title = title;
@@ -123,9 +125,9 @@ class Documents with ChangeNotifier {
     if (note != null) {
       existingDocument.note = note;
     }
-    _databaseHelper.updateDocument(
+    await _databaseHelper.updateDocument(
       documentId,
-      BaseDocument(title: existingDocument.title, note: existingDocument.note),
+      existingDocument.toBaseDocument(),
     );
     notifyListeners();
     return documentId;
@@ -135,6 +137,7 @@ class Documents with ChangeNotifier {
     int documentId,
     String imagePath,
   ) async {
+    log('adding in provider $documentId  $imagePath');
     final newDocumentImage = await _databaseHelper.insertDocumentImage(
         DocumentImage(path: imagePath, documentId: documentId));
 

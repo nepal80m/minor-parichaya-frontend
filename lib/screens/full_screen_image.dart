@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 import './document_details.dart';
 import '../providers/documents.dart';
@@ -89,12 +90,23 @@ class FullScreenImage extends StatelessWidget {
       body: SizedBox(
         height: double.infinity,
         width: double.infinity,
-        child: PhotoView(
-          imageProvider: FileImage(
-            File(imageDoc.path),
-          ),
+        child: PhotoViewGallery.builder(
+          pageController:
+              PageController(initialPage: document.images.indexOf(imageDoc)),
           enableRotation: true,
-          initialScale: PhotoViewComputedScale.contained * 0.9,
+          allowImplicitScrolling: true,
+          scrollPhysics: const BouncingScrollPhysics(),
+          builder: (BuildContext context, int index) {
+            return PhotoViewGalleryPageOptions(
+              imageProvider: FileImage(
+                File(
+                  document.images[index].path,
+                ),
+              ),
+              initialScale: PhotoViewComputedScale.contained * 0.9,
+            );
+          },
+          itemCount: document.images.length,
         ),
       ),
     );

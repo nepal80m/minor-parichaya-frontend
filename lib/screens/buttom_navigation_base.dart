@@ -81,7 +81,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                     //  child:
                     CircleAvatar(
                       backgroundColor: Colors.white,
-                      radius: 28,
+                      // radius: 50,
                       child: Text(
                         name[0].toUpperCase(),
                         style: TextStyle(
@@ -91,7 +91,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                       ),
                     ),
                     //   ),
-                    SizedBox(width: 15),
+                    SizedBox(width: 20),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -117,40 +117,42 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
               ),
             ),
 //Switch for dark mode
-            Consumer<ThemeProvider>(builder: (context, provider, child) {
-              return ListTile(
-                //  value:provider.currentTheme,
-                title: Row(
-                  children: [
-                    Icon(isSwitched
-                        ? Icons.dark_mode_rounded
-                        : Icons.light_mode_rounded),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        'Dark Mode',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+            Consumer<ThemeProvider>(
+              builder: (context, provider, child) {
+                return ListTile(
+                  //  value:provider.currentTheme,
+                  title: Row(
+                    children: [
+                      Icon(isSwitched
+                          ? Icons.dark_mode_rounded
+                          : Icons.light_mode_rounded),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          'Dark Mode',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                trailing: Switch(
-                  value: isSwitched,
-                  onChanged: (value) {
-                    setState(() {
-                      isSwitched = value;
-                      provider.changeTheme(isSwitched);
-                    });
-                  },
-                  activeTrackColor: Theme.of(context).primaryColorLight,
-                  activeColor: Theme.of(context).primaryColor,
-                ),
-                //onTap: () {},
-              );
-            }),
+                    ],
+                  ),
+                  trailing: Switch(
+                    value: isSwitched,
+                    onChanged: (value) {
+                      setState(() {
+                        isSwitched = value;
+                        provider.changeTheme(isSwitched);
+                      });
+                    },
+                    activeTrackColor: Theme.of(context).primaryColorLight,
+                    activeColor: Theme.of(context).primaryColor,
+                  ),
+                  //onTap: () {},
+                );
+              },
+            ),
             Divider(color: Colors.grey),
 //Change Number
             ListTile(

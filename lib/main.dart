@@ -22,41 +22,43 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => Documents(),
-      child: Consumer<ThemeProvider>(builder: (context, provider, child) {
-        return MaterialApp(
-          title: 'Parichaya',
+      child: Consumer<ThemeProvider>(
+        builder: (context, provider, child) {
+          return MaterialApp(
+            title: 'Parichaya',
 
-          // TODO: Customize theme
-          //themeMode: ThemeMode.system,
-          // theme: ThemeData(
-          //   primarySwatch: Colors.blue,
-          //   fontFamily: 'OpenSans',
-          //   // brightness: Brightness.dark,
-          //   // fontFamily: 'Quicksand',
-          //   // splashFactory: InkRipple.splashFactory,
-          // ),
+            // TODO: Customize theme
+            //themeMode: ThemeMode.system,
+            // theme: ThemeData(
+            //   primarySwatch: Colors.blue,
+            //   fontFamily: 'OpenSans',
+            //   // brightness: Brightness.dark,
+            //   // fontFamily: 'Quicksand',
+            //   // splashFactory: InkRipple.splashFactory,
+            // ),
 
-          theme: ThemeData.light(),
-          darkTheme: ThemeData.dark(),
-          themeMode: provider.themeMode,
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            themeMode: provider.themeMode,
 
-          //lightTheme: MyThemes.lightTheme,
+            //lightTheme: MyThemes.lightTheme,
 
-          debugShowCheckedModeBanner: false,
-          routes: {
-            '/': (ctx) => const ButtomNavigationBase(),
-            AddDocuments.routeName: (ctx) => const AddDocuments(),
-            DocumentDetails.routeName: (ctx) => const DocumentDetails(),
-            EditDocument.routeName: (ctx) => const EditDocument(),
-            FullScreenImage.routeName: (ctx) => const FullScreenImage(),
-          },
-          onUnknownRoute: (settings) {
-            return MaterialPageRoute(
-              builder: (ctx) => const ButtomNavigationBase(),
-            );
-          },
-        );
-      }),
+            debugShowCheckedModeBanner: false,
+            routes: {
+              '/': (ctx) => const ButtomNavigationBase(),
+              AddDocuments.routeName: (ctx) => const AddDocuments(),
+              DocumentDetails.routeName: (ctx) => const DocumentDetails(),
+              EditDocument.routeName: (ctx) => const EditDocument(),
+              FullScreenImage.routeName: (ctx) => const FullScreenImage(),
+            },
+            onUnknownRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (ctx) => const ButtomNavigationBase(),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

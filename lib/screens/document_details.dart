@@ -34,6 +34,8 @@ class _DocumentDetailsState extends State<DocumentDetails> {
       if (image == null) return;
       Provider.of<Documents>(context, listen: false)
           .addDocumentImage(documentId, image.path);
+      const snackBar = SnackBar(content: Text('Image Successfully Added'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } on PlatformException catch (_) {
       return;
     }
@@ -43,8 +45,8 @@ class _DocumentDetailsState extends State<DocumentDetails> {
   Widget build(BuildContext context) {
     final routeDocumentId = ModalRoute.of(context)?.settings.arguments as int;
 
-    final document =
-        Provider.of<Documents>(context).getDocumentById(routeDocumentId);
+    final document = Provider.of<Documents>(context, listen: false)
+        .getDocumentById(routeDocumentId);
 
     Widget cancelButton = TextButton(
       child: const Text("Cancel"),

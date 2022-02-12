@@ -39,7 +39,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
     //   'title': 'My Identity Docs',
     // },
     {
-      'screen': DocumentList(),
+      'screen': const DocumentList(),
       'title': 'My Identity Docs',
     },
     {
@@ -68,10 +68,10 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
           padding: EdgeInsets.zero,
           children: [
             // TODO: Complete this drawer
-            Container(
+            SizedBox(
               height: 130,
               child: DrawerHeader(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.blue,
                 ),
                 child: Row(
@@ -91,20 +91,20 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                       ),
                     ),
                     //   ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           name,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 16),
                         ),
                         Text(
                           number,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 14),
@@ -126,7 +126,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                       Icon(isSwitched
                           ? Icons.dark_mode_rounded
                           : Icons.light_mode_rounded),
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.all(10),
                         child: Text(
                           'Dark Mode',
@@ -153,7 +153,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 );
               },
             ),
-            Divider(color: Colors.grey),
+            const Divider(),
 //Change Number
             ListTile(
               title: Row(
@@ -171,7 +171,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 ],
               ),
               onTap: () {},
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
 //Change Email Address
             ListTile(
@@ -190,7 +190,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 ],
               ),
               onTap: () {},
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
 
 //Change Password
@@ -210,9 +210,9 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 ],
               ),
               onTap: () {},
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
-            Divider(color: Colors.grey),
+            const Divider(),
             //Terms of services
             ListTile(
               title: Row(
@@ -230,7 +230,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 ],
               ),
               onTap: () {},
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
             //Privacy Policy
             ListTile(
@@ -249,7 +249,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 ],
               ),
               onTap: () {},
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
             //Terms of services
             ListTile(
@@ -268,11 +268,9 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 ],
               ),
               onTap: () {},
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: const Icon(Icons.arrow_forward_ios),
             ),
-            Divider(
-              color: Colors.grey,
-            ),
+            const Divider(),
           ],
         ),
       ),

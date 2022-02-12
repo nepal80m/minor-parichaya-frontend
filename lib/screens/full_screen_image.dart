@@ -87,27 +87,25 @@ class FullScreenImage extends StatelessWidget {
               ),
             ),
           ]),
-      body: SizedBox(
-        height: double.infinity,
-        width: double.infinity,
-        child: PhotoViewGallery.builder(
-          pageController:
-              PageController(initialPage: document.images.indexOf(imageDoc)),
-          enableRotation: true,
-          allowImplicitScrolling: true,
-          scrollPhysics: const BouncingScrollPhysics(),
-          builder: (BuildContext context, int index) {
-            return PhotoViewGalleryPageOptions(
-              imageProvider: FileImage(
-                File(
-                  document.images[index].path,
-                ),
+      body: PhotoViewGallery.builder(
+        pageController:
+            PageController(initialPage: document.images.indexOf(imageDoc)),
+        // enableRotation: true,
+        allowImplicitScrolling: true,
+        scrollPhysics: const BouncingScrollPhysics(),
+        builder: (BuildContext context, int index) {
+          return PhotoViewGalleryPageOptions(
+            imageProvider: FileImage(
+              File(
+                document.images[index].path,
               ),
-              initialScale: PhotoViewComputedScale.contained * 0.9,
-            );
-          },
-          itemCount: document.images.length,
-        ),
+            ),
+            filterQuality: FilterQuality.high,
+            minScale: PhotoViewComputedScale.contained,
+            maxScale: PhotoViewComputedScale.contained * 5,
+          );
+        },
+        itemCount: document.images.length,
       ),
     );
   }

@@ -49,9 +49,9 @@ class _EditDocumentState extends State<EditDocument> {
 
   @override
   Widget build(BuildContext context) {
-    final docId = ModalRoute.of(context)?.settings.arguments as int;
-    final document =
-        Provider.of<Documents>(context, listen: false).getDocumentById(docId);
+    final documentId = ModalRoute.of(context)?.settings.arguments as int;
+    final document = Provider.of<Documents>(context, listen: false)
+        .getDocumentById(documentId);
     titleController.text = document.title;
     noteController.text = document.note;
 

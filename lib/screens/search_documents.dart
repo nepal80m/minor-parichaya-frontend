@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:parichaya_frontend/models/document_model.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/documents.dart';
-import './document_tile.dart';
-import '../screens/document_details.dart';
+import '../widgets/document_tile.dart';
+import 'document_details.dart';
 
-class CustomSearchDelegate extends SearchDelegate {
+class DocumentSearchDelegate extends SearchDelegate {
   @override
   List<Widget> buildActions(BuildContext context) {
     return [

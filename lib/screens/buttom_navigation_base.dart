@@ -6,7 +6,7 @@ import '../utils/string.dart';
 
 import '../widgets/custom_icons_icons.dart';
 import './add_document.dart';
-import '../widgets/search_file.dart';
+import 'search_documents.dart';
 
 // import './homepage.dart';
 import './document_list.dart';
@@ -328,7 +328,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
             onPressed: () {
               showSearch(
                 context: context,
-                delegate: CustomSearchDelegate(),
+                delegate: DocumentSearchDelegate(),
               );
             },
             icon: const Icon(

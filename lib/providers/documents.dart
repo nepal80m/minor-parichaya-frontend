@@ -80,6 +80,10 @@ class Documents with ChangeNotifier {
     return _items.length;
   }
 
+  bool checkIfDocumentExists(int documentId) {
+    return _items.any((document) => document.id == documentId);
+  }
+
   Document getDocumentById(int documentId) {
     return _items.firstWhere((document) => document.id == documentId);
   }
@@ -137,7 +141,6 @@ class Documents with ChangeNotifier {
     int documentId,
     String imagePath,
   ) async {
-    log('adding in provider $documentId  $imagePath');
     final newDocumentImage = await _databaseHelper.insertDocumentImage(
         DocumentImage(path: imagePath, documentId: documentId));
 
@@ -153,16 +156,19 @@ class Documents with ChangeNotifier {
     final existingDocument = getDocumentById(documentImage.documentId);
     existingDocument.images
         .removeWhere((image) => image.id == documentImage.id);
-    _databaseHelper.deleteDocumentImage(documentImage.id!);
+    _databaseHelper.deleteDocumentImageById(documentImage.id!);
 
     notifyListeners();
     // return documentImage.documentId;
   }
 
-  void deleteDocument(int documentId) {
+  Future<void> deleteDocument(int documentId, {bool notify = true}) async {
+    // TODO: try making this function synchronous
     _items.removeWhere((document) => document.id == documentId);
-    _databaseHelper.deleteDocument(documentId);
-    notifyListeners();
+    await _databaseHelper.deleteDocument(documentId);
+    if (notify) {
+      notifyListeners();
+    }
   }
 }
 

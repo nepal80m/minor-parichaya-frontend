@@ -22,40 +22,36 @@ class FullScreenImage extends StatelessWidget {
     final document =
         Provider.of<Documents>(context).getDocumentById(imageDoc.documentId);
 
-    Widget cancelButton = TextButton(
-      child: const Text("Cancel"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: const Text("Continue"),
-      onPressed: () {
-        if (document.images.length > 1) {
-          Provider.of<Documents>(context, listen: false)
-              .deleteDocumentImage(imageDoc);
-          const snackBar =
-              SnackBar(content: Text('Image Successfully Deleted'));
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        } else {
-          final snackBar = SnackBar(
-              backgroundColor: Theme.of(context).errorColor,
-              content: const Text(
-                  'You must have atleast one image in the document.'));
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-        Navigator.popUntil(
-            context, ModalRoute.withName(DocumentDetails.routeName));
-      },
-    );
-
     AlertDialog alert = AlertDialog(
       title: const Text("Confirmation"),
-      content: const Text("Down to Delete?"),
+      content: const Text("Are you sure you want to delete this image?"),
       actions: [
-        cancelButton,
-        continueButton,
+        TextButton(
+          child: const Text("Cancel"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: const Text("Continue"),
+          onPressed: () {
+            if (document.images.length > 1) {
+              Provider.of<Documents>(context, listen: false)
+                  .deleteDocumentImage(imageDoc);
+              const snackBar = SnackBar(
+                content: Text('Image Successfully Deleted'),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            } else {
+              final snackBar = SnackBar(
+                  backgroundColor: Theme.of(context).errorColor,
+                  content: const Text(
+                      'You must have atleast one image in the document.'));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+            Navigator.of(context).pop();
+          },
+        ),
       ],
     );
 
@@ -80,9 +76,9 @@ class FullScreenImage extends StatelessWidget {
                   );
                 },
                 child: const Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                  size: 28,
+                  Icons.clear,
+                  color: Colors.redAccent,
+                  size: 30,
                 ),
               ),
             ),

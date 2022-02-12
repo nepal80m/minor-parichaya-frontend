@@ -43,39 +43,6 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     }
   }
 
-<<<<<<< HEAD
-  @override
-  Widget build(BuildContext context) {
-    final routeDocumentId = ModalRoute.of(context)?.settings.arguments as int;
-
-    final document =
-        Provider.of<Documents>(context).getDocumentById(routeDocumentId);
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Are you sure?"),
-      content: const Text(
-        "Deleting the document will delete all the images in it and cannot be undone.",
-      ),
-      actions: [
-        TextButton(
-          child: const Text("Cancel"),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        TextButton(
-          child: const Text("Continue"),
-          onPressed: () {
-            Provider.of<Documents>(context, listen: false)
-                .deleteDocument(document.id);
-            const snackBar =
-                SnackBar(content: Text('Document Deleted Successfully'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            Navigator.popUntil(
-              context,
-              ModalRoute.withName('/'),
-            );
-=======
   Future<bool> showDeleteConfirmationDialog() async {
     final result = await showDialog<bool>(
       context: context,
@@ -141,12 +108,6 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                   SnackBar(content: Text('Document Deleted Successfully'));
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
-
-            // Navigator.popUntil(
-            //   context,
-            //   ModalRoute.withName('/'),
-            // );
->>>>>>> main
           },
         ),
       ],
@@ -274,8 +235,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                   style: Theme.of(context).textTheme.headline3,
                 ),
                 const Divider(
-                  height: 60,
-                  thickness: 2,
+                  height: 30,
                   color: Colors.grey,
                 ),
                 Text(
@@ -283,7 +243,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 40,
                 ),
                 GridView.count(
                   padding: EdgeInsets.zero,

@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:parichaya_frontend/screens/document_details.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/documents.dart';
+import '../widgets/options_modal_buttom_sheet.dart';
+import '../screens/document_details.dart';
 import '../widgets/ui/custom_text_field.dart';
+import '../providers/documents.dart';
 
 class AddDocuments extends StatefulWidget {
   const AddDocuments({Key? key}) : super(key: key);
@@ -70,43 +71,28 @@ class _AddDocumentsState extends State<AddDocuments> {
   }
 
   void showAddImageModalBottomSheet(BuildContext context) {
-    showModalBottomSheet<void>(
-      isScrollControlled: true,
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      ),
-      builder: (BuildContext context) {
-        return Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: Wrap(
-              children: [
-                const Text('Select Actions'),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.file_upload_rounded),
-                  title: const Text('Upload Image'),
-                  onTap: () {
-                    pickImage(ImageSource.gallery);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.camera_alt_rounded),
-                  title: const Text('Take a Photo'),
-                  onTap: () {
-                    pickImage(ImageSource.camera);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    showOptionsModalButtomSheet(
+      context,
+      children: [
+        const Text('Select Actions aaaaa'),
+        const Divider(),
+        ListTile(
+          leading: const Icon(Icons.file_upload_rounded),
+          title: const Text('Upload Image'),
+          onTap: () {
+            pickImage(ImageSource.gallery);
+            Navigator.of(context).pop();
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.camera_alt_rounded),
+          title: const Text('Take a Photo'),
+          onTap: () {
+            pickImage(ImageSource.camera);
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 

@@ -10,11 +10,11 @@ import '../models/db_models/document_image_model.dart';
 import '../models/document_model.dart';
 
 class DatabaseHelper {
-  static final _databaseName = 'parichaya_DB.db';
-  static final _databaseVersion = 1;
+  static const _databaseName = 'parichaya_DB.db';
+  static const _databaseVersion = 1;
 
-  static final documentTable = 'document_table';
-  static final imageTable = 'image_table';
+  static const documentTable = 'document_table';
+  static const imageTable = 'image_table';
 
   static final DatabaseHelper _databaseHelper = DatabaseHelper._internal();
   factory DatabaseHelper() => _databaseHelper;
@@ -32,9 +32,17 @@ class DatabaseHelper {
 
     final path = join(databasePath, _databaseName);
 
-    return await openDatabase(path,
-        onCreate: _onCreate, version: _databaseVersion);
+    return await openDatabase(
+      path,
+      onCreate: _onCreate,
+      version: _databaseVersion,
+      // onOpen: _onOpen,
+    );
   }
+
+  // Future<void> _onOpen(Database db) async {
+  //   await db.execute('PRAGMA foreign_keys=on;');
+  // }
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute(
@@ -54,11 +62,12 @@ class DatabaseHelper {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     document.id = newDocumentId;
+    log('Inserted document ($newDocumentId) in DB ');
     return document;
   }
 
   Future<DocumentImage> insertDocumentImage(DocumentImage documentImage) async {
-    log('Inserting image in DB');
+    log('Inserting image of documentID(${documentImage.documentId}) in DB');
     final db = await _databaseHelper.database;
 
     final Directory baseDir = await getApplicationDocumentsDirectory();
@@ -76,6 +85,8 @@ class DatabaseHelper {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     documentImage.id = newDocumentImageId;
+    log('Inserted image in DB ');
+
     return documentImage;
   }
 
@@ -85,6 +96,7 @@ class DatabaseHelper {
 
     final List<Map<String, dynamic>> documentMaps =
         await db.query(documentTable);
+    log(documentMaps.toString());
 
     return List.generate(documentMaps.length,
         (index) => BaseDocument.fromMap(documentMaps[index]));
@@ -100,11 +112,12 @@ class DatabaseHelper {
       whereArgs: [documentId],
       limit: 1,
     );
+    log(documentMaps.toString());
     return BaseDocument.fromMap(documentMaps.first);
   }
 
   Future<List<DocumentImage>> getDocumentImages(int documentId) async {
-    log('Getting document image from DB');
+    log('Getting document image of documentID($documentId)from DB');
     final db = await _databaseHelper.database;
     final List<Map<String, dynamic>> documentImageMaps = await db.query(
       imageTable,
@@ -126,12 +139,13 @@ class DatabaseHelper {
       whereArgs: [id],
       limit: 1,
     );
+    log(documentImageMaps.toString());
     return DocumentImage.fromMap(documentImageMaps.first);
   }
 
   Future<BaseDocument> updateDocument(
       int documentId, BaseDocument document) async {
-    log('Updating document in DB');
+    log('Updating document with documentID($documentId)in DB');
     final db = await _databaseHelper.database;
 
     await db.update(
@@ -140,24 +154,47 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [documentId],
     );
+    log('Updated document');
     return document;
   }
 
   Future<int> deleteDocument(int documentId) async {
-    log('Deleting document in DB');
+    log('Deleting document with documentId($documentId)in DB');
 
     final db = await _databaseHelper.database;
+
+    await deleteDocumentImages(documentId);
 
     final deletedDocumentId = await db.delete(
       documentTable,
       where: 'id = ?',
       whereArgs: [documentId],
     );
+    log('Document deleted');
     return deletedDocumentId;
   }
 
-  Future<int> deleteDocumentImage(int imageId) async {
-    log('Deleting document image in DB');
+  Future<void> deleteDocumentImages(int documentId) async {
+    log('Deleting document images with documentId($documentId) in DB');
+
+    final db = await _databaseHelper.database;
+
+    final documentImages = await getDocumentImages(documentId);
+    Batch batch = db.batch();
+    for (final documentImage in documentImages) {
+      File(documentImage.path).delete();
+      batch.delete(
+        imageTable,
+        where: 'id = ?',
+        whereArgs: [documentImage.id],
+      );
+    }
+    batch.commit();
+    log('Document Images deleted');
+  }
+
+  Future<int> deleteDocumentImageById(int imageId) async {
+    log('Deleting document image with imageId($imageId) in DB');
 
     final db = await _databaseHelper.database;
 
@@ -169,6 +206,7 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [imageId],
     );
+    log('Document Image deleted');
     return deletedDocumentImageId;
   }
 

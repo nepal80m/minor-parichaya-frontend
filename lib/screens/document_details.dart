@@ -45,30 +45,8 @@ class _DocumentDetailsState extends State<DocumentDetails> {
   Widget build(BuildContext context) {
     final routeDocumentId = ModalRoute.of(context)?.settings.arguments as int;
 
-    final document = Provider.of<Documents>(context, listen: false)
-        .getDocumentById(routeDocumentId);
-
-    Widget cancelButton = TextButton(
-      child: const Text("Cancel"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: const Text("Continue"),
-      onPressed: () {
-        Provider.of<Documents>(context, listen: false)
-            .deleteDocument(document.id);
-        const snackBar =
-            SnackBar(content: Text('Document Deleted Successfully'));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        Navigator.popUntil(
-          context,
-          ModalRoute.withName('/'),
-        );
-      },
-    );
+    final document =
+        Provider.of<Documents>(context).getDocumentById(routeDocumentId);
 
     AlertDialog alert = AlertDialog(
       title: const Text("Are you sure?"),
@@ -76,8 +54,26 @@ class _DocumentDetailsState extends State<DocumentDetails> {
         "Deleting the document will delete all the images in it and cannot be undone.",
       ),
       actions: [
-        cancelButton,
-        continueButton,
+        TextButton(
+          child: const Text("Cancel"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: const Text("Continue"),
+          onPressed: () {
+            Provider.of<Documents>(context, listen: false)
+                .deleteDocument(document.id);
+            const snackBar =
+                SnackBar(content: Text('Document Deleted Successfully'));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            Navigator.popUntil(
+              context,
+              ModalRoute.withName('/'),
+            );
+          },
+        ),
       ],
     );
 
@@ -157,37 +153,55 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                   document.title,
                   style: Theme.of(context).textTheme.headline3,
                 ),
-                Text(document.images.length.toString()),
-                const SizedBox(
-                  height: 10,
-                ),
-                const SizedBox(
-                  height: 10,
+                const Divider(
+                  height: 60,
+                  thickness: 2,
+                  color: Colors.grey,
                 ),
                 Text(
                   document.note,
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
-                Column(
+                GridView.count(
+                  padding: EdgeInsets.zero,
+                  physics: const ScrollPhysics(),
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
                   children: [
                     ...document.images.map((image) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: GestureDetector(
-                          child: Image.file(
-                            File(image.path),
-                            height: 200,
-                            width: 200,
-                            fit: BoxFit.cover,
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                                FullScreenImage.routeName,
-                                arguments: image);
-                          },
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: Image.file(
+                                File(image.path),
+                                height: 200,
+                                width: 200,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Positioned.fill(
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  highlightColor:
+                                      Colors.orange.withOpacity(0.1),
+                                  splashColor: Colors.black12,
+                                  onTap: () {
+                                    Navigator.of(context).pushReplacementNamed(
+                                        FullScreenImage.routeName,
+                                        arguments: image);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     }).toList(),

@@ -10,14 +10,12 @@ class DocumentTile extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
   final Widget? action;
-  final int docId;
 
   const DocumentTile({
     required this.title,
     required this.imagePath,
     required this.onTap,
     this.action,
-    required this.docId,
     Key? key,
   }) : super(key: key);
   @override

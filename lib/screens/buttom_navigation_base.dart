@@ -10,9 +10,8 @@ import 'search_documents.dart';
 
 // import './homepage.dart';
 import './document_list.dart';
-// import './extras.dart';
-import './received_list.dart';
 import './shared_list.dart';
+import 'select_document.dart';
 
 class ButtomNavigationBase extends StatefulWidget {
   const ButtomNavigationBase({Key? key}) : super(key: key);
@@ -46,15 +45,37 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
       'screen': const SharedList(),
       'title': 'Shared Docs',
     },
-    {
-      'screen': const ReceivedList(),
-      'title': 'Received Docs',
-    },
+    // {
+    //   'screen': const ReceivedList(),
+    //   'title': 'Received Docs',
+    // },
     // {
     //   'screen': const Extras(),
     //   'title': 'Extra',
     // },
   ];
+
+  Widget _getFAB() {
+    if (_screenIndex == 0) {
+      return FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(AddDocuments.routeName);
+        },
+        tooltip: 'Add New Doc',
+        elevation: 2,
+        child: const Icon(Icons.add_a_photo),
+      );
+    } else {
+      return FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(SelectDocument.routeName);
+        },
+        tooltip: 'Add Shared Doc',
+        elevation: 2,
+        child: const Icon(Icons.add_link_rounded),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -315,7 +336,9 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
           if (_screenIndex == 1)
             IconButton(
               splashRadius: 24,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(SelectDocument.routeName);
+              },
               icon: const Icon(
                 Icons.add_link_rounded,
                 size: 30,
@@ -337,14 +360,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
         ],
       ),
       body: _screens[_screenIndex]['screen'] as Widget,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed(AddDocuments.routeName);
-        },
-        tooltip: 'Add New Doc',
-        elevation: 2,
-        child: const Icon(Icons.add_a_photo),
-      ),
+      floatingActionButton: _getFAB(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         // type: BottomNavigationBarType.fixed,
@@ -374,10 +390,10 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
             icon: Icon(CustomIcons.link_filled),
             label: "Shared",
           ),
-          BottomNavigationBarItem(
-            icon: Icon(CustomIcons.inbox),
-            label: "Received",
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(CustomIcons.inbox),
+          //   label: "Received",
+          // ),
           // BottomNavigationBarItem(
           //   icon: Icon(CustomIcons.menu_circle_filled),
           //   label: "Extras",

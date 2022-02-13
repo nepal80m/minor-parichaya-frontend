@@ -1,63 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parichaya_frontend/models/document.dart';
-import 'package:parichaya_frontend/share_to_inbox_buttom_sheet.dart';
-import 'package:parichaya_frontend/widgets/custom_icons_icons.dart';
-import 'package:parichaya_frontend/widgets/ui/custom_elevated_button.dart';
-// import '../widgets/custom_icons_icons.dart';
-import '../datas/dummy_documents.dart';
+import 'package:provider/provider.dart';
 
-import '../widgets/document_tile.dart';
+import '../providers/share_links.dart';
+import '../widgets/shared_document_tile.dart';
+
+// import '../widgets/custom_icons_icons.dart';
 
 class ShareDetails extends StatefulWidget {
   const ShareDetails({Key? key}) : super(key: key);
+
+  static const routeName = '/share_details';
 
   @override
   State<ShareDetails> createState() => _ShareDetailsState();
 }
 
 class _ShareDetailsState extends State<ShareDetails> {
-  final title = 'Shared to Lalitpur Engineering College for Admission';
-  final sharedDocumentList = DUMMY_DOCS;
-
-  void addNewTransaction(String title, double amount, DateTime chosenDate) {}
-
-  void startAddTransaction(BuildContext context) {
-    showModalBottomSheet<void>(
-      isScrollControlled: true,
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      ),
-      builder: (BuildContext context) {
-        return ShareToInboxBottomSheet(addNewTransaction);
-      },
-    );
-    // showModalBottomSheet(
-    //   backgroundColor: Colors.transparent,
-    //   context: context,
-    //   builder: (_) {
-    //     return GestureDetector(
-    //       onTap: () {},
-    //       behavior: HitTestBehavior.opaque,
-    //       child: ShareToInbox(addNewTransaction),
-    //     );
-    //   },
-    // );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final title = ModalRoute.of(context)?.settings.arguments as String;
+    final sharedDocumentList =
+        Provider.of<ShareLinks>(context).sharedItems.reversed;
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).primaryColor),
-        // leading: const Icon(Icons.arrow_back_ios_new_rounded),
-        // leading: Icon(CustomIcons.link_filled),
+        leading: GestureDetector(
+          child: const Icon(Icons.arrow_back),
+          onTap: () {
+            Provider.of<ShareLinks>(context, listen: false).clearDocument();
+            Navigator.of(context).pop();
+          },
+        ),
         title: const Text('DETAILS'),
-        centerTitle: true,
         actions: [
           PopupMenuButton(
             itemBuilder: (context) => [
@@ -66,7 +43,7 @@ class _ShareDetailsState extends State<ShareDetails> {
                 value: 'share',
               ),
               PopupMenuItem(
-                child: Text('Expire this link'),
+                child: const Text('Expire this link'),
                 textStyle: Theme.of(context).textTheme.bodyText2?.copyWith(
                       color: Colors.red,
                       // fontWeight: FontWeight.bold,
@@ -87,7 +64,7 @@ class _ShareDetailsState extends State<ShareDetails> {
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
             ),
             Padding(
@@ -120,11 +97,6 @@ class _ShareDetailsState extends State<ShareDetails> {
                           )
                         ],
                       ),
-                      CustomElevatedButton(
-                          child: const Text('SEND TO PERSONAL INBOX'),
-                          onPressed: () {
-                            startAddTransaction(context);
-                          })
                     ],
                   ),
                 ),
@@ -139,9 +111,9 @@ class _ShareDetailsState extends State<ShareDetails> {
             ),
             ...sharedDocumentList.map(
               (document) {
-                return DocumentTile(
+                return SharedDocumentTile(
                   title: document.title,
-                  image: document.images[0],
+                  expiryDate: document.expiryDate,
                 );
               },
             ).toList()

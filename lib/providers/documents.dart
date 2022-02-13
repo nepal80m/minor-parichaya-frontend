@@ -146,7 +146,6 @@ class Documents with ChangeNotifier {
 
     final existingDocument = getDocumentById(documentId);
     existingDocument.images.add(newDocumentImage);
-
     notifyListeners();
     return newDocumentImage;
   }

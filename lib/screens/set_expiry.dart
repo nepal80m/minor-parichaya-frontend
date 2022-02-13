@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
-import '../widgets/ui/custom_elevated_button.dart';
-// import '../widgets/custom_icons_icons.dart';
+import 'package:provider/provider.dart';
+import 'share_details.dart';
+
+import '../providers/share_links.dart';
+import '../widgets/ui/done_botton.dart';
 
 class SetExpiry extends StatefulWidget {
   const SetExpiry({Key? key}) : super(key: key);
+
+  static const routeName = '/set_expiry';
 
   @override
   State<SetExpiry> createState() => _SetExpiryState();
@@ -38,14 +43,26 @@ class _SetExpiryState extends State<SetExpiry> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedDocuments =
+        ModalRoute.of(context)?.settings.arguments as List;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).primaryColor),
-        leading: const Icon(Icons.arrow_back_ios_new_rounded),
         title: const Text('SET EXTRA INFO'),
-        centerTitle: true,
+        actions: [
+          DoneButton(onPressed: () {
+            Provider.of<ShareLinks>(context, listen: false)
+                .addShareLinks(selectedDocuments, dateController.text);
+            Navigator.of(context)
+              ..pop()
+              ..pop();
+            Navigator.of(context).pushNamed(ShareDetails.routeName,
+                arguments: titleController.text);
+          })
+        ],
       ),
       body: LayoutBuilder(
         builder: (ctx, constraints) {
@@ -127,15 +144,6 @@ class _SetExpiryState extends State<SetExpiry> {
             ),
           );
         },
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-          child: CustomElevatedButton(
-            child: const Text('FINISH'),
-            onPressed: () {},
-          ),
-        ),
       ),
     );
   }

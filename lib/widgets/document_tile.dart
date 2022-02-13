@@ -8,13 +8,13 @@ import '../utils/string.dart';
 class DocumentTile extends StatelessWidget {
   final String imagePath;
   final String title;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final Widget? action;
 
   const DocumentTile({
     required this.title,
     required this.imagePath,
-    required this.onTap,
+    this.onTap,
     this.action,
     Key? key,
   }) : super(key: key);
@@ -52,6 +52,7 @@ class DocumentTile extends StatelessWidget {
               // ),
             ),
           ),
+          trailing: action,
           title: Text(generateLimitedLengthText(title, 25)),
           // subtitle: Text(document.note.length > 25 ?
           //      note.replaceRange(25, null, '...')

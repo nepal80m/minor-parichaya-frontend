@@ -1,26 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parichaya_frontend/models/document.dart';
-import 'package:parichaya_frontend/widgets/ui/custom_elevated_button.dart';
-// import '../widgets/custom_icons_icons.dart';
-import '../datas/dummy_documents.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/documents.dart';
 import '../widgets/document_tile.dart';
+import '../models/document_model.dart';
+import '../widgets/ui/done_botton.dart';
+import 'set_expiry.dart';
 
 class SelectDocument extends StatefulWidget {
   const SelectDocument({Key? key}) : super(key: key);
+
+  static const routeName = '/selected_document';
 
   @override
   State<SelectDocument> createState() => _SelectDocumentState();
 }
 
 class _SelectDocumentState extends State<SelectDocument> {
-  final documentList = DUMMY_DOCS;
+  // final documentList = DUMMY_DOCS;
 
   final searchController = TextEditingController();
-  List<Document> filteredDocumentList = DUMMY_DOCS;
 
+  List<Document> filteredDocumentList = [];
   final List<Document> selectedDocumentList = [];
+  List<Document> documentList = [];
+
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      documentList = Provider.of<Documents>(context, listen: false).items;
+      filteredDocumentList =
+          Provider.of<Documents>(context, listen: false).items;
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   void _updateFilteredDcoumentList() {
     setState(() {
@@ -31,7 +48,7 @@ class _SelectDocumentState extends State<SelectDocument> {
     });
   }
 
-  void toggleSelection(String id) {
+  void toggleSelection(int id) {
     final existingIndex = selectedDocumentList.indexWhere((element) {
       return element.id == id;
     });
@@ -60,9 +77,13 @@ class _SelectDocumentState extends State<SelectDocument> {
         elevation: 1,
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).primaryColor),
-        leading: const Icon(Icons.arrow_back_ios_new_rounded),
         title: const Text('SELECT DOCUMENT'),
-        centerTitle: true,
+        actions: [
+          DoneButton(onPressed: () {
+            Navigator.of(context).pushNamed(SetExpiry.routeName,
+                arguments: selectedDocumentList);
+          })
+        ],
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -105,15 +126,13 @@ class _SelectDocumentState extends State<SelectDocument> {
                         (document) {
                           return DocumentTile(
                             title: document.title,
-                            image: document.images[0],
-                            action: IconButton(
-                              onPressed: () {
-                                toggleSelection(document.id);
-                              },
-                              icon: Icon(isDocumentSelected(document.id)
-                                  ? Icons.check_circle_rounded
-                                  : Icons.circle_outlined),
-                            ),
+                            imagePath: document.images[0].path,
+                            onTap: () {
+                              toggleSelection(document.id);
+                            },
+                            action: Icon(isDocumentSelected(document.id)
+                                ? Icons.check_circle_rounded
+                                : Icons.circle_outlined),
                           );
                         },
                       ).toList(),
@@ -169,14 +188,12 @@ class _SelectDocumentState extends State<SelectDocument> {
                         ...selectedDocumentList.map(
                           (document) {
                             return DocumentTile(
-                              image: document.images[0],
+                              imagePath: document.images[0].path,
                               title: document.title,
-                              action: IconButton(
-                                icon: const Icon(Icons.cancel),
-                                onPressed: () {
-                                  toggleSelection(document.id);
-                                },
-                              ),
+                              onTap: () {
+                                toggleSelection(document.id);
+                              },
+                              action: const Icon(Icons.cancel),
                             );
                           },
                         ).toList(),
@@ -188,15 +205,6 @@ class _SelectDocumentState extends State<SelectDocument> {
             },
           ),
         ],
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-          child: CustomElevatedButton(
-            child: const Text('NEXT'),
-            onPressed: () {},
-          ),
-        ),
       ),
     );
   }

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../providers/share_links.dart';
 import '../widgets/shared_document_details_tile.dart';
-import 'full_screen_image.dart';
 
 // import '../widgets/custom_icons_icons.dart';
 

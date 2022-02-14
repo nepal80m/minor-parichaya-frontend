@@ -5,10 +5,12 @@ import '../utils/string.dart';
 class SharedDocumentTile extends StatelessWidget {
   String title;
   String expiryDate;
+  VoidCallback onTap;
 
   SharedDocumentTile({
     required this.title,
     required this.expiryDate,
+    required this.onTap,
     Key? key,
   }) : super(key: key);
 
@@ -19,6 +21,7 @@ class SharedDocumentTile extends StatelessWidget {
         ListTile(
           title: Text(generateLimitedLengthText(title, 25)),
           subtitle: Text(expiryDate),
+          onTap: onTap,
         ),
         const Divider(
           indent: 10,

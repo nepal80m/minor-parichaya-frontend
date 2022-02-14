@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:parichaya_frontend/providers/documents.dart';
-import 'package:parichaya_frontend/providers/theme_provider.dart';
-import 'package:parichaya_frontend/screens/document_detail_full_screen_gallery.dart';
 import 'package:provider/provider.dart';
 
-import 'screens/buttom_navigation_base.dart';
-import 'screens/add_document.dart';
-import 'screens/document_details.dart';
-import 'screens/edit_document.dart';
-import 'screens/document_detail_full_screen_gallery.dart';
+import './providers/documents.dart';
+import './providers/theme_provider.dart';
+import 'providers/share_links.dart';
+
+import './screens/document_detail_full_screen_gallery.dart';
+import './screens/buttom_navigation_base.dart';
+import './screens/add_document.dart';
+import './screens/document_details.dart';
+import './screens/edit_document.dart';
+import './screens/select_document.dart';
+import './screens/set_expiry.dart';
+import './screens/share_details.dart';
 
 void main() {
   runApp(ChangeNotifierProvider<ThemeProvider>(
     create: (_) => ThemeProvider(),
-    child: MyApp(),
+    child: const MyApp(),
   ));
 }
 
@@ -22,8 +26,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => Documents(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Documents()),
+        ChangeNotifierProvider(create: (_) => ShareLinks())
+      ],
       child: Consumer<ThemeProvider>(
         builder: (context, provider, child) {
           return MaterialApp(
@@ -53,6 +60,9 @@ class MyApp extends StatelessWidget {
               EditDocument.routeName: (ctx) => const EditDocument(),
               DocumentDetailFullScreenGallery.routeName: (ctx) =>
                   const DocumentDetailFullScreenGallery(),
+              SelectDocument.routeName: (ctx) => const SelectDocument(),
+              SetExpiry.routeName: (ctx) => const SetExpiry(),
+              ShareDetails.routeName: (ctx) => const ShareDetails(),
             },
             onUnknownRoute: (settings) {
               return MaterialPageRoute(

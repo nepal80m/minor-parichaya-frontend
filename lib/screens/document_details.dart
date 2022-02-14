@@ -33,6 +33,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
+      // TODO SOLVE THIS ISSUE OF IMAGE NOT BEING ADDED
       Provider.of<Documents>(context, listen: false)
           .addDocumentImage(documentId, image.path);
       const snackBar = SnackBar(content: Text('Image Successfully Added'));
@@ -86,9 +87,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
   Widget build(BuildContext context) {
     final routeDocumentId = ModalRoute.of(context)?.settings.arguments as int;
 
-    final documentsProvider = Provider.of<Documents>(
-      context,
-    );
+    final documentsProvider = Provider.of<Documents>(context);
     if (!documentsProvider.checkIfDocumentExists(routeDocumentId)) {
       return const PageNotFound();
     }
@@ -101,7 +100,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
         systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Theme.of(context).primaryColor),
         title: Text(
-          generateLimitedLengthText(document.title, 25),
+          generateLimitedLengthText(document.title.toUpperCase(), 25),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         actions: [
@@ -115,7 +114,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
               icon: const Icon(Icons.more_vert)),
         ],
       ),
-      body: LayoutBuilder(builder: (ctx, constraints) {
+      body: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.all(15),
@@ -210,9 +209,10 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                       ListTile(
                         leading: const Icon(Icons.file_upload_rounded),
                         title: const Text('Upload Image'),
-                        onTap: () {
+                        onTap: () async {
+                          await pickImage(
+                              context, ImageSource.gallery, document.id);
                           Navigator.of(context).pop();
-                          pickImage(context, ImageSource.gallery, document.id);
                         },
                       ),
                       ListTile(

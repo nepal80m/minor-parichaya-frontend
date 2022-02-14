@@ -9,6 +9,7 @@ import '../widgets/options_modal_buttom_sheet.dart';
 import '../screens/document_details.dart';
 import '../widgets/ui/custom_text_field.dart';
 import '../providers/documents.dart';
+import '../widgets/ui/appbar_confirmation_button.dart';
 
 class AddDocuments extends StatefulWidget {
   const AddDocuments({Key? key}) : super(key: key);
@@ -74,7 +75,7 @@ class _AddDocumentsState extends State<AddDocuments> {
     showOptionsModalButtomSheet(
       context,
       children: [
-        const Text('Select Actions aaaaa'),
+        const Text('Select Actions'),
         const Divider(),
         ListTile(
           leading: const Icon(Icons.file_upload_rounded),
@@ -115,29 +116,12 @@ class _AddDocumentsState extends State<AddDocuments> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton.icon(
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    // side: BorderSide(color: Colors.red),
-                  ),
-                ),
-                backgroundColor:
-                    MaterialStateProperty.all(Theme.of(context).canvasColor),
-                foregroundColor:
-                    MaterialStateProperty.all(Theme.of(context).primaryColor),
-                overlayColor: MaterialStateProperty.all(
-                    Theme.of(context).primaryColor.withOpacity(0.1)),
-              ),
-              label: const Text('Done'),
-              icon: const Icon(Icons.done),
-              onPressed: () {
-                addDocument(context);
-              },
-            ),
+          DoneButton(
+            text: 'Done',
+            icon: const Icon(Icons.done),
+            onPressed: () {
+              addDocument(context);
+            },
           )
         ],
       ),
@@ -237,19 +221,23 @@ class _AddDocumentsState extends State<AddDocuments> {
                           showAddImageModalBottomSheet(context);
                           // pickImage(ImageSource.gallery);
                         },
-                        splashColor: Theme.of(context).primaryColor,
+                        splashColor:
+                            Theme.of(context).disabledColor.withOpacity(0.1),
                         child: Container(
                           height: 100,
                           width: 100,
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.blueAccent,
-                            ),
+                            color: Theme.of(context)
+                                .disabledColor
+                                .withOpacity(0.05),
+                            // border: Border.all(
+                            // color: Colors.blueAccent,
+                            // ),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.add_circle,
-                            color: Colors.blueAccent,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                       ),

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/documents.dart';
 import '../widgets/document_tile.dart';
 import '../models/document_model.dart';
-import '../widgets/ui/done_botton.dart';
+import '../widgets/ui/appbar_confirmation_button.dart';
 import 'set_expiry.dart';
 
 class SelectDocument extends StatefulWidget {
@@ -79,10 +79,21 @@ class _SelectDocumentState extends State<SelectDocument> {
             statusBarColor: Theme.of(context).primaryColor),
         title: const Text('SELECT DOCUMENT'),
         actions: [
-          DoneButton(onPressed: () {
-            Navigator.of(context).pushNamed(SetExpiry.routeName,
-                arguments: selectedDocumentList);
-          })
+          DoneButton(
+              text: 'Next',
+              icon: const Icon(Icons.arrow_forward_rounded),
+              onPressed: () {
+                if (selectedDocumentList.isEmpty) {
+                  final snackBar = SnackBar(
+                      backgroundColor: Theme.of(context).errorColor,
+                      content:
+                          const Text('You must select atleast one document.'));
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                } else {
+                  Navigator.of(context).pushNamed(SetExpiry.routeName,
+                      arguments: selectedDocumentList);
+                }
+              })
         ],
       ),
       body: Stack(

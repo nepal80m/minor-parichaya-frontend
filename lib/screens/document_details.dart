@@ -32,7 +32,6 @@ class _DocumentDetailsState extends State<DocumentDetails> {
       BuildContext context, ImageSource source, int documentId) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
-      log(documentId.toString());
       if (image == null) return;
       // TODO SOLVE THIS ISSUE OF IMAGE NOT BEING ADDED
       Provider.of<Documents>(context, listen: false)
@@ -118,7 +117,6 @@ class _DocumentDetailsState extends State<DocumentDetails> {
   @override
   Widget build(BuildContext context) {
     final routeDocumentId = ModalRoute.of(context)?.settings.arguments as int;
-    log('Document id received through router' + routeDocumentId.toString());
 
     final documentsProvider = Provider.of<Documents>(context);
     if (!documentsProvider.checkIfDocumentExists(routeDocumentId)) {
@@ -222,7 +220,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
               icon: const Icon(Icons.more_vert)),
         ],
       ),
-      body: LayoutBuilder(builder: (ctx, constraints) {
+      body: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.all(15),
@@ -316,8 +314,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                       ListTile(
                         leading: const Icon(Icons.file_upload_rounded),
                         title: const Text('Upload Image'),
-                        onTap: () {
-                          pickImage(context, ImageSource.gallery, document.id);
+                        onTap: () async {
+                          await pickImage(
+                              context, ImageSource.gallery, document.id);
                           Navigator.of(context).pop();
                         },
                       ),

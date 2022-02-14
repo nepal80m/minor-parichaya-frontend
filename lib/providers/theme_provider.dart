@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
   bool currentTheme = false;
@@ -14,15 +15,15 @@ class ThemeProvider extends ChangeNotifier {
 
   changeTheme(bool theme) async {
     AnimatedSwitcher(duration: const Duration(milliseconds: 0));
-    //final SharedPreferences _prefs = await SharedPreferences.getInstance();
-    //await _prefs.setBool('theme', theme);
+    final SharedPreferences _prefs = await SharedPreferences.getInstance();
+    await _prefs.setBool('theme', theme);
     currentTheme = theme;
     notifyListeners();
   }
 
-  //initialize() async {
-  //final SharedPreferences _prefs = await SharedPreferences.getInstance();
-  //currentTheme = _prefs.getBool('theme') ?? false;
-  //notifyListeners();
-  // }
+  initialize() async {
+    final SharedPreferences _prefs = await SharedPreferences.getInstance();
+    currentTheme = _prefs.getBool('theme') ?? false;
+    notifyListeners();
+  }
 }

@@ -58,13 +58,12 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   Widget _getFAB() {
     if (_screenIndex == 0) {
       return FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed(AddDocuments.routeName);
-        },
-        tooltip: 'Add New Doc',
-        elevation: 2,
-        child: const Icon(Icons.add_a_photo),
-      );
+          onPressed: () {
+            Navigator.of(context).pushNamed(AddDocuments.routeName);
+          },
+          tooltip: 'Add New Doc',
+          elevation: 2,
+          child: const Icon(Icons.add_rounded));
     } else {
       return FloatingActionButton(
         onPressed: () {
@@ -84,6 +83,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
         // Add a ListView to the drawer. This ensures the user can scroll
         // through the options in the drawer if there isn't enough vertical
         // space to fit everything.
+
         child: ListView(
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
@@ -92,8 +92,10 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
             SizedBox(
               height: 130,
               child: DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
+                decoration: BoxDecoration(
+                  color: !isSwitched
+                      ? Theme.of(context).primaryColor
+                      : Colors.blue.withGreen(232),
                 ),
                 child: Row(
                   children: [
@@ -123,13 +125,13 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                               fontWeight: FontWeight.bold,
                               fontSize: 16),
                         ),
-                        Text(
-                          number,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14),
-                        ),
+                        // Text(
+                        //   number,
+                        //   style: const TextStyle(
+                        //       color: Colors.white,
+                        //       fontWeight: FontWeight.bold,
+                        //       fontSize: 14),
+                        // ),
                         // Text('goerranger@gmail.com'),
                       ],
                     ),
@@ -176,83 +178,83 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
             ),
             const Divider(),
 //Change Number
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(Icons.phone_android_rounded),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Change Number',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {},
-              trailing: const Icon(Icons.arrow_forward_ios),
-            ),
+            // ListTile(
+            //   title: Row(
+            //     children: [
+            //       Icon(Icons.phone_android_rounded),
+            //       Padding(
+            //         padding: EdgeInsets.all(10),
+            //         child: Text(
+            //           'Change Number',
+            //           style: TextStyle(
+            //             fontSize: 16,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            //   onTap: () {},
+            //   trailing: const Icon(Icons.arrow_forward_ios),
+            // ),
 //Change Email Address
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(Icons.mail_rounded),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Change Email address',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {},
-              trailing: const Icon(Icons.arrow_forward_ios),
-            ),
+//             ListTile(
+//               title: Row(
+//                 children: [
+//                   Icon(Icons.mail_rounded),
+//                   Padding(
+//                     padding: EdgeInsets.all(10),
+//                     child: Text(
+//                       'Change Email address',
+//                       style: TextStyle(
+//                         fontSize: 16,
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               onTap: () {},
+//               trailing: const Icon(Icons.arrow_forward_ios),
+//             ),
 
-//Change Password
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(Icons.vpn_key_rounded),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Change Password',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {},
-              trailing: const Icon(Icons.arrow_forward_ios),
-            ),
-            const Divider(),
-            //Terms of services
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(Icons.subject_rounded),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Terms of services',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {},
-              trailing: const Icon(Icons.arrow_forward_ios),
-            ),
+// //Change Password
+//             ListTile(
+//               title: Row(
+//                 children: [
+//                   Icon(Icons.vpn_key_rounded),
+//                   Padding(
+//                     padding: EdgeInsets.all(10),
+//                     child: Text(
+//                       'Change Password',
+//                       style: TextStyle(
+//                         fontSize: 16,
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               onTap: () {},
+//               trailing: const Icon(Icons.arrow_forward_ios),
+//             ),
+//             const Divider(),
+//             //Terms of services
+//             ListTile(
+//               title: Row(
+//                 children: [
+//                   Icon(Icons.subject_rounded),
+//                   Padding(
+//                     padding: EdgeInsets.all(10),
+//                     child: Text(
+//                       'Terms of services',
+//                       style: TextStyle(
+//                         fontSize: 16,
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               onTap: () {},
+//               trailing: const Icon(Icons.arrow_forward_ios),
+//             ),
             //Privacy Policy
             ListTile(
               title: Row(
@@ -370,8 +372,11 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
         // showUnselectedLabels: true,
         elevation: 5,
         iconSize: 20,
-        unselectedItemColor: Theme.of(context).unselectedWidgetColor,
-        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: !isSwitched
+            ? Theme.of(context).unselectedWidgetColor
+            : Theme.of(context).unselectedWidgetColor.withOpacity(.2),
+        selectedItemColor:
+            !isSwitched ? Theme.of(context).primaryColor : Colors.white,
         currentIndex: _screenIndex,
         onTap: _selectScreen,
         items: const [
@@ -383,7 +388,10 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
           //   label: "Home",
           // ),
           BottomNavigationBarItem(
-            icon: Icon(CustomIcons.files_folder_filled),
+            icon: Icon(
+              CustomIcons.files_folder_filled,
+              // color: isSwitched?Colors.white,
+            ),
             label: "My Docs",
           ),
           BottomNavigationBarItem(

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:parichaya_frontend/providers/documents.dart';
 import 'package:parichaya_frontend/providers/theme_provider.dart';
+import 'package:parichaya_frontend/screens/document_detail_full_screen_gallery.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/buttom_navigation_base.dart';
 import 'screens/add_document.dart';
 import 'screens/document_details.dart';
 import 'screens/edit_document.dart';
-import 'screens/full_screen_image.dart';
+import 'screens/document_detail_full_screen_gallery.dart';
 
 void main() {
   runApp(ChangeNotifierProvider<ThemeProvider>(
@@ -50,7 +51,8 @@ class MyApp extends StatelessWidget {
               AddDocuments.routeName: (ctx) => const AddDocuments(),
               DocumentDetails.routeName: (ctx) => const DocumentDetails(),
               EditDocument.routeName: (ctx) => const EditDocument(),
-              FullScreenImage.routeName: (ctx) => const FullScreenImage(),
+              DocumentDetailFullScreenGallery.routeName: (ctx) =>
+                  const DocumentDetailFullScreenGallery(),
             },
             onUnknownRoute: (settings) {
               return MaterialPageRoute(

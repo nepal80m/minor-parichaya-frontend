@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './providers/documents.dart';
-import 'providers/share_links.dart';
 import './providers/theme_provider.dart';
+import 'providers/share_links.dart';
 
-import 'screens/buttom_navigation_base.dart';
-import 'screens/add_document.dart';
-import 'screens/document_details.dart';
-import 'screens/edit_document.dart';
-import 'screens/full_screen_image.dart';
-import 'screens/select_document.dart';
-import 'screens/set_expiry.dart';
-import 'screens/share_details.dart';
+import './screens/document_detail_full_screen_gallery.dart';
+import './screens/buttom_navigation_base.dart';
+import './screens/add_document.dart';
+import './screens/document_details.dart';
+import './screens/edit_document.dart';
+import './screens/select_document.dart';
+import './screens/set_expiry.dart';
+import './screens/share_details.dart';
 
 void main() {
   runApp(ChangeNotifierProvider<ThemeProvider>(
@@ -58,7 +58,8 @@ class MyApp extends StatelessWidget {
               AddDocuments.routeName: (ctx) => const AddDocuments(),
               DocumentDetails.routeName: (ctx) => const DocumentDetails(),
               EditDocument.routeName: (ctx) => const EditDocument(),
-              FullScreenImage.routeName: (ctx) => const FullScreenImage(),
+              DocumentDetailFullScreenGallery.routeName: (ctx) =>
+                  const DocumentDetailFullScreenGallery(),
               SelectDocument.routeName: (ctx) => const SelectDocument(),
               SetExpiry.routeName: (ctx) => const SetExpiry(),
               ShareDetails.routeName: (ctx) => const ShareDetails(),

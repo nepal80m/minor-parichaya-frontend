@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parichaya_frontend/widgets/shared_document_details_tile.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/share_links.dart';
-import '../widgets/shared_document_tile.dart';
+import '../widgets/shared_document_details_tile.dart';
+import 'full_screen_image.dart';
 
 // import '../widgets/custom_icons_icons.dart';
 
-class ShareDetails extends StatefulWidget {
+class ShareDetails extends StatelessWidget {
   const ShareDetails({Key? key}) : super(key: key);
 
   static const routeName = '/share_details';
 
   @override
-  State<ShareDetails> createState() => _ShareDetailsState();
-}
-
-class _ShareDetailsState extends State<ShareDetails> {
-  @override
   Widget build(BuildContext context) {
-    final title = ModalRoute.of(context)?.settings.arguments as String;
-    final sharedDocumentList =
-        Provider.of<ShareLinks>(context).sharedItems.reversed;
+    final sharedLinkId = ModalRoute.of(context)?.settings.arguments as int;
+    final shareLink = Provider.of<ShareLinks>(context, listen: false)
+        .getShareLinkById(sharedLinkId);
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
@@ -30,7 +27,6 @@ class _ShareDetailsState extends State<ShareDetails> {
         leading: GestureDetector(
           child: const Icon(Icons.arrow_back),
           onTap: () {
-            Provider.of<ShareLinks>(context, listen: false).clearDocument();
             Navigator.of(context).pop();
           },
         ),
@@ -62,10 +58,16 @@ class _ShareDetailsState extends State<ShareDetails> {
             Container(
               margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
               child: Text(
-                title,
+                shareLink.title.toUpperCase(),
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 20),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
+            ),
+            Text(
+              'Expiry Date : ${shareLink.expiryDate}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 14),
             ),
             Padding(
               padding: const EdgeInsets.all(10.0),
@@ -79,7 +81,7 @@ class _ShareDetailsState extends State<ShareDetails> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Icon(
-                        Icons.qr_code,
+                        Icons.qr_code_2,
                         size: 200,
                       ),
                       Row(
@@ -109,14 +111,15 @@ class _ShareDetailsState extends State<ShareDetails> {
             const SizedBox(
               height: 10,
             ),
-            ...sharedDocumentList.map(
+            ...shareLink.documents.map(
               (document) {
-                return SharedDocumentTile(
+                return SharedDocumentDetailsTile(
                   title: document.title,
-                  expiryDate: document.expiryDate,
+                  images: document.images,
+                  onTap: () {},
                 );
               },
-            ).toList()
+            ).toList(),
           ],
         ),
       ),

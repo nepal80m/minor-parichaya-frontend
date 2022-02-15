@@ -11,7 +11,7 @@ import '../providers/documents.dart';
 import '../screens/page_not_found.dart';
 import '../utils/string.dart';
 import './edit_document.dart';
-import '../widgets/confirmation_alert_dialog.dart';
+import '../widgets/delete_confirmation_buttom_sheet.dart';
 
 enum selectionValue {
   edit,
@@ -33,7 +33,6 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
-      // TODO SOLVE THIS ISSUE OF IMAGE NOT BEING ADDED
       Provider.of<Documents>(context, listen: false)
           .addDocumentImage(documentId, image.path);
       const snackBar = SnackBar(content: Text('Image Successfully Added'));
@@ -53,7 +52,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
         const Text('Select Actions'),
         const Divider(),
         ListTile(
-          leading: const Icon(Icons.edit),
+          leading: Icon(Icons.edit, color: Theme.of(context).disabledColor),
           title: const Text('Edit Document'),
           onTap: () {
             Navigator.of(context)
@@ -62,11 +61,11 @@ class _DocumentDetailsState extends State<DocumentDetails> {
           },
         ),
         ListTile(
-          leading: const Icon(Icons.delete),
+          leading: Icon(Icons.delete, color: Theme.of(context).disabledColor),
           title: const Text('Delete Document'),
           onTap: () async {
             Navigator.of(context).pop();
-            final isConfirmed = await showDeleteConfirmationDialog(context,
+            final isConfirmed = await showDeleteConfirmationButtomSheet(context,
                 message:
                     "Deleting the document will delete all the images in it and cannot be undone.");
             if (isConfirmed) {
@@ -165,7 +164,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                                       Colors.orange.withOpacity(0.1),
                                   splashColor: Colors.black12,
                                   onTap: () {
-                                    Navigator.of(context).pushReplacementNamed(
+                                    Navigator.of(context).pushNamed(
                                         DocumentDetailFullScreenGallery
                                             .routeName,
                                         arguments: image);
@@ -218,8 +217,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                       ListTile(
                         leading: const Icon(Icons.camera_alt_rounded),
                         title: const Text('Take a Photo'),
-                        onTap: () {
-                          pickImage(context, ImageSource.camera, document.id);
+                        onTap: () async {
+                          await pickImage(
+                              context, ImageSource.camera, document.id);
                           Navigator.of(context).pop();
                         },
                       ),

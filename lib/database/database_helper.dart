@@ -134,7 +134,7 @@ class DatabaseHelper {
     final db = await _databaseHelper.database;
 
     final List<Map<String, dynamic>> documentImageMaps = await db.query(
-      documentTable,
+      imageTable,
       where: 'id = ?',
       whereArgs: [id],
       limit: 1,

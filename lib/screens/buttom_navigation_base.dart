@@ -63,7 +63,10 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
           },
           tooltip: 'Add New Doc',
           elevation: 2,
-          child: const Icon(Icons.add_rounded));
+          child: const Icon(
+            Icons.add_rounded,
+            size: 30,
+          ));
     } else {
       return FloatingActionButton(
         onPressed: () {
@@ -71,7 +74,10 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
         },
         tooltip: 'Add Shared Doc',
         elevation: 2,
-        child: const Icon(Icons.add_link_rounded),
+        child: const Icon(
+          Icons.add_link_rounded,
+          size: 30,
+        ),
       );
     }
   }

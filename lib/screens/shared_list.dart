@@ -10,7 +10,7 @@ class SharedList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shareLinks = Provider.of<ShareLinks>(context).sharedItems;
+    final shareLinks = Provider.of<ShareLinks>(context).items;
 
     return SingleChildScrollView(
       child: Column(

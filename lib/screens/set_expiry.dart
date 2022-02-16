@@ -65,8 +65,11 @@ class _SetExpiryState extends State<SetExpiry> {
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 } else {
                   final newId = Provider.of<ShareLinks>(context, listen: false)
-                      .addShareLinks(selectedDocuments, dateController.text,
-                          titleController.text);
+                      .addShareLink(
+                    title: titleController.text,
+                    expiryDate: dateController.text,
+                    documents: selectedDocuments,
+                  );
                   Navigator.of(context)
                     ..pop()
                     ..pop();

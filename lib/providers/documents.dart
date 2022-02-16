@@ -162,12 +162,11 @@ class Documents with ChangeNotifier {
     // return documentImage.documentId;
   }
 
-  void deleteDocument(int documentId, {bool notify = true}) {
-    // TODO: try making this function synchronous
+  void deleteDocument(
+    int documentId,
+  ) {
     _items.removeWhere((document) => document.id == documentId);
     _databaseHelper.deleteDocument(documentId);
-    if (notify) {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 }

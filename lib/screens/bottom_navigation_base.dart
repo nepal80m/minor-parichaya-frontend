@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parichaya_frontend/screens/about_us.dart';
+import 'package:parichaya_frontend/screens/update_name.dart';
+import 'package:parichaya_frontend/utils/name_provider.dart';
 import 'package:parichaya_frontend/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import '../utils/string.dart';
@@ -13,17 +16,21 @@ import './document_list.dart';
 import './shared_list.dart';
 import 'select_document.dart';
 
-class ButtomNavigationBase extends StatefulWidget {
-  const ButtomNavigationBase({Key? key}) : super(key: key);
+class BottomNavigationBase extends StatefulWidget {
+  //const BottomNavigationBase({Key? key}) : super(key: key);
+
+  BottomNavigationBase();
+  static const routeName = '/bottom_navigation_base';
 
   @override
-  State<ButtomNavigationBase> createState() => _ButtomNavigationBaseState();
+  State<BottomNavigationBase> createState() => _BottomNavigationBaseState();
 }
 
-class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
+class _BottomNavigationBaseState extends State<BottomNavigationBase> {
   int _screenIndex = 0;
-  final name = 'Peter Griffin';
-  final number = " 988434633";
+  // Future<String> name = NameProvider.getStringValue(nameKey);
+  String name = 'key_name';
+  //final number = " 988434633";
   bool isSwitched = false;
 
   void _selectScreen(int index) {
@@ -77,7 +84,25 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadName();
+  }
+
+  loadName() async {
+    NameProvider.instance
+        .getStringValue("nameKey")
+        .then((value) => setState(() {
+              name = value;
+            }));
+  }
+
+  @override
   Widget build(BuildContext context) {
+    isSwitched =
+        Provider.of<ThemeProvider>(context, listen: false).isDarkModeOn;
+
     return Scaffold(
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -99,21 +124,19 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 ),
                 child: Row(
                   children: [
-                    // Padding(
-                    // padding: EdgeInsets.all(10),
-                    //  child:
                     CircleAvatar(
                       backgroundColor: Colors.white,
                       // radius: 50,
-                      child: Text(
-                        name[0].toUpperCase(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 20),
-                      ),
+                      child: name.isNotEmpty
+                          ? Text(
+                              name[0].toUpperCase(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 20),
+                            )
+                          : Icon(Icons.person_rounded),
                     ),
-                    //   ),
                     const SizedBox(width: 20),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -125,14 +148,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                               fontWeight: FontWeight.bold,
                               fontSize: 16),
                         ),
-                        // Text(
-                        //   number,
-                        //   style: const TextStyle(
-                        //       color: Colors.white,
-                        //       fontWeight: FontWeight.bold,
-                        //       fontSize: 14),
-                        // ),
-                        // Text('goerranger@gmail.com'),
                       ],
                     ),
                   ],
@@ -143,7 +158,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
             Consumer<ThemeProvider>(
               builder: (context, provider, child) {
                 return ListTile(
-                  //  value:provider.currentTheme,
                   title: Row(
                     children: [
                       Icon(isSwitched
@@ -162,7 +176,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                     ],
                   ),
                   trailing: Switch(
-                    value: isSwitched,
+                    value: provider.isDarkModeOn,
                     onChanged: (value) {
                       setState(() {
                         isSwitched = value;
@@ -177,93 +191,15 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
               },
             ),
             const Divider(),
-//Change Number
-            // ListTile(
-            //   title: Row(
-            //     children: [
-            //       Icon(Icons.phone_android_rounded),
-            //       Padding(
-            //         padding: EdgeInsets.all(10),
-            //         child: Text(
-            //           'Change Number',
-            //           style: TextStyle(
-            //             fontSize: 16,
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            //   onTap: () {},
-            //   trailing: const Icon(Icons.arrow_forward_ios),
-            // ),
-//Change Email Address
-//             ListTile(
-//               title: Row(
-//                 children: [
-//                   Icon(Icons.mail_rounded),
-//                   Padding(
-//                     padding: EdgeInsets.all(10),
-//                     child: Text(
-//                       'Change Email address',
-//                       style: TextStyle(
-//                         fontSize: 16,
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               onTap: () {},
-//               trailing: const Icon(Icons.arrow_forward_ios),
-//             ),
-
-// //Change Password
-//             ListTile(
-//               title: Row(
-//                 children: [
-//                   Icon(Icons.vpn_key_rounded),
-//                   Padding(
-//                     padding: EdgeInsets.all(10),
-//                     child: Text(
-//                       'Change Password',
-//                       style: TextStyle(
-//                         fontSize: 16,
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               onTap: () {},
-//               trailing: const Icon(Icons.arrow_forward_ios),
-//             ),
-//             const Divider(),
-//             //Terms of services
-//             ListTile(
-//               title: Row(
-//                 children: [
-//                   Icon(Icons.subject_rounded),
-//                   Padding(
-//                     padding: EdgeInsets.all(10),
-//                     child: Text(
-//                       'Terms of services',
-//                       style: TextStyle(
-//                         fontSize: 16,
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               onTap: () {},
-//               trailing: const Icon(Icons.arrow_forward_ios),
-//             ),
-            //Privacy Policy
+//Change Name
             ListTile(
               title: Row(
                 children: [
-                  Icon(Icons.lock_rounded),
+                  Icon(Icons.cast_for_education_sharp),
                   Padding(
                     padding: EdgeInsets.all(10),
                     child: Text(
-                      'Privacy Policy',
+                      'Update Name',
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -271,10 +207,19 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                   ),
                 ],
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UpdateName(),
+                  ),
+                );
+              },
               trailing: const Icon(Icons.arrow_forward_ios),
             ),
-            //Terms of services
+            const Divider(),
+
+            //About us
             ListTile(
               title: Row(
                 children: [
@@ -290,10 +235,16 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                   ),
                 ],
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AboutUs(),
+                  ),
+                );
+              },
               trailing: const Icon(Icons.arrow_forward_ios),
             ),
-            const Divider(),
           ],
         ),
       ),

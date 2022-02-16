@@ -36,18 +36,9 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Parichaya',
 
-            // TODO: Customize theme
-            //themeMode: ThemeMode.system,
-            // theme: ThemeData(
-            //   primarySwatch: Colors.blue,
-            //   fontFamily: 'OpenSans',
-            //   // brightness: Brightness.dark,
-            //   // fontFamily: 'Quicksand',
-            //   // splashFactory: InkRipple.splashFactory,
-            // ),
-
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
+
             themeMode: provider.themeMode,
 
             //lightTheme: MyThemes.lightTheme,

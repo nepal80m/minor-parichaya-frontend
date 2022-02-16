@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 import '../models/db_models/base_document_model.dart';
+import '../models/db_models/base_share_link_model.dart';
 import '../models/db_models/document_image_model.dart';
 import '../models/document_model.dart';
 
@@ -15,6 +16,7 @@ class DatabaseHelper {
 
   static const documentTable = 'document_table';
   static const imageTable = 'image_table';
+  static const shareLinkTable = 'share_link_table';
 
   static final DatabaseHelper _databaseHelper = DatabaseHelper._internal();
   factory DatabaseHelper() => _databaseHelper;
@@ -50,6 +52,9 @@ class DatabaseHelper {
     );
     await db.execute(
       'CREATE TABLE $imageTable(id INTEGER PRIMARY KEY, path TEXT,documentId INTEGER, FOREIGN KEY (documentId) REFERENCES document(id) ON DELETE CASCADE)',
+    );
+    await db.execute(
+      'CREATE TABLE $shareLinkTable(id INTEGER PRIMARY KEY, serverId TEXT,title TEXT, encryptionKey TEXT,createdOn TEXT, expiryDate TEXT)',
     );
   }
 
@@ -88,6 +93,19 @@ class DatabaseHelper {
     log('Inserted image in DB ');
 
     return documentImage;
+  }
+
+  Future<BaseShareLink> insertShareLink(BaseShareLink shareLink) async {
+    log('Inserting Share link in DB');
+    final db = await _databaseHelper.database;
+    final newShareLinkId = await db.insert(
+      shareLinkTable,
+      shareLink.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    shareLink.id = newShareLinkId;
+    log('Inserted share link ($newShareLinkId) in DB ');
+    return shareLink;
   }
 
   Future<List<BaseDocument>> getDocuments() async {
@@ -143,6 +161,46 @@ class DatabaseHelper {
     return DocumentImage.fromMap(documentImageMaps.first);
   }
 
+  Future<List<BaseShareLink>> getShareLinks() async {
+    log('Getting share links from DB');
+    final db = await _databaseHelper.database;
+
+    final List<Map<String, dynamic>> shareLinkMaps =
+        await db.query(shareLinkTable);
+    log(shareLinkMaps.toString());
+
+    return List.generate(shareLinkMaps.length,
+        (index) => BaseShareLink.fromMap(shareLinkMaps[index]));
+  }
+
+  Future<BaseShareLink> getShareLinkById(int shareLinkId) async {
+    log('Getting share link by Id in DB');
+    final db = await _databaseHelper.database;
+
+    final List<Map<String, dynamic>> shareLinkMaps = await db.query(
+      shareLinkTable,
+      where: 'id = ?',
+      whereArgs: [shareLinkId],
+      limit: 1,
+    );
+    log(shareLinkMaps.first.toString());
+    return BaseShareLink.fromMap(shareLinkMaps.first);
+  }
+
+  Future<BaseShareLink> getShareLinkByServerId(int shareLinkServerId) async {
+    log('Getting share link by serverId in DB');
+    final db = await _databaseHelper.database;
+
+    final List<Map<String, dynamic>> shareLinkMaps = await db.query(
+      shareLinkTable,
+      where: 'serverId = ?',
+      whereArgs: [shareLinkServerId],
+      limit: 1,
+    );
+    log(shareLinkMaps.first.toString());
+    return BaseShareLink.fromMap(shareLinkMaps.first);
+  }
+
   Future<BaseDocument> updateDocument(
       int documentId, BaseDocument document) async {
     log('Updating document with documentID($documentId)in DB');
@@ -156,6 +214,21 @@ class DatabaseHelper {
     );
     log('Updated document');
     return document;
+  }
+
+  Future<BaseShareLink> updateShareLink(
+      int shareLinkId, BaseShareLink shareLink) async {
+    log('Updating shareLink with shareLinkID($shareLinkId)in DB');
+    final db = await _databaseHelper.database;
+
+    await db.update(
+      shareLinkTable,
+      shareLink.toMap(),
+      where: 'id = ?',
+      whereArgs: [shareLinkId],
+    );
+    log('Updated shareLink');
+    return shareLink;
   }
 
   Future<int> deleteDocument(int documentId) async {
@@ -208,6 +281,20 @@ class DatabaseHelper {
     );
     log('Document Image deleted');
     return deletedDocumentImageId;
+  }
+
+  Future<int> deleteShareLink(int shareLinkId) async {
+    log('Deleting sharelink with shareLinkId($shareLinkId)in DB');
+
+    final db = await _databaseHelper.database;
+
+    final deletedShareLinkId = await db.delete(
+      shareLinkTable,
+      where: 'id = ?',
+      whereArgs: [shareLinkId],
+    );
+    log('Share Link deleted');
+    return deletedShareLinkId;
   }
 
   // Future<int> xinsertDocumentWithImage(Document document) async {

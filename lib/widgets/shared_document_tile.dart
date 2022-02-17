@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../utils/string.dart';
 
 class SharedDocumentTile extends StatelessWidget {
   String title;
-  String expiryDate;
+  DateTime expiryDate;
+  VoidCallback onTap;
 
   SharedDocumentTile({
     required this.title,
     required this.expiryDate,
+    required this.onTap,
     Key? key,
   }) : super(key: key);
 
@@ -18,7 +21,8 @@ class SharedDocumentTile extends StatelessWidget {
       children: [
         ListTile(
           title: Text(generateLimitedLengthText(title, 25)),
-          subtitle: Text(expiryDate),
+          subtitle: Text(DateFormat('yyyy-MM-dd').format(expiryDate)),
+          onTap: onTap,
         ),
         const Divider(
           indent: 10,

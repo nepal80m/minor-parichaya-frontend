@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:parichaya_frontend/models/document_model.dart';
 import 'package:provider/provider.dart';
 import 'share_details.dart';
 
@@ -44,7 +45,7 @@ class _SetExpiryState extends State<SetExpiry> {
   @override
   Widget build(BuildContext context) {
     final selectedDocuments =
-        ModalRoute.of(context)?.settings.arguments as List;
+        ModalRoute.of(context)?.settings.arguments as List<Document>;
 
     return Scaffold(
       appBar: AppBar(
@@ -63,13 +64,17 @@ class _SetExpiryState extends State<SetExpiry> {
                       content: const Text('Title is required.'));
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 } else {
-                  Provider.of<ShareLinks>(context, listen: false)
-                      .addShareLinks(selectedDocuments, dateController.text);
+                  final newId = Provider.of<ShareLinks>(context, listen: false)
+                      .addShareLink(
+                    title: titleController.text,
+                    expiryDate: dateController.text,
+                    documents: selectedDocuments,
+                  );
                   Navigator.of(context)
                     ..pop()
                     ..pop();
-                  Navigator.of(context).pushNamed(ShareDetails.routeName,
-                      arguments: titleController.text);
+                  Navigator.of(context)
+                      .pushNamed(ShareDetails.routeName, arguments: newId);
                 }
               })
         ],

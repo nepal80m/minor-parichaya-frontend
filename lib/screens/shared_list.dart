@@ -3,13 +3,14 @@ import 'package:provider/provider.dart';
 
 import '../providers/share_links.dart';
 import '../widgets/shared_document_tile.dart';
+import 'share_details.dart';
 
 class SharedList extends StatelessWidget {
   const SharedList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final sharedDocumentsList = Provider.of<ShareLinks>(context).sharedItems;
+    final shareLinks = Provider.of<ShareLinks>(context).items;
 
     return SingleChildScrollView(
       child: Column(
@@ -18,14 +19,20 @@ class SharedList extends StatelessWidget {
           Container(
               margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
               child: Text(
-                '${sharedDocumentsList.length} DOCUMENTS',
+                '${shareLinks.length} DOCUMENTS',
               )),
           const SizedBox(
             height: 10,
           ),
-          ...sharedDocumentsList.map((element) {
+          ...shareLinks.map((shareLink) {
             return SharedDocumentTile(
-                title: element.title, expiryDate: element.expiryDate);
+              title: shareLink.title.toUpperCase(),
+              expiryDate: shareLink.expiryDate,
+              onTap: () {
+                Navigator.of(context)
+                    .pushNamed(ShareDetails.routeName, arguments: shareLink.id);
+              },
+            );
           }).toList(),
         ],
       ),

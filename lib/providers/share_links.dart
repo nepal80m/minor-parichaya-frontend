@@ -11,7 +11,7 @@ import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
 import 'package:parichaya_frontend/models/share_link_model.dart';
 
 // TODO: Change this to actual server url
-const baseUrl = "http://192.168.1.67:8000/api/share-link/";
+const baseUrl = "http://192.168.100.171:8000/api/share-link/";
 
 class ShareLinks with ChangeNotifier {
   final List<ShareLink> _items = [];

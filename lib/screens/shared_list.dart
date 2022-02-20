@@ -19,7 +19,7 @@ class SharedList extends StatelessWidget {
           Container(
               margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
               child: Text(
-                '${shareLinks.length} DOCUMENTS',
+                '${shareLinks.length} SHARABLE LINKS',
               )),
           const SizedBox(
             height: 10,

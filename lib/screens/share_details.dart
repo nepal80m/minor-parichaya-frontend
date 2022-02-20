@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parichaya_frontend/widgets/shared_document_details_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../providers/share_links.dart';
 import '../widgets/shared_document_details_tile.dart';
+import '../utils/string.dart';
 
 // import '../widgets/custom_icons_icons.dart';
 
@@ -33,9 +36,14 @@ class ShareDetails extends StatelessWidget {
         actions: [
           PopupMenuButton(
             itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 child: Text('Share'),
                 value: 'share',
+                onTap: () {
+                  Share.share(
+                      'https://www.parichaya.web.app/${shareLink.serverId}/${shareLink.encryptionKey}',
+                      subject: shareLink.title);
+                },
               ),
               PopupMenuItem(
                 child: const Text('Expire this link'),
@@ -77,21 +85,43 @@ class ShareDetails extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Icon(
-                        Icons.qr_code_2,
+                      QrImage(
+                        data:
+                            'https://www.parichaya.web.app/${shareLink.serverId}/${shareLink.encryptionKey}',
                         size: 200,
+                        backgroundColor: Colors.white,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text('parichaya.com/ag32v3r...'),
+                          Container(
+                            margin: const EdgeInsets.all(9),
+                            width: 300,
+                            height: 20,
+                            child: Text(
+                              generateLimitedLengthText(
+                                  'https://www.parichaya.web.app/${shareLink.serverId}/${shareLink.encryptionKey}',
+                                  40),
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                            ),
+                          ),
                           Flexible(
                             child: IconButton(
                                 padding: EdgeInsets.zero,
                                 iconSize: 20,
-                                onPressed: () {},
+                                onPressed: () {
+                                  Clipboard.setData(ClipboardData(
+                                      text:
+                                          'https://www.parichaya.web.app/${shareLink.serverId}/${shareLink.encryptionKey}'));
+                                  const snackBar = SnackBar(
+                                    content: Text('Link Copied to Clipboard.'),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                },
                                 icon: const Icon(
                                   Icons.copy,
                                 )),

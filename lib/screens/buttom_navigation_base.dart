@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parichaya_frontend/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
-import '../utils/string.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'dart:async';
+import 'package:fluttertoast/fluttertoast.dart';
 
+import '../utils/string.dart';
 import '../widgets/custom_icons_icons.dart';
 import './add_document.dart';
 import 'search_documents.dart';
@@ -25,6 +28,29 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   final name = 'Peter Griffin';
   final number = " 988434633";
   bool isSwitched = false;
+  bool isOnline = true;
+  late StreamSubscription internetSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    internetSubscription =
+        InternetConnectionChecker().onStatusChange.listen((status) {
+      final isOnline = (status == InternetConnectionStatus.connected);
+
+      setState(() {
+        this.isOnline = isOnline;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    internetSubscription.cancel();
+
+    super.dispose();
+  }
 
   void _selectScreen(int index) {
     setState(() {
@@ -55,7 +81,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
     // },
   ];
 
-  Widget _getFAB() {
+  Widget? _getFAB() {
     if (_screenIndex == 0) {
       return FloatingActionButton(
           onPressed: () {
@@ -67,7 +93,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
             Icons.add_rounded,
             size: 30,
           ));
-    } else {
+    } else if (_screenIndex == 1 && isOnline) {
       return FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pushNamed(SelectDocument.routeName);
@@ -95,6 +121,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
           padding: EdgeInsets.zero,
           children: [
             // TODO: Complete this drawer
+
             SizedBox(
               height: 130,
               child: DrawerHeader(
@@ -341,7 +368,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 size: 30,
               ),
             ),
-          if (_screenIndex == 1)
+          if (_screenIndex == 1 && isOnline)
             IconButton(
               splashRadius: 24,
               onPressed: () {

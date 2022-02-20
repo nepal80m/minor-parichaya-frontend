@@ -65,7 +65,7 @@ class _SetExpiryState extends State<SetExpiry> {
                     content: const Text('Title is required.'));
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               } else {
-                Provider.of<ShareLinks>(context, listen: false).syncToDB();
+                // Provider.of<ShareLinks>(context, listen: false).syncToDB();
                 setState(() {
                   _isloading = true;
                 });

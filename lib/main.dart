@@ -37,7 +37,9 @@ class MyApp extends StatelessWidget {
             title: 'Parichaya',
 
             theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
+            darkTheme: ThemeData.dark().copyWith(
+                floatingActionButtonTheme: FloatingActionButtonThemeData(
+                    backgroundColor: Colors.white)),
 
             themeMode: provider.themeMode,
 

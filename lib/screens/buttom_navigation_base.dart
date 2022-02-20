@@ -128,7 +128,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 decoration: BoxDecoration(
                   color: !isSwitched
                       ? Theme.of(context).primaryColor
-                      : Colors.blue.withGreen(232),
+                      : Colors.grey.shade500,
                 ),
                 child: Row(
                   children: [

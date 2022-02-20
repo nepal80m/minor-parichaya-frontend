@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:parichaya_frontend/widgets/shared_document_details_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -18,9 +19,9 @@ class ShareDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sharedLinkId = ModalRoute.of(context)?.settings.arguments as int;
+    final shareLinkId = ModalRoute.of(context)?.settings.arguments as int;
     final shareLink = Provider.of<ShareLinks>(context, listen: false)
-        .getShareLinkById(sharedLinkId);
+        .getShareLinkById(shareLinkId);
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
@@ -54,7 +55,14 @@ class ShareDetails extends StatelessWidget {
                 value: 'delete',
               ),
             ],
-            onSelected: (String newValue) {},
+            onSelected: (String selectedValue) {
+              print(selectedValue);
+              if (selectedValue == 'delete') {
+                Provider.of<ShareLinks>(context, listen: false)
+                    .deleteShareLink(shareLinkId);
+                Navigator.of(context).pop();
+              }
+            },
           ),
         ],
       ),
@@ -72,7 +80,7 @@ class ShareDetails extends StatelessWidget {
               ),
             ),
             Text(
-              'Expiry Date : ${shareLink.expiryDate}',
+              'Expiry at ${DateFormat('yyyy-MM-dd').format(shareLink.expiryDate)}',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14),
             ),
@@ -140,15 +148,7 @@ class ShareDetails extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            ...shareLink.documents.map(
-              (document) {
-                return SharedDocumentDetailsTile(
-                  title: document.title,
-                  images: document.images,
-                  onTap: () {},
-                );
-              },
-            ).toList(),
+            SharedDocumentDetailsTiles(documents: shareLink.documents),
           ],
         ),
       ),

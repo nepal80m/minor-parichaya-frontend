@@ -14,6 +14,9 @@ import 'package:parichaya_frontend/models/share_link_model.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/db_models/base_document_model.dart';
 
+// TODO: Change this to actual server url
+const baseUrl = "http://192.168.1.67:8000/api/share-link/";
+
 class ShareLinks with ChangeNotifier {
   final List<ShareLink> _items = [];
 
@@ -30,17 +33,23 @@ class ShareLinks with ChangeNotifier {
         await _databaseHelper.getShareLinks();
 
     final List<ShareLink> shareLinks = [];
-    const baseUrl = 'http://192.168.100.171:8000/api/share-link/';
 
     for (BaseShareLink baseShareLink in baseShareLinks) {
       final serverId = baseShareLink.serverId;
       final encryptionKey = baseShareLink.encryptionKey;
       final url = baseUrl + '$serverId/$encryptionKey';
+      log('fetching sharelink detail from server...');
       final response = await http.get(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
       );
+      // TODO: Recheck this logic
+      if (response.statusCode == 404) {
+        _databaseHelper.deleteShareLink(baseShareLink.id!);
+        continue;
+      }
       final responseData = json.decode(response.body);
+      log(responseData.toString());
       final createdOn = responseData['created_on'];
       final expiryDate = responseData['expiry_date'];
       final documentMaps = responseData['documents'];
@@ -97,9 +106,8 @@ class ShareLinks with ChangeNotifier {
     required String expiryDate,
     required List<Document> documents,
   }) async {
-    const url = 'http://192.168.100.171:8000/api/share-link/';
     final response = await http.post(
-      Uri.parse(url),
+      Uri.parse(baseUrl),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(
         {
@@ -114,6 +122,20 @@ class ShareLinks with ChangeNotifier {
     final _encryptionKey = responseData['encryption_key'];
     final _createdOn = responseData['created_on'];
     final _expiryDate = responseData['expiry_date'];
+
+    for (Document document in documents) {
+      final documentAddingUrl =
+          baseUrl + '$_serverId/$_encryptionKey/add-document/';
+      final request =
+          http.MultipartRequest('POST', Uri.parse(documentAddingUrl));
+
+      request.fields['title'] = document.title;
+      for (DocumentImage image in document.images) {
+        request.files
+            .add(await http.MultipartFile.fromPath('images', image.path));
+      }
+      final response = await request.send();
+    }
 
     final newBaseShareLink = await _databaseHelper.insertShareLink(
       BaseShareLink(
@@ -130,7 +152,7 @@ class ShareLinks with ChangeNotifier {
       encryptionKey: _encryptionKey,
       createdOn: DateTime.parse(_createdOn),
       expiryDate: DateTime.parse(_expiryDate),
-      documents: [],
+      documents: documents,
     );
     // option 1
     _items.add(newShareLink);
@@ -163,8 +185,8 @@ class ShareLinks with ChangeNotifier {
     Document document,
   ) async {
     final existingShareLink = getShareLinkById(shareLinkId);
-    final url =
-        'http://192.168.100.171:8000/api/share-link/${existingShareLink.serverId}/${existingShareLink.encryptionKey}/add-document/';
+    final url = baseUrl +
+        '${existingShareLink.serverId}/${existingShareLink.encryptionKey}/add-document/';
     // TODO: Make http POST to add document to share link with serverId and eencryptionKey.
     final response = await http.post(
       Uri.parse(url),
@@ -191,9 +213,20 @@ class ShareLinks with ChangeNotifier {
     // return documentImage.documentId;
   }
 
-  void deleteShareLink(int shareLinkId) {
+  Future<void> deleteShareLink(int shareLinkId) async {
     // TODO:make HTTP DELETE request to delete the share link.
-    _items.removeWhere((shareLink) => shareLink.id == shareLinkId);
+    final existingShareLink = getShareLinkById(shareLinkId);
+    final url = baseUrl +
+        '${existingShareLink.serverId}/${existingShareLink.encryptionKey}/';
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 204) {
+      log('deleted share link $shareLinkId from server');
+      _databaseHelper.deleteShareLink(shareLinkId);
+      _items.removeWhere((shareLink) => shareLink.id == shareLinkId);
+    }
     notifyListeners();
   }
 }

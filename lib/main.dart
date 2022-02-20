@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
 
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark().copyWith(
-                floatingActionButtonTheme: FloatingActionButtonThemeData(
+                floatingActionButtonTheme: const FloatingActionButtonThemeData(
                     backgroundColor: Colors.white)),
 
             themeMode: provider.themeMode,

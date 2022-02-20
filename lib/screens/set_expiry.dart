@@ -22,7 +22,7 @@ class _SetExpiryState extends State<SetExpiry> {
   final messageController = TextEditingController();
   final dateController = TextEditingController(
       text: DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 1))));
+          .format(DateTime.now().add(const Duration(days: 1))));
   var _isloading = false;
 
   void _showDatePicker() async {

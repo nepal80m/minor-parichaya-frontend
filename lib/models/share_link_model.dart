@@ -1,5 +1,4 @@
 import 'package:parichaya_frontend/models/db_models/base_share_link_model.dart';
-import 'package:intl/intl.dart';
 import 'document_model.dart';
 
 class ShareLink {

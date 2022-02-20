@@ -14,6 +14,7 @@ class DocumentDetailFullScreenGallery extends StatefulWidget {
   const DocumentDetailFullScreenGallery({Key? key}) : super(key: key);
 
   static const routeName = '/document_detail_fullscreen_gallery';
+  @override
   State<DocumentDetailFullScreenGallery> createState() =>
       _DocumentDetailFullScreenGalleryState();
 }

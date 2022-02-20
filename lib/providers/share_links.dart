@@ -5,14 +5,10 @@ import 'package:parichaya_frontend/models/document_model.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:parichaya_frontend/database/database_helper.dart';
 import 'package:parichaya_frontend/models/db_models/base_share_link_model.dart';
 import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
-import 'package:parichaya_frontend/models/document_model.dart';
 import 'package:parichaya_frontend/models/share_link_model.dart';
-import 'package:sqflite/sqflite.dart';
-import '../models/db_models/base_document_model.dart';
 
 // TODO: Change this to actual server url
 const baseUrl = "http://192.168.1.67:8000/api/share-link/";
@@ -28,7 +24,7 @@ class ShareLinks with ChangeNotifier {
     syncToDB();
   }
 
-  void syncToDB() async {
+  Future<void> syncToDB() async {
     final List<BaseShareLink> baseShareLinks =
         await _databaseHelper.getShareLinks();
 
@@ -120,8 +116,8 @@ class ShareLinks with ChangeNotifier {
 
     final _serverId = responseData['id'];
     final _encryptionKey = responseData['encryption_key'];
-    final _createdOn = responseData['created_on'];
-    final _expiryDate = responseData['expiry_date'];
+    // final _createdOn = responseData['created_on'];
+    // final _expiryDate = responseData['expiry_date'];
 
     for (Document document in documents) {
       final documentAddingUrl =
@@ -134,7 +130,7 @@ class ShareLinks with ChangeNotifier {
         request.files
             .add(await http.MultipartFile.fromPath('images', image.path));
       }
-      final response = await request.send();
+      await request.send();
     }
 
     final newBaseShareLink = await _databaseHelper.insertShareLink(
@@ -145,22 +141,25 @@ class ShareLinks with ChangeNotifier {
       ),
     );
     // create new ShareLink for state
-    final newShareLink = ShareLink(
-      id: newBaseShareLink.id!,
-      serverId: _serverId,
-      title: title,
-      encryptionKey: _encryptionKey,
-      createdOn: DateTime.parse(_createdOn),
-      expiryDate: DateTime.parse(_expiryDate),
-      documents: documents,
-    );
+
+    // final newShareLink = ShareLink(
+    //   id: newBaseShareLink.id!,
+    //   serverId: _serverId,
+    //   title: title,
+    //   encryptionKey: _encryptionKey,
+    //   createdOn: DateTime.parse(_createdOn),
+    //   expiryDate: DateTime.parse(_expiryDate),
+    //   documents: documents,
+    // );
+    await syncToDB();
     // option 1
-    _items.add(newShareLink);
-    notifyListeners();
+    // _items.add(newShareLink);
+    // notifyListeners();
     // option 2
     // syncToDB();
 
-    return newShareLink.id;
+    // return newShareLink.id;
+    return newBaseShareLink.id!;
   }
 
   Future<int> updateShareLink(

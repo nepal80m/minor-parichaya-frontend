@@ -56,7 +56,6 @@ class ShareDetails extends StatelessWidget {
               ),
             ],
             onSelected: (String selectedValue) {
-              print(selectedValue);
               if (selectedValue == 'delete') {
                 Provider.of<ShareLinks>(context, listen: false)
                     .deleteShareLink(shareLinkId);

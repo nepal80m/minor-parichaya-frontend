@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:parichaya_frontend/database/database_helper.dart';
 import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
 import 'package:parichaya_frontend/models/document_model.dart';
-import 'package:sqflite/sqflite.dart';
 import '../models/db_models/base_document_model.dart';
 
 class Documents with ChangeNotifier {

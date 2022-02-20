@@ -59,6 +59,8 @@ class ShareLink {
         serverId: serverId,
         title: title,
         encryptionKey: encryptionKey,
+        createdOn: createdOn.toString(),
+        expiryDate: expiryDate.toString(),
       );
 
   @override

@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
@@ -69,6 +70,21 @@ class _SetExpiryState extends State<SetExpiry> {
                 setState(() {
                   _isloading = true;
                 });
+                final Connectivity _connectivity = Connectivity();
+                ConnectivityResult connectivityResult =
+                    await _connectivity.checkConnectivity();
+
+                if (connectivityResult == ConnectivityResult.none) {
+                  final snackBar = SnackBar(
+                      backgroundColor: Theme.of(context).errorColor,
+                      content: const Text(
+                          'You are currently offline. Please connect to your internet to create new share link.'));
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  setState(() {
+                    _isloading = false;
+                  });
+                  return;
+                }
                 final newId =
                     await Provider.of<ShareLinks>(context, listen: false)
                         .addShareLink(

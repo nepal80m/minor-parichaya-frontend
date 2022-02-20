@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -38,7 +39,7 @@ class ShareDetails extends StatelessWidget {
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
-                child: Text('Share'),
+                child: const Text('Share'),
                 value: 'share',
                 onTap: () {
                   Share.share(
@@ -55,8 +56,20 @@ class ShareDetails extends StatelessWidget {
                 value: 'delete',
               ),
             ],
-            onSelected: (String selectedValue) {
+            onSelected: (String selectedValue) async {
               if (selectedValue == 'delete') {
+                final Connectivity _connectivity = Connectivity();
+                ConnectivityResult connectivityResult =
+                    await _connectivity.checkConnectivity();
+
+                if (connectivityResult == ConnectivityResult.none) {
+                  final snackBar = SnackBar(
+                      backgroundColor: Theme.of(context).errorColor,
+                      content: const Text(
+                          'You are currently offline. Please connect to your internet to expire this link.'));
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  return;
+                }
                 Provider.of<ShareLinks>(context, listen: false)
                     .deleteShareLink(shareLinkId);
                 Navigator.of(context).pop();

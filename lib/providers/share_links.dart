@@ -116,8 +116,8 @@ class ShareLinks with ChangeNotifier {
 
     final _serverId = responseData['id'];
     final _encryptionKey = responseData['encryption_key'];
-    // final _createdOn = responseData['created_on'];
-    // final _expiryDate = responseData['expiry_date'];
+    final _createdOn = responseData['created_on'];
+    final _expiryDate = responseData['expiry_date'];
 
     for (Document document in documents) {
       final documentAddingUrl =
@@ -138,6 +138,8 @@ class ShareLinks with ChangeNotifier {
         serverId: _serverId,
         title: title,
         encryptionKey: _encryptionKey,
+        createdOn: _createdOn,
+        expiryDate: _expiryDate,
       ),
     );
     // create new ShareLink for state

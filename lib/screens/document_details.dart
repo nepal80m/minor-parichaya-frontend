@@ -116,24 +116,36 @@ class _DocumentDetailsState extends State<DocumentDetails> {
       body: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   document.title,
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.headline5,
                 ),
-                const Divider(
-                  height: 30,
-                  color: Colors.grey,
+                const SizedBox(
+                  height: 10,
                 ),
                 Text(
                   document.note,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(
-                  height: 40,
+                  height: 20,
+                ),
+                const Divider(
+                  // height: 30,
+                  color: Colors.grey,
+                ),
+
+                Text(
+                  '${document.images.length} Images Attached',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+
+                const SizedBox(
+                  height: 20,
                 ),
                 GridView.count(
                   padding: EdgeInsets.zero,

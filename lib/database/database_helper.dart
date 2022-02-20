@@ -54,7 +54,7 @@ class DatabaseHelper {
       'CREATE TABLE $imageTable(id INTEGER PRIMARY KEY, path TEXT,documentId INTEGER, FOREIGN KEY (documentId) REFERENCES document(id) ON DELETE CASCADE)',
     );
     await db.execute(
-      'CREATE TABLE $shareLinkTable(id INTEGER PRIMARY KEY, serverId TEXT,title TEXT, encryptionKey TEXT)',
+      'CREATE TABLE $shareLinkTable(id INTEGER PRIMARY KEY, serverId TEXT,title TEXT, encryptionKey TEXT, createdOn TEXT, expiryDate TEXT)',
     );
   }
 

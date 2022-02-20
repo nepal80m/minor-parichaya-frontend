@@ -48,7 +48,7 @@ class Documents with ChangeNotifier {
     syncToDB();
   }
 
-  void syncToDB() async {
+  Future<void> syncToDB() async {
     final List<BaseDocument> baseDocuments =
         await _databaseHelper.getDocuments();
 

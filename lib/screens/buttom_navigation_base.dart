@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parichaya_frontend/providers/theme_provider.dart';
+import 'package:parichaya_frontend/screens/no_internet.dart';
 import 'package:provider/provider.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'dart:async';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../utils/string.dart';
 import '../widgets/custom_icons_icons.dart';
@@ -28,19 +28,29 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   final name = 'Peter Griffin';
   final number = " 988434633";
   bool isSwitched = false;
-  bool isOnline = true;
+  bool isOnline = false;
   late StreamSubscription internetSubscription;
 
   @override
   void initState() {
     super.initState();
-
-    internetSubscription =
-        InternetConnectionChecker().onStatusChange.listen((status) {
-      final isOnline = (status == InternetConnectionStatus.connected);
-
+    internetSubscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      bool connected = true;
+      if (result == ConnectivityResult.none) {
+        connected = false;
+      }
+      if (!connected && _screenIndex == 1) {
+        const snackBar = SnackBar(
+          content: Text('You are currently offline.'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // Navigator.of(context).push(
+        // MaterialPageRoute(builder: (context) => const NoInternetPage()));
+      }
       setState(() {
-        this.isOnline = isOnline;
+        isOnline = connected;
       });
     });
   }
@@ -48,7 +58,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   @override
   void dispose() {
     internetSubscription.cancel();
-
     super.dispose();
   }
 
@@ -69,6 +78,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
     },
     {
       'screen': const SharedList(),
+      // 'screen': const NoInternetPage(),
       'title': 'Shared Docs',
     },
     // {
@@ -96,7 +106,12 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
     } else if (_screenIndex == 1 && isOnline) {
       return FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed(SelectDocument.routeName);
+          if (isOnline) {
+            Navigator.of(context).pushNamed(SelectDocument.routeName);
+          } else {
+            const snackBar = SnackBar(content: Text('No Internet Connection.'));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
         },
         tooltip: 'Add Shared Doc',
         elevation: 2,
@@ -105,6 +120,15 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
           size: 30,
         ),
       );
+    }
+    return null;
+  }
+
+  Widget _getBody() {
+    if (!isOnline && _screenIndex == 1) {
+      return const NoInternetPage();
+    } else {
+      return _screens[_screenIndex]['screen'] as Widget;
     }
   }
 
@@ -394,7 +418,8 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
           ),
         ],
       ),
-      body: _screens[_screenIndex]['screen'] as Widget,
+      // body: _screens[_screenIndex]['screen'] as Widget,
+      body: _getBody(),
       floatingActionButton: _getFAB(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
@@ -413,13 +438,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
         currentIndex: _screenIndex,
         onTap: _selectScreen,
         items: const [
-          // BottomNavigationBarItem(
-          //   icon: Icon(
-          //     Icons.home_rounded,
-          //     size: 28,
-          //   ),
-          //   label: "Home",
-          // ),
           BottomNavigationBarItem(
             icon: Icon(
               CustomIcons.files_folder_filled,
@@ -431,14 +449,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
             icon: Icon(CustomIcons.link_filled),
             label: "Shared",
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(CustomIcons.inbox),
-          //   label: "Received",
-          // ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(CustomIcons.menu_circle_filled),
-          //   label: "Extras",
-          // ),
         ],
       ),
     );

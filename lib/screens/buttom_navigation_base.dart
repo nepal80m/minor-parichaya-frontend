@@ -264,7 +264,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
             //Privacy Policy
             ListTile(
               title: Row(
-                children: [
+                children: const [
                   Icon(Icons.lock_rounded),
                   Padding(
                     padding: EdgeInsets.all(10),
@@ -283,7 +283,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
             //Terms of services
             ListTile(
               title: Row(
-                children: [
+                children: const [
                   Icon(Icons.group_rounded),
                   Padding(
                     padding: EdgeInsets.all(10),

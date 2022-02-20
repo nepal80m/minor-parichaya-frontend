@@ -77,6 +77,7 @@ class _SharedDocumentDetailsTilesState
                               borderRadius: BorderRadius.circular(15),
                               child: Stack(
                                 children: [
+                                  Text(image.path),
                                   Positioned.fill(
                                     child: Image.network(
                                       image.path,

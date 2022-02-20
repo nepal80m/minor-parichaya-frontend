@@ -60,7 +60,7 @@ class _AddDocumentsState extends State<AddDocuments> {
         uploadedImagePaths.add(image.path);
         imageErrorMessage = '';
       });
-    } on PlatformException catch (e) {
+    } on PlatformException catch (_) {
       return;
     }
   }
@@ -183,7 +183,7 @@ class _AddDocumentsState extends State<AddDocuments> {
                           child: Stack(
                             children: [
                               Padding(
-                                padding: EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(8.0),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(20),
                                   child: Image.file(

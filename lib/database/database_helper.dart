@@ -338,7 +338,7 @@ class DatabaseHelper {
   }
 
   Future<Document> getDocumentWithImagesById(int documentId) async {
-    final db = await _databaseHelper.database;
+    // final db = await _databaseHelper.database;
     final baseDocument = await getDocumentById(documentId);
 
     final images = getDocumentImages(documentId);

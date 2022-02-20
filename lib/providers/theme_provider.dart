@@ -5,16 +5,17 @@ class ThemeProvider extends ChangeNotifier {
   bool currentTheme = false;
 
   ThemeMode get themeMode {
-    if (currentTheme == false)
+    if (currentTheme == false) {
       return ThemeMode.light;
-    else if (currentTheme == true)
+    } else if (currentTheme == true) {
       return ThemeMode.dark;
-    else
+    } else {
       return ThemeMode.system;
+    }
   }
 
   changeTheme(bool theme) async {
-    AnimatedSwitcher(duration: const Duration(milliseconds: 0));
+    const AnimatedSwitcher(duration: Duration(milliseconds: 0));
     final SharedPreferences _prefs = await SharedPreferences.getInstance();
     await _prefs.setBool('theme', theme);
     currentTheme = theme;

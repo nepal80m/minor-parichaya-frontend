@@ -25,13 +25,22 @@ dependencies:
   connectivity_plus: ^2.2.1
   share_plus: ^3.0.5
   qr_flutter: ^4.0.0
-  fluttertoast: ^8.0.8
-
+  flutter_native_splash: ^2.0.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^1.0.0
+flutter_native_splash:
+  color: "#FFFFFF"
+  color_dark: '#0F0F0F'
+  image: assets/images/light-splash-logo.png
+  image_dark: assets/images/dark-splash-logo.png
+  android: true
+  ios: true
+
+
+
 
 flutter:
   uses-material-design: true

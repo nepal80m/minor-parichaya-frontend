@@ -22,7 +22,6 @@ import 'select_document.dart';
 
 class ButtomNavigationBase extends StatefulWidget {
   const ButtomNavigationBase({Key? key}) : super(key: key);
-  static const routeName = '/';
 
   @override
   State<ButtomNavigationBase> createState() => _ButtomNavigationBaseState();

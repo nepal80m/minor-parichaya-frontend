@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parichaya_frontend/utils/name_provider.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/is_first_run.dart';
-import '../widgets/ui/custom_text_field.dart';
-import 'buttom_navigation_base.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -29,8 +25,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           if (nameController.text.isNotEmpty) {
             NameProvider.instance
                 .setStringValue('nameKey', nameController.text);
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                ButtomNavigationBase.routeName, (route) => false);
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/', (route) => false);
           } else {
             final snackBar = SnackBar(
                 backgroundColor: Theme.of(context).errorColor,

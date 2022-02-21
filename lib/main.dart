@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:parichaya_frontend/screens/onboarding_screen.dart';
-import 'package:parichaya_frontend/screens/splash.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import './providers/documents.dart';
 import './providers/theme_provider.dart';

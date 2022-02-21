@@ -13,7 +13,6 @@ import 'search_documents.dart';
 
 import 'package:parichaya_frontend/screens/about_us.dart';
 import 'package:parichaya_frontend/screens/update_name.dart';
-import 'package:parichaya_frontend/utils/name_provider.dart';
 
 // import './homepage.dart';
 import './document_list.dart';
@@ -38,7 +37,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   @override
   void initState() {
     super.initState();
-    loadName();
     internetSubscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
@@ -64,14 +62,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   void dispose() {
     internetSubscription.cancel();
     super.dispose();
-  }
-
-  loadName() async {
-    NameProvider.instance
-        .getStringValue("nameKey")
-        .then((value) => setState(() {
-              name = value;
-            }));
   }
 
   void _selectScreen(int index) {

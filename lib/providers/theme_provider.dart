@@ -15,6 +15,7 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   changeTheme(bool theme) async {
+    const AnimatedSwitcher(duration: Duration(milliseconds: 0));
     final SharedPreferences _prefs = await SharedPreferences.getInstance();
     await _prefs.setBool('theme', theme);
     isDarkModeOn = theme;

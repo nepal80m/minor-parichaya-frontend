@@ -60,14 +60,17 @@ class ShareDetails extends StatelessWidget {
             } else {
               final isConfirmed = await showDeleteConfirmationButtomSheet(
                   context,
-                  message: "You still have ${shareLink.expiryDate} ");
+                  message:
+                      "You still have ${shareLink.expiryDate.minute} minutes left. Confirm delete?");
               if (isConfirmed) {
                 Provider.of<ShareLinks>(context, listen: false)
                     .deleteShareLink(shareLinkId);
-                Navigator.of(context).pop();
+                Navigator.of(context)
+                  ..pop()
+                  ..pop();
 
                 const snackBar =
-                    SnackBar(content: Text('Document Deleted Successfully'));
+                    SnackBar(content: Text('Share Link Deleted Successfully'));
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
             }
@@ -164,7 +167,7 @@ class ShareDetails extends StatelessWidget {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(snackBar);
                                 },
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.copy,
                                 )),
                           )

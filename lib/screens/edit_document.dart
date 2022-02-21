@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
 import '../providers/documents.dart';
 import '../widgets/ui/custom_text_field.dart';
-import './document_details.dart';
 
 class EditDocument extends StatefulWidget {
   const EditDocument({Key? key}) : super(key: key);

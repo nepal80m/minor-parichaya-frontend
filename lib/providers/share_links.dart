@@ -5,14 +5,13 @@ import 'package:parichaya_frontend/models/document_model.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:parichaya_frontend/database/database_helper.dart';
 import 'package:parichaya_frontend/models/db_models/base_share_link_model.dart';
 import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
-import 'package:parichaya_frontend/models/document_model.dart';
 import 'package:parichaya_frontend/models/share_link_model.dart';
-import 'package:sqflite/sqflite.dart';
-import '../models/db_models/base_document_model.dart';
+
+// TODO: Change this to actual server url
+const baseUrl = "http://192.168.100.107:8000/api/share-link/";
 
 class ShareLinks with ChangeNotifier {
   final List<ShareLink> _items = [];
@@ -25,17 +24,56 @@ class ShareLinks with ChangeNotifier {
     syncToDB();
   }
 
-  void syncToDB() async {
+  Future<void> syncToDB() async {
     final List<BaseShareLink> baseShareLinks =
         await _databaseHelper.getShareLinks();
 
     final List<ShareLink> shareLinks = [];
 
     for (BaseShareLink baseShareLink in baseShareLinks) {
-      // TODO: fetch documents from server and add to document list.
-      final shareLink = ShareLink.fromMap({
-        ...baseShareLink.toMap(),
-      });
+      final serverId = baseShareLink.serverId;
+      final encryptionKey = baseShareLink.encryptionKey;
+      final url = baseUrl + '$serverId/$encryptionKey';
+      log('fetching sharelink detail from server...');
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+      );
+      // TODO: Recheck this logic
+      if (response.statusCode == 404) {
+        _databaseHelper.deleteShareLink(baseShareLink.id!);
+        continue;
+      }
+      final responseData = json.decode(response.body);
+      log(responseData.toString());
+      final createdOn = responseData['created_on'];
+      final expiryDate = responseData['expiry_date'];
+      final documentMaps = responseData['documents'];
+      final shareLink = ShareLink(
+          id: baseShareLink.id!,
+          serverId: baseShareLink.serverId,
+          title: baseShareLink.title,
+          encryptionKey: baseShareLink.encryptionKey,
+          createdOn: DateTime.parse(createdOn),
+          expiryDate: DateTime.parse(expiryDate),
+          documents: []);
+      for (Map documentMap in documentMaps) {
+        final document = Document(
+          id: documentMap['id'],
+          title: documentMap['title'],
+          note: '',
+          images: [],
+        );
+        for (Map imageMap in documentMap['images']) {
+          document.images.add(
+            DocumentImage(
+                path: baseUrl + 'image/${imageMap['id']}/$encryptionKey/',
+                documentId: document.id),
+          );
+        }
+        shareLink.documents.add(document);
+      }
+
       shareLinks.add(shareLink);
     }
     _items.clear();
@@ -59,41 +97,71 @@ class ShareLinks with ChangeNotifier {
     return _items.firstWhere((shareLink) => shareLink.id == shareLinkId);
   }
 
-  Future<ShareLink> addShareLink({
+  Future<int> addShareLink({
     required String title,
     required String expiryDate,
     required List<Document> documents,
   }) async {
-    // TODO: make POST request to server to create new share link and get sharelink object from server
+    final response = await http.post(
+      Uri.parse(baseUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(
+        {
+          'title': title,
+          'expiryDate': expiryDate,
+        },
+      ),
+    );
+    final responseData = json.decode(response.body);
 
-    // TODO: replace this serverID with the one from POST response
-    const serverId = 'my_server_id';
-    // TODO: replace this serverID with the one from POST response
-    const encryptionKey = 'my_very_secret_key';
+    final _serverId = responseData['id'];
+    final _encryptionKey = responseData['encryption_key'];
+    final _createdOn = responseData['created_on'];
+    final _expiryDate = responseData['expiry_date'];
+
+    for (Document document in documents) {
+      final documentAddingUrl =
+          baseUrl + '$_serverId/$_encryptionKey/add-document/';
+      final request =
+          http.MultipartRequest('POST', Uri.parse(documentAddingUrl));
+
+      request.fields['title'] = document.title;
+      for (DocumentImage image in document.images) {
+        request.files
+            .add(await http.MultipartFile.fromPath('images', image.path));
+      }
+      await request.send();
+    }
 
     final newBaseShareLink = await _databaseHelper.insertShareLink(
       BaseShareLink(
-        serverId: serverId,
+        serverId: _serverId,
         title: title,
-        createdOn: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        encryptionKey: encryptionKey,
-        expiryDate: expiryDate,
+        encryptionKey: _encryptionKey,
+        createdOn: _createdOn,
+        expiryDate: _expiryDate,
       ),
     );
+    // create new ShareLink for state
 
-    final newShareLink = ShareLink.fromBaseShareLink(
-      id: newBaseShareLink.id!,
-      baseShareLink: newBaseShareLink,
-      documents: documents,
-    );
-
+    // final newShareLink = ShareLink(
+    //   id: newBaseShareLink.id!,
+    //   serverId: _serverId,
+    //   title: title,
+    //   encryptionKey: _encryptionKey,
+    //   createdOn: DateTime.parse(_createdOn),
+    //   expiryDate: DateTime.parse(_expiryDate),
+    //   documents: documents,
+    // );
+    await syncToDB();
     // option 1
-    _items.add(newShareLink);
-    notifyListeners();
+    // _items.add(newShareLink);
+    // notifyListeners();
     // option 2
     // syncToDB();
 
-    return newShareLink;
+    // return newShareLink.id;
+    return newBaseShareLink.id!;
   }
 
   Future<int> updateShareLink(
@@ -118,10 +186,19 @@ class ShareLinks with ChangeNotifier {
     Document document,
   ) async {
     final existingShareLink = getShareLinkById(shareLinkId);
+    final url = baseUrl +
+        '${existingShareLink.serverId}/${existingShareLink.encryptionKey}/add-document/';
     // TODO: Make http POST to add document to share link with serverId and eencryptionKey.
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'document': document}),
+    );
 
-    // TODO: Create new documnet object based on the reseponse and add to existingSharedLink
+    log(json.decode(response.body).toString());
     existingShareLink.documents.add(document);
+    // TODO: Create new documnet object based on the response and add to existingSharedLink
+    // existingShareLink.documents.add(document);
     notifyListeners();
     return document;
   }
@@ -137,9 +214,20 @@ class ShareLinks with ChangeNotifier {
     // return documentImage.documentId;
   }
 
-  void deleteShareLink(int shareLinkId) {
+  Future<void> deleteShareLink(int shareLinkId) async {
     // TODO:make HTTP DELETE request to delete the share link.
-    _items.removeWhere((shareLink) => shareLink.id == shareLinkId);
+    final existingShareLink = getShareLinkById(shareLinkId);
+    final url = baseUrl +
+        '${existingShareLink.serverId}/${existingShareLink.encryptionKey}/';
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 204) {
+      log('deleted share link $shareLinkId from server');
+      _databaseHelper.deleteShareLink(shareLinkId);
+      _items.removeWhere((shareLink) => shareLink.id == shareLinkId);
+    }
     notifyListeners();
   }
 }

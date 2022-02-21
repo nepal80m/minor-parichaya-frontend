@@ -1,105 +1,113 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
-class SharedDocumentDetailsTile extends StatefulWidget {
-  final String title;
-  final List images;
-  final VoidCallback onTap;
+import '../models/document_model.dart';
 
-  SharedDocumentDetailsTile({
-    required this.title,
-    required this.images,
-    required this.onTap,
+class SharedDocumentDetailsTiles extends StatefulWidget {
+  final List<Document> documents;
+
+  const SharedDocumentDetailsTiles({
+    required this.documents,
     Key? key,
   }) : super(key: key);
 
   @override
-  State<SharedDocumentDetailsTile> createState() =>
-      _SharedDocumentDetailsTileState();
+  State<SharedDocumentDetailsTiles> createState() =>
+      _SharedDocumentDetailsTilesState();
 }
 
-class _SharedDocumentDetailsTileState extends State<SharedDocumentDetailsTile> {
-  bool isItExpanded = false;
+class _SharedDocumentDetailsTilesState
+    extends State<SharedDocumentDetailsTiles> {
+  // bool isItExpanded = false;
+  List<int> expandedIndex = [];
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: ExpansionPanelList(
-          elevation: 0,
-          animationDuration: const Duration(seconds: 1),
-          expandedHeaderPadding: const EdgeInsets.all(5),
-          expansionCallback: (panelIndex, isExpanded) {
-            setState(() {
-              isItExpanded = !isExpanded;
-            });
-          },
-          children: [
-            ExpansionPanel(
-              backgroundColor: Theme.of(context).disabledColor.withOpacity(0.1),
-              headerBuilder: (context, isExpanded) {
-                return Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                  child: Text(
-                    widget.title.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                );
-              },
-              body: Container(
-                margin: const EdgeInsets.all(10),
-                child: GridView.count(
-                  padding: EdgeInsets.zero,
-                  physics: const ScrollPhysics(),
-                  crossAxisCount: 3,
-                  shrinkWrap: true,
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
-                  children: [
-                    ...widget.images.map((image) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Image.file(
-                                File(image.path),
-                                height: 200,
-                                width: 200,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Positioned.fill(
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  highlightColor:
-                                      Colors.orange.withOpacity(0.1),
-                                  splashColor: Colors.black12,
-                                  onTap: widget.onTap,
-                                ),
-                              ),
-                            ),
-                          ],
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: ExpansionPanelList.radio(
+            elevation: 0,
+            animationDuration: const Duration(milliseconds: 500),
+            // expandedHeaderPadding: const EdgeInsets.all(5),
+            // expansionCallback: (panelIndex, isExpanded) {
+            //   setState(() {
+            //     if (isExpanded) {
+            //       expandedIndex.add(panelIndex);
+            //     } else {
+            //       expandedIndex.remove(panelIndex);
+            //     }
+            //     // isItExpanded = !isExpanded;
+            //   });
+            // },
+            children: widget.documents
+                .map(
+                  (document) => ExpansionPanelRadio(
+                    canTapOnHeader: true,
+                    value: document.id,
+                    // isExpanded: isItExpanded,
+                    backgroundColor:
+                        Theme.of(context).disabledColor.withOpacity(0.1),
+                    headerBuilder: (context, isExpanded) {
+                      return Container(
+                        // padding: EdgeInsets.all(10),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 15),
+                        child: Text(
+                          document.title.toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       );
-                    }).toList(),
-                  ],
-                ),
-              ),
-              canTapOnHeader: true,
-              isExpanded: isItExpanded,
-            ),
-          ],
-        ),
-      ),
-    );
+                    },
+                    body: Container(
+                      margin: const EdgeInsets.all(10),
+                      child: GridView.count(
+                        padding: EdgeInsets.zero,
+                        physics: const ScrollPhysics(),
+                        crossAxisCount: 3,
+                        shrinkWrap: true,
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 15,
+                        children: [
+                          ...document.images.map((image) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Stack(
+                                children: [
+                                  Text(image.path),
+                                  Positioned.fill(
+                                    child: Image.network(
+                                      image.path,
+                                      height: 200,
+                                      width: 200,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Positioned.fill(
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        highlightColor:
+                                            Colors.orange.withOpacity(0.1),
+                                        splashColor: Colors.black12,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ));
     // return Card(
     //   margin: const EdgeInsets.all(10),
     //   elevation: 0,

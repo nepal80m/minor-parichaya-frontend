@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +23,8 @@ class _SetExpiryState extends State<SetExpiry> {
   final messageController = TextEditingController();
   final dateController = TextEditingController(
       text: DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().add(Duration(days: 1))));
+          .format(DateTime.now().add(const Duration(days: 1))));
+  var _isloading = false;
 
   void _showDatePicker() async {
     DateTime? pickedDate = await showDatePicker(
@@ -55,111 +57,141 @@ class _SetExpiryState extends State<SetExpiry> {
         title: const Text('SET EXTRA INFO'),
         actions: [
           DoneButton(
-              text: 'Done',
-              icon: const Icon(Icons.done),
-              onPressed: () {
-                if (titleController.text.isEmpty) {
+            text: 'Done',
+            icon: const Icon(Icons.done),
+            onPressed: () async {
+              if (titleController.text.isEmpty) {
+                final snackBar = SnackBar(
+                    backgroundColor: Theme.of(context).errorColor,
+                    content: const Text('Title is required.'));
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              } else {
+                // Provider.of<ShareLinks>(context, listen: false).syncToDB();
+                setState(() {
+                  _isloading = true;
+                });
+                final Connectivity _connectivity = Connectivity();
+                ConnectivityResult connectivityResult =
+                    await _connectivity.checkConnectivity();
+
+                if (connectivityResult == ConnectivityResult.none) {
                   final snackBar = SnackBar(
                       backgroundColor: Theme.of(context).errorColor,
-                      content: const Text('Title is required.'));
+                      content: const Text(
+                          'You are currently offline. Please connect to your internet to create new share link.'));
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                } else {
-                  final newId = Provider.of<ShareLinks>(context, listen: false)
-                      .addShareLink(
-                    title: titleController.text,
-                    expiryDate: dateController.text,
-                    documents: selectedDocuments,
-                  );
-                  Navigator.of(context)
-                    ..pop()
-                    ..pop();
-                  Navigator.of(context)
-                      .pushNamed(ShareDetails.routeName, arguments: newId);
+                  setState(() {
+                    _isloading = false;
+                  });
+                  return;
                 }
-              })
+                final newId =
+                    await Provider.of<ShareLinks>(context, listen: false)
+                        .addShareLink(
+                  title: titleController.text,
+                  expiryDate: dateController.text,
+                  documents: selectedDocuments,
+                );
+                setState(() {
+                  _isloading = false;
+                });
+                Navigator.of(context)
+                  ..pop()
+                  ..pop();
+                Navigator.of(context)
+                    .pushNamed(ShareDetails.routeName, arguments: newId);
+              }
+            },
+          )
         ],
       ),
-      body: LayoutBuilder(
-        builder: (ctx, constraints) {
-          return SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    child: Text(
-                      'Title',
-                      style: TextStyle(fontSize: 18),
+      body: _isloading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : LayoutBuilder(
+              builder: (ctx, constraints) {
+                return SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                          child: Text(
+                            'Title',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                        TextField(
+                          controller: titleController,
+                          autofocus: true,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        // const Padding(
+                        //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        //   child: Text(
+                        //     'Message',
+                        //     style: TextStyle(fontSize: 18),
+                        //   ),
+                        // ),
+                        // TextField(
+                        //   controller: messageController,
+                        //   textInputAction: TextInputAction.next,
+                        //   maxLines: 6,
+                        //   decoration: InputDecoration(
+                        //     filled: true,
+                        //     fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(10),
+                        //       borderSide: BorderSide.none,
+                        //     ),
+                        //   ),
+                        //   onChanged: (value) {
+                        //     return;
+                        //   },
+                        // ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                          child: Text(
+                            'Set Expiry Date',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                        TextField(
+                          controller: dateController,
+                          decoration: InputDecoration(
+                            icon: const Icon(Icons.calendar_today_outlined),
+                            filled: true,
+                            fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          readOnly: true,
+                          onTap: _showDatePicker,
+                        ),
+                      ],
                     ),
                   ),
-                  TextField(
-                    controller: titleController,
-                    autofocus: true,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  // const Padding(
-                  //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  //   child: Text(
-                  //     'Message',
-                  //     style: TextStyle(fontSize: 18),
-                  //   ),
-                  // ),
-                  // TextField(
-                  //   controller: messageController,
-                  //   textInputAction: TextInputAction.next,
-                  //   maxLines: 6,
-                  //   decoration: InputDecoration(
-                  //     filled: true,
-                  //     fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(10),
-                  //       borderSide: BorderSide.none,
-                  //     ),
-                  //   ),
-                  //   onChanged: (value) {
-                  //     return;
-                  //   },
-                  // ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    child: Text(
-                      'Set Expiry Date',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                  TextField(
-                    controller: dateController,
-                    decoration: InputDecoration(
-                      icon: const Icon(Icons.calendar_today_outlined),
-                      filled: true,
-                      fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    readOnly: true,
-                    onTap: _showDatePicker,
-                  ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }

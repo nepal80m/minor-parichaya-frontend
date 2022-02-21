@@ -36,7 +36,7 @@ class CustomTextField extends StatelessWidget {
         ),
       if (errorMessage.isNotEmpty)
         Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Text(
             errorMessage,
             style: TextStyle(fontSize: 14, color: Theme.of(context).errorColor),
@@ -82,7 +82,7 @@ class CustomTextFieldLabel extends StatelessWidget {
         ),
         if (errorMessage.isNotEmpty)
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Text(
               errorMessage,
               style:

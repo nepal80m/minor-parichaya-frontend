@@ -4,11 +4,11 @@ import 'package:intl/intl.dart';
 import '../utils/string.dart';
 
 class SharedDocumentTile extends StatelessWidget {
-  String title;
-  DateTime expiryDate;
-  VoidCallback onTap;
+  final String title;
+  final DateTime expiryDate;
+  final VoidCallback onTap;
 
-  SharedDocumentTile({
+  const SharedDocumentTile({
     required this.title,
     required this.expiryDate,
     required this.onTap,

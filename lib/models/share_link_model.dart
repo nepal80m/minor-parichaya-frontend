@@ -1,5 +1,4 @@
 import 'package:parichaya_frontend/models/db_models/base_share_link_model.dart';
-import 'package:intl/intl.dart';
 import 'document_model.dart';
 
 class ShareLink {
@@ -31,19 +30,19 @@ class ShareLink {
         documents: map['documents'],
       );
 
-  factory ShareLink.fromBaseShareLink(
-          {required int id,
-          required BaseShareLink baseShareLink,
-          List<Document> documents = const []}) =>
-      ShareLink(
-        id: id,
-        serverId: baseShareLink.serverId,
-        title: baseShareLink.title,
-        encryptionKey: baseShareLink.encryptionKey,
-        createdOn: DateTime.parse(baseShareLink.createdOn),
-        expiryDate: DateTime.parse(baseShareLink.expiryDate),
-        documents: documents,
-      );
+  // factory ShareLink.fromBaseShareLink(
+  //         {required int id,
+  //         required BaseShareLink baseShareLink,
+  //         List<Document> documents = const []}) =>
+  //     ShareLink(
+  //       id: id,
+  //       serverId: baseShareLink.serverId,
+  //       title: baseShareLink.title,
+  //       encryptionKey: baseShareLink.encryptionKey,
+  //       // createdOn: DateTime.parse(baseShareLink.createdOn),
+  //       // expiryDate: DateTime.parse(baseShareLink.expiryDate),
+  //       documents: documents,
+  //     );
 
   Map<String, dynamic> toMap() => {
         'id': id,
@@ -60,8 +59,8 @@ class ShareLink {
         serverId: serverId,
         title: title,
         encryptionKey: encryptionKey,
-        createdOn: DateFormat('yyyy-MM-dd').format(createdOn),
-        expiryDate: DateFormat('yyyy-MM-dd').format(expiryDate),
+        createdOn: createdOn.toString(),
+        expiryDate: expiryDate.toString(),
       );
 
   @override

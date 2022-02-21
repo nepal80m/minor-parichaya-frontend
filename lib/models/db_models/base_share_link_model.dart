@@ -6,14 +6,14 @@ class BaseShareLink {
   String createdOn;
   String expiryDate;
 
-  BaseShareLink({
-    this.id,
-    required this.serverId,
-    required this.title,
-    required this.encryptionKey,
-    required this.createdOn,
-    required this.expiryDate,
-  });
+  BaseShareLink(
+      {this.id,
+      required this.serverId,
+      required this.title,
+      required this.encryptionKey,
+      required this.createdOn,
+      required this.expiryDate,
+      required});
 
   factory BaseShareLink.fromMap(Map<String, dynamic> map) => BaseShareLink(
         id: map['id'],
@@ -35,6 +35,6 @@ class BaseShareLink {
 
   @override
   String toString() {
-    return 'BaseShareLink(id: $id, serverId: $serverId, title: $title, encryptionKey: $encryptionKey, createdOn: $createdOn, expiryDate: $expiryDate)';
+    return 'BaseShareLink(id: $id, serverId: $serverId, title: $title, encryptionKey: $encryptionKey, createdOn: $createdOn ,expiryDate: $expiryDate)';
   }
 }

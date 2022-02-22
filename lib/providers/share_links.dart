@@ -9,9 +9,9 @@ import 'package:parichaya_frontend/database/database_helper.dart';
 import 'package:parichaya_frontend/models/db_models/base_share_link_model.dart';
 import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
 import 'package:parichaya_frontend/models/share_link_model.dart';
+import '../utils/server_url.dart';
 
-// TODO: Change this to actual server url
-const baseUrl = "http://192.168.100.171:8000/api/share-link/";
+const baseUrl = baseServerUrl;
 
 class ShareLinks with ChangeNotifier {
   final List<ShareLink> _items = [];
@@ -122,15 +122,19 @@ class ShareLinks with ChangeNotifier {
     for (Document document in documents) {
       final documentAddingUrl =
           baseUrl + '$_serverId/$_encryptionKey/add-document/';
+      log('Sending Initial Request');
       final request =
           http.MultipartRequest('POST', Uri.parse(documentAddingUrl));
 
       request.fields['title'] = document.title;
       for (DocumentImage image in document.images) {
+        log('add image ${image.path}');
         request.files
             .add(await http.MultipartFile.fromPath('images', image.path));
       }
+      log('sending request!!!!');
       await request.send();
+      log('Done');
     }
 
     final newBaseShareLink = await _databaseHelper.insertShareLink(

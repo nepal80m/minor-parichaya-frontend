@@ -77,10 +77,28 @@ class _SharedDocumentDetailsTilesState
                               borderRadius: BorderRadius.circular(15),
                               child: Stack(
                                 children: [
-                                  Text(image.path),
                                   Positioned.fill(
                                     child: Image.network(
                                       image.path,
+                                      loadingBuilder: (BuildContext context,
+                                          Widget child,
+                                          ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        }
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
                                       height: 200,
                                       width: 200,
                                       fit: BoxFit.cover,

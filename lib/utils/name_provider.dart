@@ -5,8 +5,8 @@ class NameProvider {
 
   static final NameProvider instance = NameProvider._privateConstructor();
   setStringValue(String key, String value) async {
-    SharedPreferences my_name_Prefs = await SharedPreferences.getInstance();
-    my_name_Prefs.setString(key, value);
+    SharedPreferences myNamePrefs = await SharedPreferences.getInstance();
+    myNamePrefs.setString(key, value);
   }
 
   Future<String> getStringValue(String key) async {

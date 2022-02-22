@@ -13,6 +13,7 @@ import 'search_documents.dart';
 
 import 'package:parichaya_frontend/screens/about_us.dart';
 import 'package:parichaya_frontend/screens/update_name.dart';
+import 'package:parichaya_frontend/utils/name_provider.dart';
 
 // import './homepage.dart';
 import './document_list.dart';
@@ -21,7 +22,6 @@ import 'select_document.dart';
 
 class ButtomNavigationBase extends StatefulWidget {
   const ButtomNavigationBase({Key? key}) : super(key: key);
-  static const routeName = '/bottom_navigation_base';
 
   @override
   State<ButtomNavigationBase> createState() => _ButtomNavigationBaseState();
@@ -37,6 +37,7 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   @override
   void initState() {
     super.initState();
+    loadName();
     internetSubscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
@@ -62,6 +63,14 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   void dispose() {
     internetSubscription.cancel();
     super.dispose();
+  }
+
+  loadName() async {
+    NameProvider.instance
+        .getStringValue("nameKey")
+        .then((value) => setState(() {
+              name = value;
+            }));
   }
 
   void _selectScreen(int index) {

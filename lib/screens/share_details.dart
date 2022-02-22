@@ -1,7 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:parichaya_frontend/models/share_link_model.dart';
 import 'package:parichaya_frontend/widgets/shared_document_details_tile.dart';
 import 'package:provider/provider.dart';
@@ -9,10 +8,12 @@ import 'package:share_plus/share_plus.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../providers/share_links.dart';
+
 import '../widgets/shared_document_details_tile.dart';
 import '../utils/string.dart';
 import '../widgets/options_modal_buttom_sheet.dart';
 import '../widgets/delete_confirmation_buttom_sheet.dart';
+import '../utils/date_formatter.dart';
 
 // import '../widgets/custom_icons_icons.dart';
 
@@ -26,6 +27,7 @@ class ShareDetails extends StatelessWidget {
     ShareLink shareLink,
     String webUrl,
     int shareLinkId,
+    String formattedExpiryDuration,
   ) {
     showOptionsModalButtomSheet(
       context,
@@ -37,6 +39,7 @@ class ShareDetails extends StatelessWidget {
               Icon(Icons.share_rounded, color: Theme.of(context).disabledColor),
           title: const Text('Share Document'),
           onTap: () {
+            Navigator.of(context).pop();
             Share.share(webUrl, subject: shareLink.title);
           },
         ),
@@ -45,6 +48,7 @@ class ShareDetails extends StatelessWidget {
               color: Theme.of(context).errorColor),
           title: const Text('Expire this link'),
           onTap: () async {
+            Navigator.of(context).pop();
             final Connectivity _connectivity = Connectivity();
             ConnectivityResult connectivityResult =
                 await _connectivity.checkConnectivity();
@@ -60,14 +64,17 @@ class ShareDetails extends StatelessWidget {
             } else {
               final isConfirmed = await showDeleteConfirmationButtomSheet(
                   context,
-                  message: "You still have ${shareLink.expiryDate} ");
+                  message:
+                      "You still have ${formattedExpiryDuration} left. Confirm delete?");
               if (isConfirmed) {
                 Provider.of<ShareLinks>(context, listen: false)
                     .deleteShareLink(shareLinkId);
-                Navigator.of(context).pop();
+                Navigator.of(context)
+                  ..pop()
+                  ..pop();
 
                 const snackBar =
-                    SnackBar(content: Text('Document Deleted Successfully'));
+                    SnackBar(content: Text('Share Link Deleted Successfully'));
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
             }
@@ -84,6 +91,9 @@ class ShareDetails extends StatelessWidget {
         .getShareLinkById(shareLinkId);
     final webUrl =
         'https://www.parichaya-alpha.web.app/${shareLink.serverId}/${shareLink.encryptionKey}';
+
+    final formattedExpiryDuration = getFormattedExpiry(shareLink.expiryDate);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
@@ -99,7 +109,8 @@ class ShareDetails extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                showOptions(context, shareLink, webUrl, shareLinkId);
+                showOptions(context, shareLink, webUrl, shareLinkId,
+                    formattedExpiryDuration);
               },
               icon: const Icon(Icons.more_vert)),
         ],
@@ -118,7 +129,9 @@ class ShareDetails extends StatelessWidget {
               ),
             ),
             Text(
-              'Expiry at ${DateFormat('yyyy-MM-dd').format(shareLink.expiryDate)}',
+              formattedExpiryDuration.isEmpty
+                  ? 'Link Has Expired'
+                  : 'Expires in $formattedExpiryDuration',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14),
             ),
@@ -149,6 +162,9 @@ class ShareDetails extends StatelessWidget {
                               generateLimitedLengthText(webUrl, 40),
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                           Flexible(
@@ -166,6 +182,7 @@ class ShareDetails extends StatelessWidget {
                                 },
                                 icon: const Icon(
                                   Icons.copy,
+                                  color: Colors.black,
                                 )),
                           )
                         ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:parichaya_frontend/screens/buttom_navigation_base.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/theme_provider.dart';
@@ -51,8 +50,8 @@ class _UpdateNameState extends State<UpdateName> {
           if (nameController.text.isNotEmpty) {
             NameProvider.instance
                 .setStringValue('nameKey', nameController.text);
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                ButtomNavigationBase.routeName, (route) => false);
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/', (route) => false);
           } else {
             final snackBar = SnackBar(
                 backgroundColor: Theme.of(context).errorColor,
@@ -86,8 +85,7 @@ class _UpdateNameState extends State<UpdateName> {
             ),
             onPressed: () {
               //passing this to our root
-              Navigator.of(context)
-                  .popAndPushNamed(ButtomNavigationBase.routeName);
+              Navigator.of(context).popAndPushNamed('/');
             },
           ),
         ),

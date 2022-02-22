@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:parichaya_frontend/screens/onboarding_screen.dart';
-import 'package:parichaya_frontend/screens/splash.dart';
 
 import './providers/documents.dart';
 import './providers/theme_provider.dart';
@@ -16,10 +16,20 @@ import './screens/select_document.dart';
 import './screens/set_expiry.dart';
 import './screens/share_details.dart';
 import './screens/onboarding_screen.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-void main() {
+void main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  final myTheme = ThemeProvider();
+  await myTheme.initialize();
+  FlutterNativeSplash.remove();
+
   runApp(ChangeNotifierProvider<ThemeProvider>(
-    create: (_) => ThemeProvider()..initialize(),
+    create: (_) => myTheme,
     child: const MyApp(),
   ));
 }
@@ -79,8 +89,7 @@ class MyApp extends StatelessWidget {
 
             debugShowCheckedModeBanner: false,
             routes: {
-              '/': (ctx) => const Splash(),
-              ButtomNavigationBase.routeName: (ctx) => ButtomNavigationBase(),
+              '/': (ctx) => const ButtomNavigationBase(),
               OnboardingScreen.routeName: (ctx) => const OnboardingScreen(),
               AddDocuments.routeName: (ctx) => const AddDocuments(),
               DocumentDetails.routeName: (ctx) => const DocumentDetails(),

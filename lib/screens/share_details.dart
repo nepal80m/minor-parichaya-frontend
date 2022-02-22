@@ -1,15 +1,19 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:parichaya_frontend/models/share_link_model.dart';
 import 'package:parichaya_frontend/widgets/shared_document_details_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../providers/share_links.dart';
+
 import '../widgets/shared_document_details_tile.dart';
 import '../utils/string.dart';
+import '../widgets/options_modal_buttom_sheet.dart';
+import '../widgets/delete_confirmation_buttom_sheet.dart';
+import '../utils/date_formatter.dart';
 
 // import '../widgets/custom_icons_icons.dart';
 
@@ -18,11 +22,78 @@ class ShareDetails extends StatelessWidget {
 
   static const routeName = '/share_details';
 
+  void showOptions(
+    BuildContext context,
+    ShareLink shareLink,
+    String webUrl,
+    int shareLinkId,
+    String formattedExpiryDuration,
+  ) {
+    showOptionsModalButtomSheet(
+      context,
+      children: [
+        const Text('Select Actions'),
+        const Divider(),
+        ListTile(
+          leading:
+              Icon(Icons.share_rounded, color: Theme.of(context).disabledColor),
+          title: const Text('Share Document'),
+          onTap: () {
+            Navigator.of(context).pop();
+            Share.share(webUrl, subject: shareLink.title);
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.link_off_outlined,
+              color: Theme.of(context).errorColor),
+          title: const Text('Expire this link'),
+          onTap: () async {
+            Navigator.of(context).pop();
+            final Connectivity _connectivity = Connectivity();
+            ConnectivityResult connectivityResult =
+                await _connectivity.checkConnectivity();
+
+            if (connectivityResult == ConnectivityResult.none) {
+              Navigator.of(context).pop();
+              final snackBar = SnackBar(
+                  backgroundColor: Theme.of(context).errorColor,
+                  content: const Text(
+                      'You are currently offline. Please connect to your internet to expire this link.'));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              return;
+            } else {
+              final isConfirmed = await showDeleteConfirmationButtomSheet(
+                  context,
+                  message:
+                      "You still have ${formattedExpiryDuration} left. Confirm delete?");
+              if (isConfirmed) {
+                Provider.of<ShareLinks>(context, listen: false)
+                    .deleteShareLink(shareLinkId);
+                Navigator.of(context)
+                  ..pop()
+                  ..pop();
+
+                const snackBar =
+                    SnackBar(content: Text('Share Link Deleted Successfully'));
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+            }
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final shareLinkId = ModalRoute.of(context)?.settings.arguments as int;
     final shareLink = Provider.of<ShareLinks>(context, listen: false)
         .getShareLinkById(shareLinkId);
+    final webUrl =
+        'https://www.parichaya-alpha.web.app/${shareLink.serverId}/${shareLink.encryptionKey}';
+
+    final formattedExpiryDuration = getFormattedExpiry(shareLink.expiryDate);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
@@ -36,46 +107,12 @@ class ShareDetails extends StatelessWidget {
         ),
         title: const Text('DETAILS'),
         actions: [
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: const Text('Share'),
-                value: 'share',
-                onTap: () {
-                  Share.share(
-                      'https://www.parichaya.web.app/${shareLink.serverId}/${shareLink.encryptionKey}',
-                      subject: shareLink.title);
-                },
-              ),
-              PopupMenuItem(
-                child: const Text('Expire this link'),
-                textStyle: Theme.of(context).textTheme.bodyText2?.copyWith(
-                      color: Colors.red,
-                      // fontWeight: FontWeight.bold,
-                    ),
-                value: 'delete',
-              ),
-            ],
-            onSelected: (String selectedValue) async {
-              if (selectedValue == 'delete') {
-                final Connectivity _connectivity = Connectivity();
-                ConnectivityResult connectivityResult =
-                    await _connectivity.checkConnectivity();
-
-                if (connectivityResult == ConnectivityResult.none) {
-                  final snackBar = SnackBar(
-                      backgroundColor: Theme.of(context).errorColor,
-                      content: const Text(
-                          'You are currently offline. Please connect to your internet to expire this link.'));
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  return;
-                }
-                Provider.of<ShareLinks>(context, listen: false)
-                    .deleteShareLink(shareLinkId);
-                Navigator.of(context).pop();
-              }
-            },
-          ),
+          IconButton(
+              onPressed: () {
+                showOptions(context, shareLink, webUrl, shareLinkId,
+                    formattedExpiryDuration);
+              },
+              icon: const Icon(Icons.more_vert)),
         ],
       ),
       body: SingleChildScrollView(
@@ -92,7 +129,9 @@ class ShareDetails extends StatelessWidget {
               ),
             ),
             Text(
-              'Expiry at ${DateFormat('yyyy-MM-dd').format(shareLink.expiryDate)}',
+              formattedExpiryDuration.isEmpty
+                  ? 'Link Has Expired'
+                  : 'Expires in $formattedExpiryDuration',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14),
             ),
@@ -108,8 +147,7 @@ class ShareDetails extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       QrImage(
-                        data:
-                            'https://www.parichaya.web.app/${shareLink.serverId}/${shareLink.encryptionKey}',
+                        data: webUrl,
                         size: 200,
                         backgroundColor: Colors.white,
                       ),
@@ -121,11 +159,12 @@ class ShareDetails extends StatelessWidget {
                             width: 300,
                             height: 20,
                             child: Text(
-                              generateLimitedLengthText(
-                                  'https://www.parichaya.web.app/${shareLink.serverId}/${shareLink.encryptionKey}',
-                                  40),
+                              generateLimitedLengthText(webUrl, 40),
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                           Flexible(
@@ -133,9 +172,8 @@ class ShareDetails extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                                 iconSize: 20,
                                 onPressed: () {
-                                  Clipboard.setData(ClipboardData(
-                                      text:
-                                          'https://www.parichaya.web.app/${shareLink.serverId}/${shareLink.encryptionKey}'));
+                                  Clipboard.setData(
+                                      ClipboardData(text: webUrl));
                                   const snackBar = SnackBar(
                                     content: Text('Link Copied to Clipboard.'),
                                   );
@@ -144,6 +182,7 @@ class ShareDetails extends StatelessWidget {
                                 },
                                 icon: const Icon(
                                   Icons.copy,
+                                  color: Colors.black,
                                 )),
                           )
                         ],

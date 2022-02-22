@@ -127,13 +127,15 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(
-                  document.note,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+                if (document.note.isNotEmpty)
+                  Text(
+                    document.note,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                if (document.note.isNotEmpty)
+                  const SizedBox(
+                    height: 20,
+                  ),
                 const Divider(
                   // height: 30,
                   color: Colors.grey,

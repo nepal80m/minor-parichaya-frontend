@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parichaya_frontend/providers/preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:parichaya_frontend/screens/onboarding_screen.dart';
 
 import './providers/documents.dart';
-import './providers/theme_provider.dart';
 import 'providers/share_links.dart';
 
 import './screens/document_detail_full_screen_gallery.dart';
@@ -24,12 +24,14 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  final myTheme = ThemeProvider();
-  await myTheme.initialize();
+  // final myTheme = ThemeProvider();
+  // await myTheme.initialize();
+  final prefs = Preferences();
+  await prefs.syncToSharedPreferences();
   FlutterNativeSplash.remove();
 
-  runApp(ChangeNotifierProvider<ThemeProvider>(
-    create: (_) => myTheme,
+  runApp(ChangeNotifierProvider<Preferences>(
+    create: (_) => prefs,
     child: const MyApp(),
   ));
 }
@@ -42,10 +44,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => Documents()),
-        ChangeNotifierProvider(create: (_) => ShareLinks())
+        ChangeNotifierProvider(create: (_) => ShareLinks()),
+        // ChangeNotifierProvider(create: (_) => Preferences())
       ],
-      child: Consumer<ThemeProvider>(
-        builder: (context, provider, child) {
+      child: Consumer<Preferences>(
+        builder: (context, prefs, child) {
           return MaterialApp(
             title: 'Parichaya',
 
@@ -80,16 +83,21 @@ class MyApp extends StatelessWidget {
             //   // splashFactory: InkRipple.splashFactory,
             // ),
 
-            theme: ThemeData.light(),
+            theme: ThemeData.light().copyWith(brightness: Brightness.light),
             darkTheme: ThemeData.dark().copyWith(
+                brightness: Brightness.dark,
                 floatingActionButtonTheme: const FloatingActionButtonThemeData(
                     backgroundColor: Colors.white)),
 
-            themeMode: provider.themeMode,
+            themeMode: prefs.themeMode,
 
             debugShowCheckedModeBanner: false,
+            initialRoute:
+                prefs.isOnboardingComplete ? '/' : OnboardingScreen.routeName,
             routes: {
               '/': (ctx) => const ButtomNavigationBase(),
+              ButtomNavigationBase.routeName: (ctx) =>
+                  const ButtomNavigationBase(),
               OnboardingScreen.routeName: (ctx) => const OnboardingScreen(),
               AddDocuments.routeName: (ctx) => const AddDocuments(),
               DocumentDetails.routeName: (ctx) => const DocumentDetails(),

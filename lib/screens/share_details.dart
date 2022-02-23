@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +15,7 @@ import '../widgets/shared_document_details_tile.dart';
 import '../utils/string.dart';
 import '../widgets/options_modal_buttom_sheet.dart';
 import '../widgets/delete_confirmation_buttom_sheet.dart';
-import '../utils/date_formatter.dart';
+import '../utils/date.dart';
 
 // import '../widgets/custom_icons_icons.dart';
 
@@ -90,7 +92,7 @@ class ShareDetails extends StatelessWidget {
     final shareLink = Provider.of<ShareLinks>(context, listen: false)
         .getShareLinkById(shareLinkId);
     final webUrl =
-        'https://www.parichaya-alpha.web.app/${shareLink.serverId}/${shareLink.encryptionKey}';
+        'parichaya-alpha.web.app/${shareLink.serverId}/${shareLink.encryptionKey}';
 
     final formattedExpiryDuration = getFormattedExpiry(shareLink.expiryDate);
 
@@ -144,12 +146,14 @@ class ShareDetails extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      QrImage(
-                        data: webUrl,
-                        size: 200,
-                        backgroundColor: Colors.white,
+                      Center(
+                        child: QrImage(
+                          data: webUrl,
+                          size: 200,
+                          backgroundColor: Colors.white,
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -186,6 +190,52 @@ class ShareDetails extends StatelessWidget {
                                 )),
                           )
                         ],
+                      ),
+                      ElevatedButton(
+                        // label: Text(text),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.share_rounded),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'SHARE',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // icon: icon,
+                        onPressed: () {
+                          Share.share(webUrl, subject: shareLink.title);
+                        },
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.all<double>(0),
+
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              // side: BorderSide(color: Colors.red),
+                            ),
+                          ),
+                          backgroundColor: MaterialStateProperty.all(
+                              Theme.of(context).primaryColorDark),
+                          foregroundColor: MaterialStateProperty.all(
+                            Colors.white,
+                            // overlayColor: MaterialStateProperty.all(
+                            //     Theme.of(context).primaryColor.withOpacity(0.1)),
+                          ),
+                          // label: Text(text),
+                          // child: Text(text),
+                        ),
                       ),
                     ],
                   ),

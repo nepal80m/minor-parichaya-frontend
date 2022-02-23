@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:parichaya_frontend/providers/preferences.dart';
 import 'package:provider/provider.dart';
-
-import '../providers/theme_provider.dart';
-import '../utils/name_provider.dart';
 
 class UpdateName extends StatefulWidget {
   const UpdateName({Key? key}) : super(key: key);
@@ -18,9 +16,9 @@ class _UpdateNameState extends State<UpdateName> {
 
   @override
   Widget build(BuildContext context) {
+    final prefs = Provider.of<Preferences>(context);
     // name field
-    isSwitched =
-        Provider.of<ThemeProvider>(context, listen: false).isDarkModeOn;
+
     final nameField = TextFormField(
       autofocus: false,
       controller: nameController,
@@ -48,8 +46,7 @@ class _UpdateNameState extends State<UpdateName> {
       child: MaterialButton(
         onPressed: () async {
           if (nameController.text.isNotEmpty) {
-            NameProvider.instance
-                .setStringValue('nameKey', nameController.text);
+            prefs.setUsername(nameController.text);
             Navigator.of(context)
                 .pushNamedAndRemoveUntil('/', (route) => false);
           } else {

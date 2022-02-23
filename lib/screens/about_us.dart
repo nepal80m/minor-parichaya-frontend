@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/theme_provider.dart';
-
 class AboutUs extends StatefulWidget {
   const AboutUs({Key? key}) : super(key: key);
 
@@ -14,8 +12,6 @@ class _AboutUsState extends State<AboutUs> {
   bool isSwitched = false;
   @override
   Widget build(BuildContext context) {
-    isSwitched =
-        Provider.of<ThemeProvider>(context, listen: false).isDarkModeOn;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -23,7 +19,9 @@ class _AboutUsState extends State<AboutUs> {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: !isSwitched ? Theme.of(context).primaryColor : Colors.white,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Theme.of(context).primaryColor
+                : Colors.white,
           ),
           onPressed: () {
             //passing this to our root
@@ -33,22 +31,29 @@ class _AboutUsState extends State<AboutUs> {
           },
         ),
       ),
-      body: Center(
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          child: const Card(
-            elevation: 5,
-            child: Padding(
-              padding: EdgeInsets.all(15),
-              child: SingleChildScrollView(
-                child: Text(
-                  'We are just a group of tech enthusiast trying to solve the daily life problems through technology. Our first app "Parichaya" aims to solve the problem of carrying the documents everywhere we go just to identify us. ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 15,
+      body: Container(
+        margin: const EdgeInsets.all(10),
+        child: Card(
+          // elevation: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text('Our Parichaya',
+                      style: Theme.of(context).textTheme.headline5),
+                  SizedBox(
+                    height: 20,
                   ),
-                  textAlign: TextAlign.justify,
-                ),
+                  Text(
+                    'We are just a group of tech enthusiast trying to solve the daily life problems through technology. Our first app "Parichaya" aims to solve the problem of carrying the documents everywhere we go just to identify us. ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                    ),
+                    textAlign: TextAlign.justify,
+                  ),
+                ],
               ),
             ),
           ),

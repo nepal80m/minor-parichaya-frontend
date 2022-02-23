@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/string.dart';
@@ -34,24 +33,24 @@ class DocumentTile extends StatelessWidget {
             padding: const EdgeInsets.all(2),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: imagePath.isEmpty
-                  ? FadeInImage.memoryNetwork(
-                      placeholder: kTransparentImage,
-                      image: 'https://picsum.photos/250?image=9',
-                    )
-                  : Image.file(
-                      File(imagePath),
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                      semanticLabel: title,
-                    ),
-              // child: FadeInImage.memoryNetwork(
-              //   placeholder: kTransparentImage,
-              //   image: imagePath,
-              // ),
+              child: Image.file(
+                File(
+                  imagePath,
+                ),
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+                semanticLabel: title,
+                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                  return Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: child,
+                  );
+                },
+              ),
             ),
           ),
+
           trailing: action,
           title: Text(generateLimitedLengthText(title, 25)),
           // subtitle: Text(document.note.length > 25 ?

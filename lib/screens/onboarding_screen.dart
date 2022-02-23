@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:parichaya_frontend/utils/name_provider.dart';
-import '../utils/is_first_run.dart';
+import 'package:parichaya_frontend/providers/preferences.dart';
+import 'package:provider/provider.dart';
+// import '../utils/is_first_run.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -16,17 +17,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final prefs = Provider.of<Preferences>(context);
     final nextButton = Material(
       borderRadius: BorderRadius.circular(10),
       color: Theme.of(context).primaryColor,
       child: MaterialButton(
         onPressed: () async {
-          IsFirstRun.instance.setBooleanValue("isfirstRun", true);
           if (nameController.text.isNotEmpty) {
-            NameProvider.instance
-                .setStringValue('nameKey', nameController.text);
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/', (route) => false);
+            prefs.setOnboardingAsComplete();
+            prefs.setUsername(nameController.text);
+            Navigator.of(context).pushReplacementNamed('/');
           } else {
             final snackBar = SnackBar(
                 backgroundColor: Theme.of(context).errorColor,
@@ -49,10 +49,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   leading: null,
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(36.0),
         child: Form(

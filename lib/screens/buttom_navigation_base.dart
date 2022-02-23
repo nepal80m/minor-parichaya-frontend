@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parichaya_frontend/providers/theme_provider.dart';
 import 'package:parichaya_frontend/screens/no_internet.dart';
-import 'package:provider/provider.dart';
+import 'package:parichaya_frontend/widgets/profile_drawer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'dart:async';
 
@@ -11,10 +10,6 @@ import '../widgets/custom_icons_icons.dart';
 import './add_document.dart';
 import 'search_documents.dart';
 
-import 'package:parichaya_frontend/screens/about_us.dart';
-import 'package:parichaya_frontend/screens/update_name.dart';
-import 'package:parichaya_frontend/utils/name_provider.dart';
-
 // import './homepage.dart';
 import './document_list.dart';
 import './shared_list.dart';
@@ -22,6 +17,7 @@ import 'select_document.dart';
 
 class ButtomNavigationBase extends StatefulWidget {
   const ButtomNavigationBase({Key? key}) : super(key: key);
+  static const routeName = '/homepage';
 
   @override
   State<ButtomNavigationBase> createState() => _ButtomNavigationBaseState();
@@ -37,7 +33,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   @override
   void initState() {
     super.initState();
-    loadName();
     internetSubscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
@@ -63,14 +58,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   void dispose() {
     internetSubscription.cancel();
     super.dispose();
-  }
-
-  loadName() async {
-    NameProvider.instance
-        .getStringValue("nameKey")
-        .then((value) => setState(() {
-              name = value;
-            }));
   }
 
   void _selectScreen(int index) {
@@ -146,153 +133,8 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
 
   @override
   Widget build(BuildContext context) {
-    isSwitched =
-        Provider.of<ThemeProvider>(context, listen: false).isDarkModeOn;
     return Scaffold(
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
-            // TODO: Complete this drawer
-
-            SizedBox(
-              height: 130,
-              child: DrawerHeader(
-                decoration: BoxDecoration(
-                  color: !isSwitched
-                      ? Theme.of(context).primaryColor
-                      : Colors.grey.shade500,
-                ),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white,
-                      // radius: 50,
-                      child: Text(
-                        name[0].toUpperCase(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 20),
-                      ),
-                    ),
-                    //   ),
-                    const SizedBox(width: 20),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          name,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-//Switch for dark mode
-            Consumer<ThemeProvider>(
-              builder: (context, provider, child) {
-                return ListTile(
-                  title: Row(
-                    children: [
-                      Icon(isSwitched
-                          ? Icons.dark_mode_rounded
-                          : Icons.light_mode_rounded),
-                      const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Text(
-                          'Dark Mode',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  trailing: Switch(
-                    value: provider.isDarkModeOn,
-                    onChanged: (value) {
-                      setState(() {
-                        isSwitched = value;
-                        provider.changeTheme(isSwitched);
-                      });
-                    },
-                    activeTrackColor: Theme.of(context).primaryColorLight,
-                    activeColor: Theme.of(context).primaryColor,
-                  ),
-                  //onTap: () {},
-                );
-              },
-            ),
-            const Divider(),
-
-            ListTile(
-              title: Row(
-                children: const [
-                  Icon(Icons.cast_for_education_sharp),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Update Name',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const UpdateName(),
-                  ),
-                );
-              },
-              trailing: const Icon(Icons.arrow_forward_ios),
-            ),
-            const Divider(),
-
-            //About Us
-            ListTile(
-              title: Row(
-                children: const [
-                  Icon(Icons.group_rounded),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'About Us',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AboutUs(),
-                  ),
-                );
-              },
-              trailing: const Icon(Icons.arrow_forward_ios),
-            ),
-          ],
-        ),
-      ),
+      drawer: const ProfileDrawer(),
       appBar: AppBar(
         elevation: 1,
         systemOverlayStyle: SystemUiOverlayStyle(

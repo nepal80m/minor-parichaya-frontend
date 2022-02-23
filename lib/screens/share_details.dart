@@ -15,7 +15,7 @@ import '../widgets/shared_document_details_tile.dart';
 import '../utils/string.dart';
 import '../widgets/options_modal_buttom_sheet.dart';
 import '../widgets/delete_confirmation_buttom_sheet.dart';
-import '../utils/date_formatter.dart';
+import '../utils/date.dart';
 
 // import '../widgets/custom_icons_icons.dart';
 

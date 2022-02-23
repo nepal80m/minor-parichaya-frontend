@@ -86,16 +86,9 @@ class _SharedDocumentDetailsTilesState
                                         if (loadingProgress == null) {
                                           return child;
                                         }
-                                        return Center(
+                                        return const Center(
                                           child: CircularProgressIndicator(
-                                            value: loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
-                                                : null,
+                                            color: Colors.white,
                                           ),
                                         );
                                       },
@@ -106,7 +99,7 @@ class _SharedDocumentDetailsTilesState
                                   ),
                                   Positioned.fill(
                                     child: Material(
-                                      color: Colors.transparent,
+                                      color: Theme.of(context).disabledColor,
                                       child: InkWell(
                                         highlightColor:
                                             Colors.orange.withOpacity(0.1),

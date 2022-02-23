@@ -15,7 +15,7 @@ dependencies:
   intl: ^0.17.0
   provider: ^6.0.2
   image_picker: ^0.8.4+6
-  transparent_image: ^2.0.0
+  # transparent_image: ^2.0.0
   sqflite: ^2.0.2
   path_provider: ^2.0.8
   shared_preferences: ^2.0.13
@@ -26,6 +26,9 @@ dependencies:
   share_plus: ^3.0.5
   qr_flutter: ^4.0.0
   flutter_native_splash: ^2.0.5
+  flutter_native_image: ^0.0.6+1
+  introduction_screen: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -33,14 +36,11 @@ dev_dependencies:
   flutter_lints: ^1.0.0
 flutter_native_splash:
   color: "#FFFFFF"
-  color_dark: '#0F0F0F'
+  color_dark: "#0F0F0F"
   image: assets/images/light-splash-logo.png
   image_dark: assets/images/dark-splash-logo.png
   android: true
   ios: true
-
-
-
 
 flutter:
   uses-material-design: true

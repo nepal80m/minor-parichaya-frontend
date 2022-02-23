@@ -17,6 +17,7 @@ import './screens/set_expiry.dart';
 import './screens/share_details.dart';
 import './screens/onboarding_screen.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();

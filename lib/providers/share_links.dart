@@ -1,14 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:parichaya_frontend/models/document_model.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:parichaya_frontend/database/database_helper.dart';
-import 'package:parichaya_frontend/models/db_models/base_share_link_model.dart';
-import 'package:parichaya_frontend/models/db_models/document_image_model.dart';
-import 'package:parichaya_frontend/models/share_link_model.dart';
+import '../database/database_helper.dart';
+import '../models/db_models/base_share_link_model.dart';
+import '../models/db_models/document_image_model.dart';
+import '../models/share_link_model.dart';
 import '../utils/server_url.dart';
 
 const baseUrl = baseServerUrl;
@@ -129,8 +132,16 @@ class ShareLinks with ChangeNotifier {
       request.fields['title'] = document.title;
       for (DocumentImage image in document.images) {
         log('add image ${image.path}');
-        request.files
-            .add(await http.MultipartFile.fromPath('images', image.path));
+        ImageProperties properties =
+            await FlutterNativeImage.getImageProperties(image.path);
+        File compressedImage = await FlutterNativeImage.compressImage(
+            image.path,
+            quality: 100,
+            targetWidth: 600,
+            targetHeight:
+                (properties.height! * 600 / properties.width!).round());
+        request.files.add(
+            await http.MultipartFile.fromPath('images', compressedImage.path));
       }
       log('sending request!!!!');
       await request.send();

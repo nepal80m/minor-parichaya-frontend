@@ -83,6 +83,7 @@ class _DocumentDetailFullScreenGalleryState
             onTap: () async {
               Navigator.of(context).pop();
               await deleteDocumentImage(context, document);
+              // Navigator.of(context).pop();
             },
           ),
           ListTile(
@@ -106,6 +107,12 @@ class _DocumentDetailFullScreenGalleryState
         imagePaths: List.generate(
             document.images.length, (index) => document.images[index].path),
         initialIndex: currentImageIndex,
+        appBarActions: const [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Icon(Icons.more_vert),
+          ),
+        ],
         onPageChange: (index) {
           setState(() {
             currentImageIndex = index;

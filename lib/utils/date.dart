@@ -1,13 +1,12 @@
 String getFormattedExpiry(DateTime expiryDate) {
-  final expiryDate = DateTime(2022, 02, 22, 19);
+  final now = DateTime.now().toLocal();
+  final localExpiryDate = expiryDate.toLocal();
 
-  final now = DateTime.now();
+  final days = localExpiryDate.difference(now).inDays;
 
-  final days = expiryDate.difference(now).inDays;
+  final hours = localExpiryDate.difference(now).inHours - days * 24;
 
-  final hours = expiryDate.difference(now).inHours - days * 24;
-
-  final minutes = expiryDate.difference(now).inMinutes - (hours * 60);
+  final minutes = localExpiryDate.difference(now).inMinutes - (hours * 60);
 
   String formattedExpiry = '';
 

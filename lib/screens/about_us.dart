@@ -42,10 +42,10 @@ class _AboutUsState extends State<AboutUs> {
                 children: [
                   Text('Our Parichaya',
                       style: Theme.of(context).textTheme.headline5),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Text(
+                  const Text(
                     'We are just a group of tech enthusiast trying to solve the daily life problems through technology. Our first app "Parichaya" aims to solve the problem of carrying the documents everywhere we go just to identify us. ',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,

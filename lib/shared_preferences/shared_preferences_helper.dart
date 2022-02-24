@@ -50,7 +50,7 @@ class SharedPreferencesHelper {
     log('Getting theme mode');
     final prefInstance = await _sharedPreferencesHelper.instance;
     final themeModeIndex =
-        prefInstance.getInt(SharedPreferencesHelper.themeModeKey) ?? 0;
+        prefInstance.getInt(SharedPreferencesHelper.themeModeKey) ?? 1;
     return ThemeMode.values[themeModeIndex];
   }
 

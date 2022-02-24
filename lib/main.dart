@@ -17,6 +17,7 @@ import './screens/set_expiry.dart';
 import './screens/share_details.dart';
 import './screens/onboarding_screen.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import './theme/custom_theme.dart';
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -24,8 +25,6 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  // final myTheme = ThemeProvider();
-  // await myTheme.initialize();
   final prefs = Preferences();
   await prefs.syncToSharedPreferences();
   FlutterNativeSplash.remove();
@@ -45,52 +44,14 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => Documents()),
         ChangeNotifierProvider(create: (_) => ShareLinks()),
-        // ChangeNotifierProvider(create: (_) => Preferences())
       ],
       child: Consumer<Preferences>(
         builder: (context, prefs, child) {
           return MaterialApp(
             title: 'Parichaya',
-
-            // TODO: Customize theme
-            //themeMode: ThemeMode.system,
-
-            // theme: ThemeData(
-            //   primarySwatch: Colors.blue,
-            //   fontFamily: 'OpenSans',
-            //   // brightness: Brightness.dark,
-            //   fontFamily: 'QuickSand',
-            //   //brightness: Brightness.dark,
-            //   textTheme: ThemeData.light().textTheme.copyWith(
-            //         bodyText1:
-            //             const TextStyle(color: Color.fromRGBO(20, 51, 51, 1)),
-            //         bodyText2:
-            //             const TextStyle(color: Color.fromRGBO(20, 51, 51, 1)),
-            //         headline1: const TextStyle(
-            //             fontSize: 50, fontWeight: FontWeight.bold),
-            //         headline2: const TextStyle(fontSize: 45),
-            //         headline3: const TextStyle(fontSize: 40),
-            //         headline4: const TextStyle(fontSize: 35),
-            //         headline5: const TextStyle(fontSize: 30),
-            //         headline6: const TextStyle(fontSize: 25),
-            //         caption: const TextStyle(fontSize: 20),
-            //         overline: const TextStyle(fontSize: 15),
-            //         subtitle1: const TextStyle(fontSize: 10),
-            //         subtitle2: const TextStyle(fontSize: 10),
-            //         button: const TextStyle(fontSize: 10),
-            //       ),
-            //   // fontFamily: 'Quicksand',
-            //   // splashFactory: InkRipple.splashFactory,
-            // ),
-
-            theme: ThemeData.light().copyWith(brightness: Brightness.light),
-            darkTheme: ThemeData.dark().copyWith(
-                brightness: Brightness.dark,
-                floatingActionButtonTheme: const FloatingActionButtonThemeData(
-                    backgroundColor: Colors.white)),
-
+            theme: CustomTheme.lightTheme,
+            darkTheme: CustomTheme.darkTheme,
             themeMode: prefs.themeMode,
-
             debugShowCheckedModeBanner: false,
             initialRoute:
                 prefs.isOnboardingComplete ? '/' : OnboardingScreen.routeName,

@@ -130,13 +130,13 @@ class ShareDetails extends StatelessWidget {
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            Text(
-              formattedExpiryDuration.isEmpty
-                  ? 'Link Has Expired'
-                  : 'Expires in $formattedExpiryDuration',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14),
-            ),
+            // Text(
+            //   formattedExpiryDuration.isEmpty
+            //       ? 'Link Has Expired'
+            //       : 'Expires in $formattedExpiryDuration',
+            //   textAlign: TextAlign.center,
+            //   style: const TextStyle(fontSize: 14),
+            // ),
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Material(

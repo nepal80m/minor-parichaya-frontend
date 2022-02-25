@@ -20,7 +20,6 @@ Future<bool> showDeleteConfirmationButtomSheet(BuildContext context,
                 child: Text(
                   alertTitle,
                   textAlign: TextAlign.center,
-                  // TODO: Change the font style to theme style
                   style: Theme.of(context).textTheme.headline6,
                 ),
               ),

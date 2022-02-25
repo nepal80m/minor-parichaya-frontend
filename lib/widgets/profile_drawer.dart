@@ -15,8 +15,6 @@ class ProfileDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          // TODO: Complete this drawer
-
           SizedBox(
             height: 130,
             child: DrawerHeader(

@@ -42,7 +42,7 @@ class ShareLinks with ChangeNotifier {
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
     );
-    // TODO: Recheck this logic
+    // ? Recheck this logic
     if (response.statusCode == 404) {
       _databaseHelper.deleteShareLink(baseShareLink.id!);
       return null;
@@ -95,7 +95,7 @@ class ShareLinks with ChangeNotifier {
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
       );
-      // TODO: Recheck this logic
+      // ? Recheck this logic
       if (response.statusCode == 404) {
         _databaseHelper.deleteShareLink(baseShareLink.id!);
         continue;
@@ -252,7 +252,6 @@ class ShareLinks with ChangeNotifier {
     final existingShareLink = getShareLinkById(shareLinkId);
     final url = baseUrl +
         '${existingShareLink.serverId}/${existingShareLink.encryptionKey}/add-document/';
-    // TODO: Make http POST to add document to share link with serverId and eencryptionKey.
     final response = await http.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
@@ -261,7 +260,7 @@ class ShareLinks with ChangeNotifier {
 
     log(json.decode(response.body).toString());
     existingShareLink.documents.add(document);
-    // TODO: Create new documnet object based on the response and add to existingSharedLink
+    // ? Create new documnet object based on the response and add to existingSharedLink
     // existingShareLink.documents.add(document);
     notifyListeners();
     return document;
@@ -270,7 +269,7 @@ class ShareLinks with ChangeNotifier {
   void deleteSharedDocument(int shareLinkId, int sharedDocumentId) {
     log('deleting shared document');
     final existingShareLink = getShareLinkById(shareLinkId);
-    // TODO: Make http DELETE to delete document in share link with id
+    // ? Make http DELETE to delete document in share link with id
     existingShareLink.documents
         .removeWhere((document) => document.id == sharedDocumentId);
 
@@ -279,7 +278,6 @@ class ShareLinks with ChangeNotifier {
   }
 
   Future<void> deleteShareLink(int shareLinkId) async {
-    // TODO:make HTTP DELETE request to delete the share link.
     final existingShareLink = getShareLinkById(shareLinkId);
     final url = baseUrl +
         '${existingShareLink.serverId}/${existingShareLink.encryptionKey}/';

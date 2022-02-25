@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:parichaya_frontend/utils/date.dart';
 
 import '../utils/string.dart';
 
@@ -21,7 +21,8 @@ class SharedDocumentTile extends StatelessWidget {
       children: [
         ListTile(
           title: Text(generateLimitedLengthText(title, 25)),
-          subtitle: Text(DateFormat('yyyy-MM-dd').format(expiryDate)),
+          // subtitle: Text(DateFormat('yyyy-MM-dd').format(expiryDate)),
+          subtitle: Text('Expires in ${getFormattedExpiry(expiryDate)}'),
           onTap: onTap,
         ),
         const Divider(

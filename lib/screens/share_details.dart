@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,11 +17,17 @@ import '../utils/date.dart';
 
 // import '../widgets/custom_icons_icons.dart';
 
-class ShareDetails extends StatelessWidget {
+class ShareDetails extends StatefulWidget {
   const ShareDetails({Key? key}) : super(key: key);
 
   static const routeName = '/share_details';
 
+  @override
+  State<ShareDetails> createState() => _ShareDetailsState();
+}
+
+class _ShareDetailsState extends State<ShareDetails> {
+  String formattedExpiryDuration = '';
   void showOptions(
     BuildContext context,
     ShareLink shareLink,
@@ -67,7 +71,7 @@ class ShareDetails extends StatelessWidget {
               final isConfirmed = await showDeleteConfirmationButtomSheet(
                   context,
                   message:
-                      "You still have ${formattedExpiryDuration} left. Confirm delete?");
+                      "You still have $formattedExpiryDuration left. Confirm delete?");
               if (isConfirmed) {
                 Provider.of<ShareLinks>(context, listen: false)
                     .deleteShareLink(shareLinkId);
@@ -92,9 +96,9 @@ class ShareDetails extends StatelessWidget {
     final shareLink = Provider.of<ShareLinks>(context, listen: false)
         .getShareLinkById(shareLinkId);
     final webUrl =
-        'parichaya-alpha.web.app/${shareLink.serverId}/${shareLink.encryptionKey}';
+        'http://165.232.180.17:8081/${shareLink.serverId}/${shareLink.encryptionKey}';
 
-    final formattedExpiryDuration = getFormattedExpiry(shareLink.expiryDate);
+    formattedExpiryDuration = getFormattedExpiry(shareLink.expiryDate);
 
     return Scaffold(
       appBar: AppBar(
@@ -117,140 +121,149 @@ class ShareDetails extends StatelessWidget {
               icon: const Icon(Icons.more_vert)),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-              child: Text(
-                shareLink.title.toUpperCase(),
-                textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            formattedExpiryDuration = getFormattedExpiry(shareLink.expiryDate);
+          });
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+                child: Text(
+                  shareLink.title.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            // Text(
-            //   formattedExpiryDuration.isEmpty
-            //       ? 'Link Has Expired'
-            //       : 'Expires in $formattedExpiryDuration',
-            //   textAlign: TextAlign.center,
-            //   style: const TextStyle(fontSize: 14),
-            // ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Material(
-                elevation: 2,
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Center(
-                        child: QrImage(
-                          data: webUrl,
-                          size: 200,
-                          backgroundColor: Colors.white,
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.all(9),
-                            width: 300,
-                            height: 20,
-                            child: Text(
-                              generateLimitedLengthText(webUrl, 40),
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                              style: const TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
+              Text(
+                formattedExpiryDuration.isEmpty
+                    ? 'Link Has Expired'
+                    : 'Expires in $formattedExpiryDuration',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Material(
+                  elevation: 2,
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Center(
+                          child: QrImage(
+                            data: webUrl,
+                            size: 200,
+                            backgroundColor: Colors.white,
                           ),
-                          Flexible(
-                            child: IconButton(
-                                padding: EdgeInsets.zero,
-                                iconSize: 20,
-                                onPressed: () {
-                                  Clipboard.setData(
-                                      ClipboardData(text: webUrl));
-                                  const snackBar = SnackBar(
-                                    content: Text('Link Copied to Clipboard.'),
-                                  );
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                },
-                                icon: const Icon(
-                                  Icons.copy,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.all(9),
+                              width: 300,
+                              height: 20,
+                              child: Text(
+                                generateLimitedLengthText(webUrl, 40),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                style: const TextStyle(
                                   color: Colors.black,
-                                )),
-                          )
-                        ],
-                      ),
-                      ElevatedButton(
-                        // label: Text(text),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(Icons.share_rounded),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'SHARE',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                            Flexible(
+                              child: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  iconSize: 20,
+                                  onPressed: () {
+                                    Clipboard.setData(
+                                        ClipboardData(text: webUrl));
+                                    const snackBar = SnackBar(
+                                      content:
+                                          Text('Link Copied to Clipboard.'),
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  },
+                                  icon: const Icon(
+                                    Icons.copy,
+                                    color: Colors.black,
+                                  )),
+                            )
+                          ],
                         ),
-                        // icon: icon,
-                        onPressed: () {
-                          Share.share(webUrl, subject: shareLink.title);
-                        },
-                        style: ButtonStyle(
-                          elevation: MaterialStateProperty.all<double>(0),
-
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              // side: BorderSide(color: Colors.red),
+                        ElevatedButton(
+                          // label: Text(text),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.share_rounded),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'SHARE',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          backgroundColor: MaterialStateProperty.all(
-                              Theme.of(context).primaryColorDark),
-                          foregroundColor: MaterialStateProperty.all(
-                            Colors.white,
-                            // overlayColor: MaterialStateProperty.all(
-                            //     Theme.of(context).primaryColor.withOpacity(0.1)),
+                          // icon: icon,
+                          onPressed: () {
+                            Share.share(webUrl, subject: shareLink.title);
+                          },
+                          style: ButtonStyle(
+                            elevation: MaterialStateProperty.all<double>(0),
+
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                // side: BorderSide(color: Colors.red),
+                              ),
+                            ),
+                            backgroundColor: MaterialStateProperty.all(
+                                Theme.of(context).primaryColorDark),
+                            foregroundColor: MaterialStateProperty.all(
+                              Colors.white,
+                              // overlayColor: MaterialStateProperty.all(
+                              //     Theme.of(context).primaryColor.withOpacity(0.1)),
+                            ),
+                            // label: Text(text),
+                            // child: Text(text),
                           ),
-                          // label: Text(text),
-                          // child: Text(text),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-              child: const Text('SHARED DOCUMENTS'),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SharedDocumentDetailsTiles(documents: shareLink.documents),
-          ],
+              Container(
+                margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+                child: const Text('SHARED DOCUMENTS'),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              SharedDocumentDetailsTiles(documents: shareLink.documents),
+            ],
+          ),
         ),
       ),
     );

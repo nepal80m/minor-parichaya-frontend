@@ -7,6 +7,7 @@ import 'package:parichaya_frontend/models/document_model.dart';
 import '../models/db_models/base_document_model.dart';
 
 class Documents with ChangeNotifier {
+  bool isSyncing = false;
   final List<Document> _items = [];
   // final List<Document> _items = [
   //   Document(
@@ -40,15 +41,20 @@ class Documents with ChangeNotifier {
   //     note: 'This is my Fake Khop Card',
   //   ),
   // ];
-  DatabaseHelper _databaseHelper = DatabaseHelper();
-
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
   Documents() {
-    DatabaseHelper _tempdataBaseHelper = DatabaseHelper();
-    _databaseHelper = _tempdataBaseHelper;
+    // DatabaseHelper _tempdataBaseHelper = DatabaseHelper();
+    // _databaseHelper = _tempdataBaseHelper;
     syncToDB();
+  }
+  Documents.noSync() {
+    // DatabaseHelper _tempdataBaseHelper = DatabaseHelper();
+    // _databaseHelper = _tempdataBaseHelper;
+    // syncToDB();
   }
 
   Future<void> syncToDB() async {
+    isSyncing = true;
     final List<BaseDocument> baseDocuments =
         await _databaseHelper.getDocuments();
 
@@ -62,6 +68,7 @@ class Documents with ChangeNotifier {
     }
     _items.clear();
     _items.addAll([...documents]);
+    isSyncing = false;
     notifyListeners();
   }
 

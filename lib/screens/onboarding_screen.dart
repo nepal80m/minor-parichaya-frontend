@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:parichaya_frontend/providers/preferences.dart';
 import 'package:provider/provider.dart';
+import '../providers/preferences.dart';
 // import '../utils/is_first_run.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -68,7 +68,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Theme.of(context).primaryColor
+                          : Colors.white,
                     ),
                   ),
                   // Text(

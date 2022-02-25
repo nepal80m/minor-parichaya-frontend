@@ -8,12 +8,12 @@ class Preferences extends ChangeNotifier {
 
   final SharedPreferencesHelper _sharedPreferencesHelper =
       SharedPreferencesHelper();
-  Preferences() {
+  Preferences.noSync() {
     // SharedPreferencesHelper _tempSharedPreferencesHelper =
     //     SharedPreferencesHelper();
     // _sharedPreferencesHelper = _tempSharedPreferencesHelper;
   }
-  Preferences.sync() {
+  Preferences() {
     syncToSharedPreferences();
   }
 

@@ -75,39 +75,23 @@ class _SharedDocumentDetailsTilesState
                           ...document.images.map((image) {
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(15),
-                              child: Stack(
-                                children: [
-                                  Positioned.fill(
-                                    child: Image.network(
-                                      image.path,
-                                      loadingBuilder: (BuildContext context,
-                                          Widget child,
-                                          ImageChunkEvent? loadingProgress) {
-                                        if (loadingProgress == null) {
-                                          return child;
-                                        }
-                                        return const Center(
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white,
-                                          ),
-                                        );
-                                      },
-                                      height: 200,
-                                      width: 200,
-                                      fit: BoxFit.cover,
+                              child: Image.network(
+                                image.path,
+                                loadingBuilder: (BuildContext context,
+                                    Widget child,
+                                    ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
                                     ),
-                                  ),
-                                  Positioned.fill(
-                                    child: Material(
-                                      color: Theme.of(context).disabledColor,
-                                      child: InkWell(
-                                        highlightColor:
-                                            Colors.orange.withOpacity(0.1),
-                                        splashColor: Colors.black12,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  );
+                                },
+                                height: 200,
+                                width: 200,
+                                fit: BoxFit.cover,
                               ),
                             );
                           }).toList(),

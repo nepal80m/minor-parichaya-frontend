@@ -43,7 +43,7 @@ class DocumentTile extends StatelessWidget {
                 semanticLabel: title,
                 frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                   return Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: child,
                   );
                 },

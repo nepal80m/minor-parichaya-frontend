@@ -25,7 +25,7 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  final prefs = Preferences();
+  final prefs = Preferences.noSync();
   await prefs.syncToSharedPreferences();
   FlutterNativeSplash.remove();
 

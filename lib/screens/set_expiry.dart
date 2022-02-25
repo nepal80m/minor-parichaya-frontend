@@ -1,8 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:parichaya_frontend/models/document_model.dart';
+import 'package:parichaya_frontend/utils/date.dart';
 import 'package:provider/provider.dart';
 import 'share_details.dart';
 
@@ -21,28 +22,63 @@ class SetExpiry extends StatefulWidget {
 class _SetExpiryState extends State<SetExpiry> {
   final titleController = TextEditingController();
   final messageController = TextEditingController();
-  final dateController = TextEditingController(
-      text: DateFormat('yyyy-MM-dd')
-          .format(DateTime.now().toLocal().add(const Duration(days: 1))));
+  DateTime expiryDate = DateTime.now().toLocal().add(const Duration(hours: 1));
+  // final dateController = TextEditingController(
+  //     text: DateTime.now().toLocal().add(const Duration(hours: 1)).toString());
   var _isloading = false;
 
-  void _showDatePicker() async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now().toLocal().add(const Duration(days: 1)),
-      firstDate: DateTime.now().toLocal().add(const Duration(days: 1)),
-      lastDate: DateTime.now().toLocal().add(
-            const Duration(days: 7),
-          ),
-    );
+  // void _showDatePicker() async {
+  //   DateTime? pickedDate = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now().toLocal().add(const Duration(days: 1)),
+  //     firstDate: DateTime.now().toLocal().add(const Duration(days: 1)),
+  //     lastDate: DateTime.now().toLocal().add(
+  //           const Duration(days: 7),
+  //         ),
+  //   );
 
-    if (pickedDate != null) {
-      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-      setState(() {
-        dateController.text = formattedDate;
-      });
-    }
-  }
+  //   if (pickedDate != null) {
+  //     String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+  //     setState(() {
+  //       dateController.text = formattedDate;
+  //     });
+  //   }
+  // }
+
+  // void _showDateTimePicker() async {
+  //   DateTime? pickedDate = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now().toLocal(),
+  //     firstDate: DateTime.now().toLocal(),
+  //     lastDate: DateTime.now().toLocal().add(
+  //           const Duration(days: 7),
+  //         ),
+  //   );
+
+  //   TimeOfDay? pickedTime = await showTimePicker(
+  //     context: context,
+  //     initialTime: TimeOfDay.fromDateTime(
+  //       DateTime.now().toLocal().add(
+  //             const Duration(hours: 1),
+  //           ),
+  //     ),
+  //   );
+  // DateTime? pickedDate = await showDatePicker(
+  //   context: context,
+  //   initialDate: DateTime.now().toLocal().add(const Duration(days: 1)),
+  //   firstDate: DateTime.now().toLocal().add(const Duration(days: 1)),
+  //   lastDate: DateTime.now().toLocal().add(
+  //         const Duration(days: 7),
+  //       ),
+  // );
+
+  //   if (pickedTime != null && pickedDate != null) {
+  //     String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+  //     setState(() {
+  //       dateController.text = formattedDate;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +125,7 @@ class _SetExpiryState extends State<SetExpiry> {
                     await Provider.of<ShareLinks>(context, listen: false)
                         .addShareLink(
                   title: titleController.text,
-                  expiryDate: dateController.text,
+                  expiryDate: expiryDate.toString(),
                   documents: selectedDocuments,
                 );
                 setState(() {
@@ -98,6 +134,16 @@ class _SetExpiryState extends State<SetExpiry> {
                 Navigator.of(context)
                   ..pop()
                   ..pop();
+                if (newId == null) {
+                  final snackBar = SnackBar(
+                    backgroundColor: Theme.of(context).errorColor,
+                    content: const Text(
+                        'Some error has occured. Please try again in a while.'),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  return;
+                }
+
                 Navigator.of(context)
                     .pushNamed(ShareDetails.routeName, arguments: newId);
               }
@@ -168,24 +214,80 @@ class _SetExpiryState extends State<SetExpiry> {
                           padding:
                               EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                           child: Text(
-                            'Set Expiry Date',
+                            'Set Expiry',
                             style: TextStyle(fontSize: 18),
                           ),
                         ),
-                        TextField(
-                          controller: dateController,
-                          decoration: InputDecoration(
-                            icon: const Icon(Icons.calendar_today_outlined),
-                            filled: true,
-                            fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
+                        // TextField(
+                        //   controller: dateController,
+                        //   decoration: InputDecoration(
+                        //     icon: const Icon(Icons.calendar_today_outlined),
+                        //     filled: true,
+                        //     fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(10),
+                        //       borderSide: BorderSide.none,
+                        //     ),
+                        //   ),
+                        //   readOnly: true,
+                        //   onTap: _showDateTimePicker,
+                        // ),
+
+                        // Icon(Icons.calendar_today_rounded),
+                        // SizedBox(
+                        //   width: 10,
+                        // ),
+                        SizedBox(
+                          height: 100,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: CupertinoDatePicker(
+                            // mode: CupertinoDatePickerMode.date,
+                            onDateTimeChanged: (newExpiryDateTime) {
+                              setState(() {
+                                expiryDate = newExpiryDateTime;
+                              });
+                            },
+                            initialDateTime: DateTime.now().toLocal().add(
+                                  const Duration(
+                                    hours: 1,
+                                  ),
+                                ),
+                            minimumDate: DateTime.now().toLocal().add(
+                                  const Duration(
+                                    minutes: 30,
+                                  ),
+                                ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Center(
+                            child: Text(
+                              'Expires in ${getFormattedExpiry(expiryDate)}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(fontSize: 15),
                             ),
                           ),
-                          readOnly: true,
-                          onTap: _showDatePicker,
                         ),
+                        // const SizedBox(
+                        //   height: 10,
+                        // ),
+                        // TextField(
+                        //   controller: dateController,
+                        //   decoration: InputDecoration(
+                        //     icon: const Icon(Icons.watch_later_outlined),
+                        //     filled: true,
+                        //     fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(10),
+                        //       borderSide: BorderSide.none,
+                        //     ),
+                        //   ),
+                        //   readOnly: true,
+                        //   onTap: _showTimePicker,
+                        // ),
                       ],
                     ),
                   ),

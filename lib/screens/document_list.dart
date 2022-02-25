@@ -38,39 +38,44 @@ class _DocumentListState extends State<DocumentList> {
           documentList = Provider.of<Documents>(context, listen: false).items;
         });
       },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.85 -
-              // appBar.preferredSize.height -
-              MediaQuery.of(context).padding.top,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                  margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-                  child: Text(
-                    '${documentList.length} DOCUMENTS',
-                  )),
-              const SizedBox(
-                height: 10,
+      child: Provider.of<Documents>(context).isSyncing
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.85 -
+                    // appBar.preferredSize.height -
+                    MediaQuery.of(context).padding.top,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                        margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+                        child: Text(
+                          '${documentList.length} DOCUMENTS',
+                        )),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ...documentList.map(
+                      (document) {
+                        return DocumentTile(
+                          title: document.title,
+                          imagePath: document.images[0].path,
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                DocumentDetails.routeName,
+                                arguments: document.id);
+                          },
+                        );
+                      },
+                    ).toList(),
+                  ],
+                ),
               ),
-              ...documentList.map(
-                (document) {
-                  return DocumentTile(
-                    title: document.title,
-                    imagePath: document.images[0].path,
-                    onTap: () {
-                      Navigator.of(context).pushNamed(DocumentDetails.routeName,
-                          arguments: document.id);
-                    },
-                  );
-                },
-              ).toList(),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

@@ -34,37 +34,42 @@ class _SharedListState extends State<SharedList> {
           shareLinks = Provider.of<ShareLinks>(context, listen: false).items;
         });
       },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.85 -
-              // appBar.preferredSize.height -
-              MediaQuery.of(context).padding.top,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                  margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
-                  child: Text(
-                    '${shareLinks.length} SHARABLE LINKS',
-                  )),
-              const SizedBox(
-                height: 10,
+      child: Provider.of<ShareLinks>(context).isSyncing
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.85 -
+                    // appBar.preferredSize.height -
+                    MediaQuery.of(context).padding.top,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                        margin: const EdgeInsets.fromLTRB(10, 20, 10, 5),
+                        child: Text(
+                          '${shareLinks.length} SHARABLE LINKS',
+                        )),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ...shareLinks.map((shareLink) {
+                      return SharedDocumentTile(
+                        title: shareLink.title.toUpperCase(),
+                        expiryDate: shareLink.expiryDate,
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                              ShareDetails.routeName,
+                              arguments: shareLink.id);
+                        },
+                      );
+                    }).toList(),
+                  ],
+                ),
               ),
-              ...shareLinks.map((shareLink) {
-                return SharedDocumentTile(
-                  title: shareLink.title.toUpperCase(),
-                  expiryDate: shareLink.expiryDate,
-                  onTap: () {
-                    Navigator.of(context).pushNamed(ShareDetails.routeName,
-                        arguments: shareLink.id);
-                  },
-                );
-              }).toList(),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

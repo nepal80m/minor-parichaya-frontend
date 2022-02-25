@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
-
+import 'package:uuid/uuid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -76,10 +76,11 @@ class DatabaseHelper {
     final db = await _databaseHelper.database;
 
     final Directory baseDir = await getApplicationDocumentsDirectory();
-    // TODO: generate random file name to prevent duplication conflicts.
     final path = baseDir.path;
-    final fileName = basename(documentImage.path);
-    final newPath = '$path/$fileName';
+    // final fileName = basenameWithoutExtension(documentImage.path);
+    final fileExtension = extension(documentImage.path);
+    const uuid = Uuid();
+    final newPath = '$path/${uuid.v4()}$fileExtension';
     File(documentImage.path).copy(newPath);
 
     documentImage.path = newPath;

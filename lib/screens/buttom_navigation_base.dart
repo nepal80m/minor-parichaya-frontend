@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parichaya_frontend/providers/preferences.dart';
 import 'package:parichaya_frontend/screens/no_internet.dart';
 import 'package:parichaya_frontend/widgets/profile_drawer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
 
 import '../utils/string.dart';
@@ -25,14 +27,24 @@ class ButtomNavigationBase extends StatefulWidget {
 
 class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   int _screenIndex = 0;
-  String name = 'key_name';
-  bool isSwitched = false;
   bool isOnline = false;
   late StreamSubscription internetSubscription;
+
+  void checkInternet() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    bool connected = true;
+    if (connectivityResult == ConnectivityResult.none) {
+      connected = false;
+    }
+    setState(() {
+      isOnline = connected;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    checkInternet();
     internetSubscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
@@ -48,9 +60,10 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
         // Navigator.of(context).push(
         // MaterialPageRoute(builder: (context) => const NoInternetPage()));
       }
-      setState(() {
-        isOnline = connected;
-      });
+      // setState(() {
+      print(connected.toString());
+      isOnline = connected;
+      // });
     });
   }
 
@@ -67,10 +80,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
   }
 
   final List<Map<String, Object>> _screens = [
-    // {
-    //   'screen': HomePage(),
-    //   'title': 'My Identity Docs',
-    // },
     {
       'screen': const DocumentList(),
       'title': 'My Identity Docs',
@@ -80,14 +89,6 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
       // 'screen': const NoInternetPage(),
       'title': 'Shared Docs',
     },
-    // {
-    //   'screen': const ReceivedList(),
-    //   'title': 'Received Docs',
-    // },
-    // {
-    //   'screen': const Extras(),
-    //   'title': 'Extra',
-    // },
   ];
 
   Widget? _getFAB() {
@@ -184,19 +185,20 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
                 size: 30,
               ),
             ),
-          IconButton(
-            splashRadius: 24,
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: DocumentSearchDelegate(),
-              );
-            },
-            icon: const Icon(
-              Icons.search,
-              size: 30,
+          if (_screenIndex == 0)
+            IconButton(
+              splashRadius: 24,
+              onPressed: () {
+                showSearch(
+                  context: context,
+                  delegate: DocumentSearchDelegate(),
+                );
+              },
+              icon: const Icon(
+                Icons.search,
+                size: 30,
+              ),
             ),
-          ),
         ],
       ),
       // body: _screens[_screenIndex]['screen'] as Widget,
@@ -211,18 +213,17 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
         // showUnselectedLabels: true,
         elevation: 5,
         iconSize: 20,
-        unselectedItemColor: !isSwitched
-            ? Theme.of(context).unselectedWidgetColor
-            : Theme.of(context).unselectedWidgetColor.withOpacity(.2),
+        unselectedItemColor:
+            Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
+        // : Theme.of(context).unselectedWidgetColor.withOpacity(.2),
         selectedItemColor:
-            !isSwitched ? Theme.of(context).primaryColor : Colors.white,
+            Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
         currentIndex: _screenIndex,
         onTap: _selectScreen,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(
               CustomIcons.files_folder_filled,
-              // color: isSwitched?Colors.white,
             ),
             label: "My Docs",
           ),

@@ -8,7 +8,6 @@ class AboutUs extends StatefulWidget {
 }
 
 class _AboutUsState extends State<AboutUs> {
-  bool isSwitched = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

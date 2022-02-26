@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parichaya_frontend/providers/preferences.dart';
 import 'package:parichaya_frontend/screens/no_internet.dart';
 import 'package:parichaya_frontend/widgets/profile_drawer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:provider/provider.dart';
 import 'dart:async';
 
 import '../utils/string.dart';
@@ -60,10 +58,9 @@ class _ButtomNavigationBaseState extends State<ButtomNavigationBase> {
         // Navigator.of(context).push(
         // MaterialPageRoute(builder: (context) => const NoInternetPage()));
       }
-      // setState(() {
-      print(connected.toString());
-      isOnline = connected;
-      // });
+      setState(() {
+        isOnline = connected;
+      });
     });
   }
 

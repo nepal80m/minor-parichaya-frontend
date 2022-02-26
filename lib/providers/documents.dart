@@ -9,38 +9,7 @@ import '../models/db_models/base_document_model.dart';
 class Documents with ChangeNotifier {
   bool isSyncing = false;
   final List<Document> _items = [];
-  // final List<Document> _items = [
-  //   Document(
-  //     id: 1,
-  //     title: 'Citizenship',
-  //     // tags: ['Government'],
-  //     note: 'This is my Fake Nagarikta',
-  //   ),
-  //   Document(
-  //     id: 2,
-  //     title: 'Licence',
-  //     // tags: ['Government', 'Bike'],
-  //     note: 'This is my Fake Licence',
-  //   ),
-  //   Document(
-  //     id: 3,
-  //     title: 'School Leaving Certificate',
-  //     // tags: ['Education', 'School'],
-  //     note: 'This is my Fake School leaving certificate',
-  //   ),
-  //   Document(
-  //     id: 4,
-  //     title: 'Passport',
-  //     // tags: ['Government'],
-  //     note: 'This is my Fake Passport',
-  //   ),
-  //   Document(
-  //     id: 5,
-  //     title: 'Khop Card',
-  //     // tags: ['Government', 'Covid'],
-  //     note: 'This is my Fake Khop Card',
-  //   ),
-  // ];
+
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   Documents() {
     // DatabaseHelper _tempdataBaseHelper = DatabaseHelper();
@@ -68,6 +37,7 @@ class Documents with ChangeNotifier {
     }
     _items.clear();
     _items.addAll([...documents]);
+    sortItemsInAlphabeticalOrder();
     isSyncing = false;
     notifyListeners();
   }
@@ -75,11 +45,17 @@ class Documents with ChangeNotifier {
   void syncToDBBackend() async {
     final documents = await _databaseHelper.getDocumentsWithImages();
     _items.addAll([...documents]);
+    sortItemsInAlphabeticalOrder();
+
     notifyListeners();
   }
 
   List<Document> get items {
     return [..._items];
+  }
+
+  void sortItemsInAlphabeticalOrder() {
+    _items.sort((a, b) => a.title.compareTo(b.title));
   }
 
   int get count {
@@ -116,6 +92,8 @@ class Documents with ChangeNotifier {
     }
     // option 1
     _items.add(newDocument);
+    sortItemsInAlphabeticalOrder();
+
     notifyListeners();
     // option 2
     // syncToDB();

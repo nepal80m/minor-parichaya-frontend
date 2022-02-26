@@ -134,12 +134,17 @@ class ShareLinks with ChangeNotifier {
     }
     _items.clear();
     _items.addAll([...shareLinks]);
+    sortItemsByExpiry();
     isSyncing = false;
     notifyListeners();
   }
 
   List<ShareLink> get items {
     return [..._items];
+  }
+
+  void sortItemsByExpiry() {
+    _items.sort((a, b) => a.expiryDate.compareTo(b.expiryDate));
   }
 
   int get count {
@@ -218,6 +223,7 @@ class ShareLinks with ChangeNotifier {
       if (newShareLink == null) {
       } else {
         _items.add(newShareLink);
+        sortItemsByExpiry();
       }
       notifyListeners();
       // await syncToDB();

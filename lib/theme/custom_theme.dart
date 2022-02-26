@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomTheme {
   // TODO: Customize these theme
+  // TODO: add bottomNavigationBarTheme.unselectedItemColor and bottomNavigationBarTheme.selectedItemColor
   // theme: ThemeData(
   //   primarySwatch: Colors.blue,
   //   fontFamily: 'OpenSans',

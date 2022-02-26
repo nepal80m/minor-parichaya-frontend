@@ -12,7 +12,7 @@ class UpdateName extends StatefulWidget {
 class _UpdateNameState extends State<UpdateName> {
   //editing controller
   final nameController = TextEditingController();
-  bool isSwitched = false;
+  // bool isSwitched = false;
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +77,9 @@ class _UpdateNameState extends State<UpdateName> {
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color:
-                  !isSwitched ? Theme.of(context).primaryColor : Colors.white,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Theme.of(context).primaryColor
+                  : Colors.white,
             ),
             onPressed: () {
               //passing this to our root
@@ -104,18 +105,19 @@ class _UpdateNameState extends State<UpdateName> {
                             style: TextStyle(
                               fontSize: 35,
                               fontWeight: FontWeight.bold,
-                              color: !isSwitched
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
                                   ? Theme.of(context).primaryColor
-                                  : const Color.fromARGB(255, 189, 187, 187),
+                                  : Colors.white,
                             ),
                           ),
-                          const Text(
-                            'Type in your Name',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
+                          // const Text(
+                          //   'Type in your Name',
+                          //   style: TextStyle(
+                          //     fontSize: 14,
+                          //     fontWeight: FontWeight.w400,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

@@ -41,6 +41,9 @@ class CustomTheme {
   static ThemeData darkTheme = ThemeData(
       brightness: Brightness.dark,
       scaffoldBackgroundColor: Colors.black,
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white.withOpacity(0.5)),
       // colorScheme: const ColorScheme.dark(),
       // appBarTheme: const AppBarTheme(
       //   backgroundColor: Colors.black,

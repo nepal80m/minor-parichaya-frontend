@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parichaya_frontend/models/document_model.dart';
 import 'package:parichaya_frontend/utils/date.dart';
+import 'package:parichaya_frontend/widgets/ui/custom_text_field.dart';
 import 'package:provider/provider.dart';
 import 'share_details.dart';
 
@@ -163,50 +164,13 @@ class _SetExpiryState extends State<SetExpiry> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                          child: Text(
-                            'Title',
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                        TextField(
+                        CustomTextField(
+                          label: 'Title',
                           controller: titleController,
                           autofocus: true,
                           textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
                         ),
-                        // const Padding(
-                        //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                        //   child: Text(
-                        //     'Message',
-                        //     style: TextStyle(fontSize: 18),
-                        //   ),
-                        // ),
-                        // TextField(
-                        //   controller: messageController,
-                        //   textInputAction: TextInputAction.next,
-                        //   maxLines: 6,
-                        //   decoration: InputDecoration(
-                        //     filled: true,
-                        //     fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
-                        //     border: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //       borderSide: BorderSide.none,
-                        //     ),
-                        //   ),
-                        //   onChanged: (value) {
-                        //     return;
-                        //   },
-                        // ),
+
                         const SizedBox(
                           height: 10,
                         ),
@@ -218,47 +182,38 @@ class _SetExpiryState extends State<SetExpiry> {
                             style: TextStyle(fontSize: 18),
                           ),
                         ),
-                        // TextField(
-                        //   controller: dateController,
-                        //   decoration: InputDecoration(
-                        //     icon: const Icon(Icons.calendar_today_outlined),
-                        //     filled: true,
-                        //     fillColor: const Color.fromRGBO(220, 220, 220, 0.6),
-                        //     border: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //       borderSide: BorderSide.none,
-                        //     ),
-                        //   ),
-                        //   readOnly: true,
-                        //   onTap: _showDateTimePicker,
-                        // ),
 
-                        // Icon(Icons.calendar_today_rounded),
-                        // SizedBox(
-                        //   width: 10,
-                        // ),
                         SizedBox(
-                          height: 100,
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          child: CupertinoDatePicker(
-                            // mode: CupertinoDatePickerMode.date,
-                            onDateTimeChanged: (newExpiryDateTime) {
-                              setState(() {
-                                expiryDate = newExpiryDateTime;
-                              });
-                            },
-                            initialDateTime: DateTime.now().toLocal().add(
-                                  const Duration(
-                                    hours: 1,
+                            height: 100,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: CupertinoTheme(
+                              data: CupertinoThemeData(
+                                brightness: Theme.of(context).brightness,
+                                textTheme: const CupertinoTextThemeData(
+                                  dateTimePickerTextStyle: TextStyle(
+                                    fontSize: 16,
                                   ),
                                 ),
-                            minimumDate: DateTime.now().toLocal().add(
-                                  const Duration(
-                                    minutes: 30,
-                                  ),
-                                ),
-                          ),
-                        ),
+                              ),
+                              child: CupertinoDatePicker(
+                                // mode: CupertinoDatePickerMode.date,
+                                onDateTimeChanged: (newExpiryDateTime) {
+                                  setState(() {
+                                    expiryDate = newExpiryDateTime;
+                                  });
+                                },
+                                initialDateTime: DateTime.now().toLocal().add(
+                                      const Duration(
+                                        hours: 1,
+                                      ),
+                                    ),
+                                minimumDate: DateTime.now().toLocal().add(
+                                      const Duration(
+                                        minutes: 30,
+                                      ),
+                                    ),
+                              ),
+                            )),
                         Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Center(

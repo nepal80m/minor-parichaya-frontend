@@ -51,7 +51,7 @@ class CustomTextField extends StatelessWidget {
         onChanged: onChanged,
         decoration: InputDecoration(
           filled: true,
-          fillColor: Theme.of(context).disabledColor.withOpacity(0.05),
+          fillColor: Theme.of(context).disabledColor.withOpacity(0.08),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide.none,

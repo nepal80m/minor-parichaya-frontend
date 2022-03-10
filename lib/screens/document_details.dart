@@ -162,6 +162,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                         borderRadius: BorderRadius.circular(15),
                         child: Stack(
                           children: [
+                            Container(
+                              color: Colors.grey.withOpacity(0.1),
+                            ),
                             Positioned.fill(
                               child: Image.file(
                                 File(image.path),
@@ -232,9 +235,10 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                         leading: const Icon(Icons.camera_alt_rounded),
                         title: const Text('Take a Photo'),
                         onTap: () async {
+                          Navigator.of(context).pop();
+
                           await pickImage(
                               context, ImageSource.camera, document.id);
-                          Navigator.of(context).pop();
                         },
                       ),
                     ],

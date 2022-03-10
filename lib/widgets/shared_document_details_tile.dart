@@ -83,10 +83,8 @@ class _SharedDocumentDetailsTilesState
                                   if (loadingProgress == null) {
                                     return child;
                                   }
-                                  return const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
+                                  return Container(
+                                    color: Colors.grey.withOpacity(0.1),
                                   );
                                 },
                                 height: 200,

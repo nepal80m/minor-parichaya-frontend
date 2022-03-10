@@ -75,9 +75,7 @@ class _ShareDetailsState extends State<ShareDetails> {
               if (isConfirmed) {
                 Provider.of<ShareLinks>(context, listen: false)
                     .deleteShareLink(shareLinkId);
-                Navigator.of(context)
-                  ..pop()
-                  ..pop();
+                Navigator.of(context).pop();
 
                 const snackBar =
                     SnackBar(content: Text('Share Link Deleted Successfully'));

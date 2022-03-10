@@ -195,11 +195,12 @@ class ShareLinks with ChangeNotifier {
           ImageProperties properties =
               await FlutterNativeImage.getImageProperties(image.path);
           File compressedImage = await FlutterNativeImage.compressImage(
-              image.path,
-              quality: 70,
-              targetWidth: 600,
-              targetHeight:
-                  (properties.height! * 600 / properties.width!).round());
+            image.path,
+            quality: 70,
+            // targetWidth: 600,
+            // targetHeight:
+            //     (properties.height! * 600 / properties.width!).round()
+          );
           request.files.add(await http.MultipartFile.fromPath(
               'images', compressedImage.path));
         }

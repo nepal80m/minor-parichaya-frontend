@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:document_scanner_flutter/document_scanner_flutter.dart';
 
 import '../widgets/options_modal_buttom_sheet.dart';
 import '../screens/document_details.dart';
@@ -27,6 +28,19 @@ class _AddDocumentsState extends State<AddDocuments> {
   var noteErrorMessage = '';
   final List<String> uploadedImagePaths = [];
   var imageErrorMessage = '';
+
+  openImageScanner(BuildContext context) async {
+    var image = await DocumentScannerFlutter.launch(
+      context,
+      //source: ScannerFileSource.CAMERA,
+    );
+    if (image != null) {
+      setState(() {
+        uploadedImagePaths.add(image.path);
+        Navigator.of(context).pop();
+      });
+    }
+  }
 
   void addDocument(context) async {
     titleErrorMessage = '';
@@ -91,6 +105,13 @@ class _AddDocumentsState extends State<AddDocuments> {
           onTap: () {
             pickImage(ImageSource.camera);
             Navigator.of(context).pop();
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.document_scanner_rounded),
+          title: const Text('Scan Document'),
+          onTap: () {
+            openImageScanner(context);
           },
         ),
       ],

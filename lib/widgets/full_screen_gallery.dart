@@ -37,7 +37,7 @@ class FullScreenGallery extends StatelessWidget {
         onPageChanged: onPageChange,
         pageController: PageController(initialPage: initialIndex),
         // enableRotation: true,
-        allowImplicitScrolling: true,
+        // allowImplicitScrolling: true,
         scrollPhysics: const BouncingScrollPhysics(),
         builder: (BuildContext context, int index) {
           return PhotoViewGalleryPageOptions(

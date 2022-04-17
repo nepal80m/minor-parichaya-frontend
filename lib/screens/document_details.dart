@@ -13,6 +13,10 @@ import '../utils/string.dart';
 import './edit_document.dart';
 import '../widgets/delete_confirmation_buttom_sheet.dart';
 
+import 'package:document_scanner_flutter/document_scanner_flutter.dart';
+// import 'package:document_scanner_flutter/configs/configs.dart';
+// import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
+
 enum selectionValue {
   edit,
   delete,
@@ -234,6 +238,20 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                         onTap: () async {
                           await pickImage(
                               context, ImageSource.camera, document.id);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.camera_alt_rounded),
+                        title: const Text('Scan a document'),
+                        onTap: () async {
+                          try {
+                            File? scannedDoc =
+                                await DocumentScannerFlutter.launch(context);
+                            // `scannedDoc` will be the image file scanned from scanner
+                          } on PlatformException {
+                            // 'Failed to get document path or operation cancelled!';
+                          }
                           Navigator.of(context).pop();
                         },
                       ),

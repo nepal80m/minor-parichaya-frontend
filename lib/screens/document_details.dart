@@ -32,6 +32,22 @@ class DocumentDetails extends StatefulWidget {
 }
 
 class _DocumentDetailsState extends State<DocumentDetails> {
+  Future<void> openImageScanner(BuildContext context, int documentId) async {
+    try {
+      final image = await DocumentScannerFlutter.launch(
+        context,
+        //source: ScannerFileSource.CAMERA,
+      );
+      if (image == null) return;
+      Provider.of<Documents>(context, listen: false)
+          .addDocumentImage(documentId, image.path);
+      const snackBar = SnackBar(content: Text('Image Successfully Added'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } on PlatformException catch (_) {
+      return;
+    }
+  }
+
   Future<void> pickImage(
       BuildContext context, ImageSource source, int documentId) async {
     try {
@@ -46,7 +62,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     }
   }
 
-  void showOptions(
+  void showMoreOptions(
     BuildContext context,
     int documentId,
   ) {
@@ -86,6 +102,58 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     );
   }
 
+  void showAddImageOptions(
+    BuildContext context,
+    int documentId,
+  ) {
+    showModalBottomSheet<void>(
+      isScrollControlled: true,
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Wrap(
+              children: [
+                const Text('Select Actions'),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.document_scanner_rounded),
+                  title: const Text('Scan a document'),
+                  onTap: () async {
+                    await openImageScanner(context, documentId);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.file_upload_rounded),
+                  title: const Text('Upload Image'),
+                  onTap: () async {
+                    await pickImage(context, ImageSource.gallery, documentId);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.camera_alt_rounded),
+                  title: const Text('Take a Photo'),
+                  onTap: () async {
+                    await pickImage(context, ImageSource.camera, documentId);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final routeDocumentId = ModalRoute.of(context)?.settings.arguments as int;
@@ -109,7 +177,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
         actions: [
           IconButton(
               onPressed: () {
-                showOptions(
+                showMoreOptions(
                   context,
                   document.id,
                 );
@@ -210,61 +278,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
         tooltip: 'Add Image',
         elevation: 2,
         onPressed: () {
-          showModalBottomSheet<void>(
-            isScrollControlled: true,
-            context: context,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-            ),
-            builder: (BuildContext context) {
-              return Padding(
-                padding: MediaQuery.of(context).viewInsets,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  child: Wrap(
-                    children: [
-                      const Text('Select Actions'),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.file_upload_rounded),
-                        title: const Text('Upload Image'),
-                        onTap: () async {
-                          await pickImage(
-                              context, ImageSource.gallery, document.id);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.camera_alt_rounded),
-                        title: const Text('Take a Photo'),
-                        onTap: () async {
-                          Navigator.of(context).pop();
-
-                          await pickImage(
-                              context, ImageSource.camera, document.id);
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.camera_alt_rounded),
-                        title: const Text('Scan a document'),
-                        onTap: () async {
-                          try {
-                            File? scannedDoc =
-                                await DocumentScannerFlutter.launch(context);
-                            // `scannedDoc` will be the image file scanned from scanner
-                          } on PlatformException {
-                            // 'Failed to get document path or operation cancelled!';
-                          }
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
+          showAddImageOptions(context, document.id);
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

@@ -29,19 +29,6 @@ class _AddDocumentsState extends State<AddDocuments> {
   final List<String> uploadedImagePaths = [];
   var imageErrorMessage = '';
 
-  openImageScanner(BuildContext context) async {
-    var image = await DocumentScannerFlutter.launch(
-      context,
-      //source: ScannerFileSource.CAMERA,
-    );
-    if (image != null) {
-      setState(() {
-        uploadedImagePaths.add(image.path);
-        Navigator.of(context).pop();
-      });
-    }
-  }
-
   void addDocument(context) async {
     titleErrorMessage = '';
     imageErrorMessage = '';
@@ -66,7 +53,19 @@ class _AddDocumentsState extends State<AddDocuments> {
     }
   }
 
-  void pickImage(ImageSource source) async {
+  Future<void> openImageScanner(BuildContext context) async {
+    File? image = await DocumentScannerFlutter.launch(
+      context,
+      //source: ScannerFileSource.CAMERA,
+    );
+    if (image != null) {
+      setState(() {
+        uploadedImagePaths.add(image.path);
+      });
+    }
+  }
+
+  Future<void> pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
@@ -92,6 +91,14 @@ class _AddDocumentsState extends State<AddDocuments> {
         const Text('Select Actions'),
         const Divider(),
         ListTile(
+          leading: const Icon(Icons.document_scanner_rounded),
+          title: const Text('Scan Document'),
+          onTap: () async {
+            await openImageScanner(context);
+            Navigator.of(context).pop();
+          },
+        ),
+        ListTile(
           leading: const Icon(Icons.file_upload_rounded),
           title: const Text('Upload Image'),
           onTap: () {
@@ -105,13 +112,6 @@ class _AddDocumentsState extends State<AddDocuments> {
           onTap: () {
             pickImage(ImageSource.camera);
             Navigator.of(context).pop();
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.document_scanner_rounded),
-          title: const Text('Scan Document'),
-          onTap: () {
-            openImageScanner(context);
           },
         ),
       ],

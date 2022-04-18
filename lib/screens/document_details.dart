@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parichaya_frontend/screens/document_scanner.dart';
 import '../screens/document_detail_full_screen_gallery.dart';
 import '../widgets/options_modal_buttom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,6 @@ import '../utils/string.dart';
 import './edit_document.dart';
 import '../widgets/delete_confirmation_buttom_sheet.dart';
 
-import 'package:document_scanner_flutter/document_scanner_flutter.dart';
 // import 'package:document_scanner_flutter/configs/configs.dart';
 // import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 
@@ -32,22 +32,6 @@ class DocumentDetails extends StatefulWidget {
 }
 
 class _DocumentDetailsState extends State<DocumentDetails> {
-  Future<void> openImageScanner(BuildContext context, int documentId) async {
-    try {
-      final image = await DocumentScannerFlutter.launch(
-        context,
-        //source: ScannerFileSource.CAMERA,
-      );
-      if (image == null) return;
-      Provider.of<Documents>(context, listen: false)
-          .addDocumentImage(documentId, image.path);
-      const snackBar = SnackBar(content: Text('Image Successfully Added'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    } on PlatformException catch (_) {
-      return;
-    }
-  }
-
   Future<void> pickImage(
       BuildContext context, ImageSource source, int documentId) async {
     try {
@@ -99,58 +83,6 @@ class _DocumentDetailsState extends State<DocumentDetails> {
           },
         ),
       ],
-    );
-  }
-
-  void showAddImageOptions(
-    BuildContext context,
-    int documentId,
-  ) {
-    showModalBottomSheet<void>(
-      isScrollControlled: true,
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      ),
-      builder: (BuildContext context) {
-        return Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: Wrap(
-              children: [
-                const Text('Select Actions'),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.document_scanner_rounded),
-                  title: const Text('Scan a document'),
-                  onTap: () async {
-                    await openImageScanner(context, documentId);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.file_upload_rounded),
-                  title: const Text('Upload Image'),
-                  onTap: () async {
-                    await pickImage(context, ImageSource.gallery, documentId);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.camera_alt_rounded),
-                  title: const Text('Take a Photo'),
-                  onTap: () async {
-                    await pickImage(context, ImageSource.camera, documentId);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 
@@ -278,7 +210,70 @@ class _DocumentDetailsState extends State<DocumentDetails> {
         tooltip: 'Add Image',
         elevation: 2,
         onPressed: () {
-          showAddImageOptions(context, document.id);
+          showModalBottomSheet<void>(
+            isScrollControlled: true,
+            context: context,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+            ),
+            builder: (BuildContext context) {
+              return Padding(
+                padding: MediaQuery.of(context).viewInsets,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Wrap(
+                    children: [
+                      const Text('Select Actions'),
+                      const Divider(),
+                      ListTile(
+                        leading: const Icon(Icons.document_scanner_rounded),
+                        title: const Text('Scan Document'),
+                        onTap: () async {
+                          File? scannedImage = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const DocumentScannerScreen(),
+                            ),
+                          );
+                          if (scannedImage != null) {
+                            // uploadedImagePaths.add(scannedImage.path);
+                            Provider.of<Documents>(context, listen: false)
+                                .addDocumentImage(
+                                    document.id, scannedImage.path);
+                            const snackBar = SnackBar(
+                                content: Text('Image Successfully Added'));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.file_upload_rounded),
+                        title: const Text('Upload Image'),
+                        onTap: () async {
+                          await pickImage(
+                              context, ImageSource.gallery, document.id);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.camera_alt_rounded),
+                        title: const Text('Take a Photo'),
+                        onTap: () async {
+                          Navigator.of(context).pop();
+
+                          await pickImage(
+                              context, ImageSource.camera, document.id);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

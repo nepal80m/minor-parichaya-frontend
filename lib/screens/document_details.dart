@@ -14,6 +14,9 @@ import '../utils/string.dart';
 import './edit_document.dart';
 import '../widgets/delete_confirmation_buttom_sheet.dart';
 
+// import 'package:document_scanner_flutter/configs/configs.dart';
+// import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
+
 enum selectionValue {
   edit,
   delete,
@@ -43,7 +46,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     }
   }
 
-  void showOptions(
+  void showMoreOptions(
     BuildContext context,
     int documentId,
   ) {
@@ -106,7 +109,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
         actions: [
           IconButton(
               onPressed: () {
-                showOptions(
+                showMoreOptions(
                   context,
                   document.id,
                 );

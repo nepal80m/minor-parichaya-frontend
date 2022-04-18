@@ -75,7 +75,7 @@ class _AddDocumentsState extends State<AddDocuments> {
     }
   }
 
-  void pickImage(ImageSource source) async {
+  Future<void> pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;

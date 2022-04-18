@@ -1,11 +1,17 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:parichaya_frontend/screens/document_scanner.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
-import 'package:document_scanner_flutter/document_scanner_flutter.dart';
-
+// import 'package:document_scanner_flutter/document_scanner_flutter.dart';
+import 'package:flutter_document_scanner/flutter_document_scanner.dart';
 import '../widgets/options_modal_buttom_sheet.dart';
 import '../screens/document_details.dart';
 import '../widgets/ui/custom_text_field.dart';
@@ -29,18 +35,21 @@ class _AddDocumentsState extends State<AddDocuments> {
   final List<String> uploadedImagePaths = [];
   var imageErrorMessage = '';
 
-  openImageScanner(BuildContext context) async {
-    var image = await DocumentScannerFlutter.launch(
-      context,
-      //source: ScannerFileSource.CAMERA,
-    );
-    if (image != null) {
-      setState(() {
-        uploadedImagePaths.add(image.path);
-        Navigator.of(context).pop();
-      });
-    }
-  }
+  bool _showScannerOverlay = false;
+  final _controller = DocumentScannerController();
+
+  // openImageScanner(BuildContext context) async {
+  //   var image = await DocumentScannerFlutter.launch(
+  //     context,
+  //     //source: ScannerFileSource.CAMERA,
+  //   );
+  //   if (image != null) {
+  //     setState(() {
+  //       uploadedImagePaths.add(image.path);
+  //       Navigator.of(context).pop();
+  //     });
+  //   }
+  // }
 
   void addDocument(context) async {
     titleErrorMessage = '';
@@ -92,6 +101,21 @@ class _AddDocumentsState extends State<AddDocuments> {
         const Text('Select Actions'),
         const Divider(),
         ListTile(
+          leading: const Icon(Icons.document_scanner_rounded),
+          title: const Text('Scan Document'),
+          onTap: () async {
+            File? scannedImage = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const DocumentScannerScreen(),
+              ),
+            );
+            if (scannedImage != null) {
+              uploadedImagePaths.add(scannedImage.path);
+            }
+            Navigator.of(context).pop();
+          },
+        ),
+        ListTile(
           leading: const Icon(Icons.file_upload_rounded),
           title: const Text('Upload Image'),
           onTap: () {
@@ -105,13 +129,6 @@ class _AddDocumentsState extends State<AddDocuments> {
           onTap: () {
             pickImage(ImageSource.camera);
             Navigator.of(context).pop();
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.document_scanner_rounded),
-          title: const Text('Scan Document'),
-          onTap: () {
-            openImageScanner(context);
           },
         ),
       ],

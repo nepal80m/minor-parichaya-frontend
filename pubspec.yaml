@@ -28,7 +28,7 @@ dependencies:
   flutter_native_splash: ^2.0.5
   flutter_native_image: ^0.0.6+1
   uuid: ^3.0.6
-  document_scanner_flutter: ^0.1.2
+  flutter_document_scanner: ^0.1.0
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parichaya_frontend/screens/document_scanner.dart';
 import '../screens/document_detail_full_screen_gallery.dart';
 import '../widgets/options_modal_buttom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -222,6 +223,29 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                     children: [
                       const Text('Select Actions'),
                       const Divider(),
+                      ListTile(
+                        leading: const Icon(Icons.document_scanner_rounded),
+                        title: const Text('Scan Document'),
+                        onTap: () async {
+                          File? scannedImage = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const DocumentScannerScreen(),
+                            ),
+                          );
+                          if (scannedImage != null) {
+                            // uploadedImagePaths.add(scannedImage.path);
+                            Provider.of<Documents>(context, listen: false)
+                                .addDocumentImage(
+                                    document.id, scannedImage.path);
+                            const snackBar = SnackBar(
+                                content: Text('Image Successfully Added'));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                          Navigator.of(context).pop();
+                        },
+                      ),
                       ListTile(
                         leading: const Icon(Icons.file_upload_rounded),
                         title: const Text('Upload Image'),
